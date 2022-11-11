@@ -69,19 +69,13 @@ if (isProduction) {
 }
 
 import router from './router'
-import { verifyStatus } from './events/paymetnStatus';
+
 
 app.use('/api', router)
 app.all('*', (req: Request, res: Response) => res.sendStatus(404))
 
 
-setInterval(()=>{
-    // verifyStatus()
-},6000)
-cron.schedule("* */24 * * *", ()=>{
-   
-    verifyStatus()
-})
+
 
 if (isProduction) {
     app.use(Sentry.Handlers.errorHandler());
