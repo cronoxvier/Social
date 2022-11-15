@@ -30,11 +30,13 @@ const getAllimgByProduct = async (req, res) => {
                 product_id: id
             }
         })
+        console.log("Dios")
         res.status(200).send({
             ok: true,
             imagens
 
         })
+        
 
     } catch (error) {
 
@@ -43,6 +45,7 @@ const getAllimgByProduct = async (req, res) => {
             ok: false
         })
     }
+    
 
 }
 
