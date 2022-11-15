@@ -9,8 +9,6 @@ import { col } from 'sequelize';
 const creatMessage = async (req, res) => {
     try {
         const { ...data } = req.body
-        console.log(data)
-
         const message = await Chat.create(data)
 
         const addMessage = await firebase.firestore().collection('chat')

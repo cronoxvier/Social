@@ -828,6 +828,7 @@ const getProductById = async (req: Request, res: Response) => {
 const getPharmacyProductByid = async (req: Request, res: Response) => {
     try {
         const { pharmacy_id, id } = req.body;
+        console.log(id)
 
         if (!(pharmacy_id && id)) {
             return res.status(204).json({
@@ -868,6 +869,7 @@ const getPharmacyProductByid = async (req: Request, res: Response) => {
                 ['active', 'status'],
                 [col('Products.Name'), 'product_name'],
                 [col('Products.img'), 'product_img'],
+                [col('Products.id'), 'product_id'],
                 [col('OrdersDetail.Order.Users.first_name'), 'first_name'],
                 [col('OrdersDetail.Order.Users.last_name'), 'last_name'],
                 [col('OrdersDetail.Order.Users.phone'), 'phone'],
