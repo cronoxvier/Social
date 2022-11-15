@@ -9,23 +9,26 @@ const getCategories = async (req: Request, res: Response) => {
     try {
         const category = await Category.findAll()
         if (!category.length) {
-            return res.status(200).json({
+            return res.status(400).json({
+                ok:false,
                 message: "No hay categorias"
             })
         }
 
         res.status(200).json({
+            ok:true,
             message: "Retorna las categorias",
             category
         })
     } catch (error) {
-        res.status(400).json({
+        res.status(500).json({
+            ok:false,
             mensaje: "Ha ocurrido un error",
             messaje: "It has ocurred an error",
             status: 400
         })
 
-        throw error
+       
     }
 }
 const addCategories = async (req: Request, res: Response) => {

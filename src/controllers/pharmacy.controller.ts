@@ -231,7 +231,7 @@ const createNewPharmacy = async (req: Request, res: Response) => {
         })
     } catch (error) {
         console.log(error)
-        res.status(400).json({
+        res.status(500).json({
             ok:false,
             mensaje: "Ha ocurrido un error",
             message: "It has ocurred an error",
@@ -296,6 +296,7 @@ const updatePharmacyPhoto = async (req: Request, res: Response) => {
 
         uploadImg(req, res, (err) => {
             if (err) {
+                console.log(err)
                 return res.status(400).send({
                     err
                 })
@@ -323,7 +324,8 @@ const updatePharmacyPhoto = async (req: Request, res: Response) => {
             })
         })
     } catch (error) {
-        res.status(400).send({
+        console.log(error)
+        res.status(500).send({
             mensaje: "Algo anda mal",
             message: "Something goes wrog!!",
             error

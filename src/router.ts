@@ -19,6 +19,10 @@ import pushRouter from './routes/pushNotification'
 import placeToPayRouter from './routes/placeToPay-requestId'
 import AdminPharmaciesDriver from './routes/AdminPharmaciesDriver'
 import chatRouter from './routes/Chat';
+import imagenRouter from './routes/imagen';
+
+
+
 
 
 
@@ -41,6 +45,7 @@ router.use('/push',pushRouter);
 router.use('/placeToPay',placeToPayRouter);
 router.use('/driver',AdminPharmaciesDriver);
 router.use('/chat', chatRouter)
+router.use('/imagen', imagenRouter)
 
 
 
