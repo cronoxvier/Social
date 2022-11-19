@@ -20,8 +20,7 @@ import placeToPayRouter from './routes/placeToPay-requestId'
 import AdminPharmaciesDriver from './routes/AdminPharmaciesDriver'
 import chatRouter from './routes/Chat';
 import imagenRouter from './routes/imagen';
-
-
+import createOccupancyRequestRouter from './routes/occupancyRequest'
 
 
 
@@ -46,7 +45,7 @@ router.use('/placeToPay',placeToPayRouter);
 router.use('/driver',AdminPharmaciesDriver);
 router.use('/chat', chatRouter)
 router.use('/imagen', imagenRouter)
-
+router.use('/occupancyRequest',createOccupancyRequestRouter)
 
 
 export default router;
