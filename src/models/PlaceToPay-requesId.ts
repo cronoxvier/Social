@@ -5,6 +5,7 @@ import { Pharmacy } from './Pharmacy';
 import { User } from './user'
 import { Ads } from './ads'
 import { Order } from './orders';
+import { OccupancyRequests } from './OccupancyRequest';
 
 const placeToPayRequestId = db.define<PlaceToPayRequestId>('PlaceToPayRequestId', {
 	id: {
@@ -83,11 +84,11 @@ const placeToPayRequestId = db.define<PlaceToPayRequestId>('PlaceToPayRequestId'
 placeToPayRequestId.belongsTo(Pharmacy, { foreignKey: 'pharmacy_id', as: 'Pharmacy' })
 placeToPayRequestId.belongsTo(Ads, { foreignKey: 'ads_id', as: 'Ads' })
 placeToPayRequestId.belongsTo(User, { foreignKey: 'user_id', as: 'User' })
-placeToPayRequestId.belongsTo(Order, { foreignKey: 'order_id', as: 'Order' })
-
-placeToPayRequestId.sync({ alter: { drop: false } }).then(
-	() => console.log("Sync complete")
-);
+//placeToPayRequestId.belongsTo(Order, { foreignKey: 'order_id', as: 'Order' })
+placeToPayRequestId.belongsTo(OccupancyRequests, { foreignKey: 'order_id', as: 'OccupancyRequests' })
+// placeToPayRequestId.sync({ alter: { drop: true } ,force:true}).then(
+// 	() => console.log("Sync complete")
+// );
 
 
 export { placeToPayRequestId }
