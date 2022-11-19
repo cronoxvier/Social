@@ -1116,6 +1116,7 @@ const updateProductPhoto = async (req: Request, res: Response) => {
         }
 
         const url = product.img
+        
         if (url) {
             deletFile(url);
         }
@@ -1135,7 +1136,7 @@ const updateProductPhoto = async (req: Request, res: Response) => {
                 }
             }
             const image = req.file as any;
-            console.log(image)
+            
 
 
             const product = Products.update({

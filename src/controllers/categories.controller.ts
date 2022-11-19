@@ -10,33 +10,61 @@ const getCategories = async (req: Request, res: Response) => {
         const category = await Category.findAll()
         if (!category.length) {
             return res.status(400).json({
-                ok:false,
+                ok: false,
                 message: "No hay categorias"
             })
         }
 
         res.status(200).json({
-            ok:true,
+            ok: true,
             message: "Retorna las categorias",
             category
         })
     } catch (error) {
         res.status(500).json({
-            ok:false,
+            ok: false,
             mensaje: "Ha ocurrido un error",
             messaje: "It has ocurred an error",
             status: 400
         })
 
-       
+
+    }
+}
+const getCategoriesByPropitier = async (req: Request, res: Response) => {
+    try {
+        const {id}= req.params
+        const category = await Category.findAll({where:{pharmacy_id:id}})
+        if (!category.length) {
+            return res.status(400).json({
+                ok: false,
+                message: "No hay categorias"
+            })
+        }
+
+        res.status(200).json({
+            ok: true,
+            message: "Retorna las categorias",
+            category
+        })
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            mensaje: "Ha ocurrido un error",
+            messaje: "It has ocurred an error",
+            status: 400
+        })
+
+
     }
 }
 const addCategories = async (req: Request, res: Response) => {
     try {
-        const { name, nombre } = req.body
+        const { name, nombre, pharmacy_id } = req.body
         const category = await Category.create({
             name,
             nombre,
+            pharmacy_id
 
         });
 
@@ -97,55 +125,84 @@ const updateCategory = async (req: Request, res: Response) => {
 }
 
 const updateCategoryImage = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const category = await Category.findOne({ where: { id } })
-    if (!category) {
-        return res.status(400).send({
-            ok: false
-        })
-
-    }
-
-    const url = category.icon
-    // console.log(url, "osir")
-
-    
-    if (url) {
-        deletFile(url);
-    }
-    uploadImg(req, res, (err) => {
-        if (err) {
-            res.status(400).send({
-                err
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(204).json({
+                ok:false,
+                mensaje: "Id invalido",
+                message: "Id invalid"
             })
-        } else {
-            if (req.file === undefined) {
+        }
+        
+        const category = await Category.findOne({ where: { id } })
+        if (!category) {
+            return res.status(400).send({
+                ok: false,
+                message: 'No existe esta categoria'
+            })
+
+        }
+
+        const url = category.icon
+        if (url) {
+            deletFile(url);
+        }
+        uploadImg(req, res, (err) => {
+
+            if (err) {
+                console.log(err)
                 res.status(400).send({
-                    mensaje: 'Error: No image selected'
+                    ok: false,
+                    err
+                })
+            } else {
+                if (req.file === undefined) {
+                    res.status(400).send({
+                        ok: false,
+                        mensaje: 'Error: No image selected'
+                    })
+                }
+            }
+
+            const image = req.file as any;
+            console.log(image)
+            const category = Category.update({
+                icon: image.location
+            }, {
+                where: {
+                    id
+                }
+            })
+            if (!category) {
+                return res.status(400).send({
+                    ok: false,
                 })
             }
-        }
-        //const {id} = req.params
-        const image = req.file as any;
-        const category = Category.update({
-            icon: image.location
-        }, {
-            where: {
-                id
-            }
+
+
+            res.status(200).send({
+                ok: true,
+                mensaje: 'Image actualizada'
+            })
         })
-        if (!category) {
-            return res.status(204).send()
-        }
-        res.status(200).send({
-            mensaje: 'Image actualizada'
+
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false,
+            mensaje: "Algo anda mal",
+            message: "Something goes wrog!!",
+            
         })
-    })
+    }
 }
 const getCategoriesStatusMobile = async (req: Request, res: Response) => {
     try {
         const { id } = req.params
-        
+
 
         if (!id) {
             return res.status(204).json({
@@ -172,13 +229,13 @@ const getCategoriesStatusMobile = async (req: Request, res: Response) => {
         // console.log(categoryStatus)
 
         var hash = {};
-        const array = categoryStatus.filter(function(current) {
+        const array = categoryStatus.filter(function (current) {
             var exists = !hash[current.id];
             hash[current.id] = true;
             return exists;
 
         })
-  
+
         if (!categoryStatus) {
             return res.status(404).send({
                 message: 'Not found',
@@ -190,7 +247,7 @@ const getCategoriesStatusMobile = async (req: Request, res: Response) => {
         res.status(200).send({
             message: 'Pharmacy category status',
             mensaje: 'Estatus de categorias',
-            categoryStatus:array
+            categoryStatus: array
         })
 
         // console.log("getCategoriesStatusMobile)",categoryStatus)
@@ -224,9 +281,9 @@ const getCategoriesStatus = async (req: Request, res: Response) => {
                 mensage: 'No encontrado'
             })
         }
-       
+
         var hash = {};
-        const array = categoryStatus.filter(function(current) {
+        const array = categoryStatus.filter(function (current) {
             var exists = !hash[current.id];
             hash[current.id] = true;
             return exists;
@@ -237,7 +294,7 @@ const getCategoriesStatus = async (req: Request, res: Response) => {
         res.status(200).send({
             message: 'Pharmacy category status',
             mensaje: 'Estatus de categorias',
-            categoryStatus:array
+            categoryStatus: array
         })
 
 
@@ -317,7 +374,7 @@ const updateCategoriesStatus = async (req: Request, res: Response) => {
 
 
 export {
-    getCategories, addCategoriesStatus,
+    getCategories, getCategoriesByPropitier, addCategoriesStatus,
     updateCategoriesStatus, getCategoriesStatus, addCategories, updateCategoryImage, updateCategory, getCategoriesStatusMobile
 }
 

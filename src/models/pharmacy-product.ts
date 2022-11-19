@@ -24,7 +24,7 @@ const PharmacyProduct = db.define<PharmacyProductAttr>('PharmaciesProducts', {
 		allowNull: false
 	},
 	price: {
-		type: DataTypes.DECIMAL(6, 2),
+		type: DataTypes.DECIMAL(8, 5),
 		allowNull: false
 	},
 	apply_taxes: {
