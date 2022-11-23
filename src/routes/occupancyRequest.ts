@@ -7,4 +7,11 @@ createOccupancyRequestRouter.post('/createOccupancyRequest',createOccupancyReque
 
 createOccupancyRequestRouter.post('/getOccupancyRequestsByUser',createOccupancyRequestCtrl.getOccupancyRequestsByUser)
 
+createOccupancyRequestRouter.post('/getOccupancyRequestsById',createOccupancyRequestCtrl.getOccupancyRequestsById)
+
+
+createOccupancyRequestRouter.post('/getAllOccupancyByPharmacy',createOccupancyRequestCtrl.getAllOccupancyByPharmacy)
+
+createOccupancyRequestRouter.post('/updateOccupancyState',createOccupancyRequestCtrl.updateOccupancyState)
+
 export default createOccupancyRequestRouter

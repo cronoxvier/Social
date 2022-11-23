@@ -13,6 +13,7 @@ import { BillingDetail } from './billing-detail';
 //import { ProductOrderStatus } from './product-order-status';
 import { OrderStateAttr } from '../interfaces/order-state'
 import { OrderDetailAttr } from '../interfaces/order-details'
+import { PharmacyProduct } from './pharmacy-product';
 
 const OccupancyRequests = db.define<OccupancyRequestsAttr>('OccupancyRequests', {
 	id: {
@@ -223,7 +224,8 @@ const OccupancyRequests = db.define<OccupancyRequestsAttr>('OccupancyRequests', 
 // OrderDetail.belongsTo(Orders, { foreignKey: 'order_id', as: 'Order' })
 // Orders.hasMany(OrderStateHistory, { foreignKey: 'order_id', as: 'OrdersStatesHistory' })
 OccupancyRequests.belongsTo(OrderState, { foreignKey: 'order_state_id', as: 'OrdersState' })
-
+OccupancyRequests.belongsTo(PharmacyProduct,{foreignKey:'product_pharmacy_id', as:'PharmacyProduct'})
+PharmacyProduct.hasOne(OccupancyRequests, { foreignKey: 'product_pharmacy_id', as: 'OccupancyRequests' })
 //  OccupancyRequests.sync({ alter: { drop: true },force:true}).catch(
 //      (error) => console.log("Sync errror",error)
 //   );
