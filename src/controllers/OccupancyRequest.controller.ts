@@ -121,7 +121,7 @@ const createOccupancyRequest = async (req: Request, res: Response) => {
             const updatePlaceToPayRequestId = await placeToPayRequestId.update({ order_id: r.id }, { where: { requestId: requestId }, transaction, returning: true })
             .catch((r)=>console.log("error",r))
             console.log(r,requestId,'test')
-            await firebase.firestore().collection('notifications').add({
+            await firebase.firestore().collection('propertiesOrder').add({
                 message: 'A new order #' + r.code + ' has been placed.',
                 seen: false,
                 user_id: pharmacy_id + '',
@@ -129,11 +129,11 @@ const createOccupancyRequest = async (req: Request, res: Response) => {
                 order_status: 1
               });
       
-              await firebase.firestore().collection('orders').add({
-                order_id: r.id,
-                order_status: 1,
-                farmacy_id: pharmacy_id
-              });
+            //   await firebase.firestore().collection('orders').add({
+            //     order_id: r.id,
+            //     order_status: 1,
+            //     farmacy_id: pharmacy_id
+            //   });
       
               await firebase.firestore().collection('notificationsPush').add({
                 message: 'A new order #' + OccupancyRequest.code + ' has been placed.',

@@ -69,11 +69,11 @@ const createClient = async (req: Request, res: Response) => {
 
 
         if (user) {
-            console.log("user already exists")
             return res.status(400).send({
+                ok: false,
                 message: 'That email is taken. Try another',
                 mensaje: 'Ese email está tomado. Prueba otra',
-                status: 409
+
             })
         }
         const createUser = await User.create(client)
@@ -81,13 +81,15 @@ const createClient = async (req: Request, res: Response) => {
             return res.status(204).send()
         }
         res.status(200).send({
+            ok: true,
             mensaje: 'El usuario ha sido creado',
             message: 'The user has been created',
             createUser
         })
     } catch (error) {
         console.log("error creating user", error)
-        res.status(400).json({
+        res.status(500).json({
+            ok: false,
             mensaje: "Ha ocurrido un error",
             messaje: "It has ocurred an error",
             error
@@ -211,7 +213,7 @@ const updateClient = (req: Request, res: Response) => {
 
 // driver
 const updateDriverUser = async (req: Request, res: Response) => {
-    
+
     try {
 
         const {
@@ -733,8 +735,8 @@ const updatedDriverActive = async (req: Request, res: Response) => {
         const { id, active } = req.body
         console.log(id, active)
         const driver = await Driver.update({ active }, { where: { id } })
-        const {pharmacy_id} = await Driver.findOne({ where: { id }})
-        
+        const { pharmacy_id } = await Driver.findOne({ where: { id } })
+
         if (!driver.length) {
             return res.status(204).send()
         }
