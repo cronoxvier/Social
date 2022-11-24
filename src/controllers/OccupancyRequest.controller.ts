@@ -22,7 +22,7 @@ const createOccupancyRequest = async (req: Request, res: Response) => {
     const code = new Date().getTime();
     try {
         const {
-            Full,
+            FullName,
             DateOfBirth,
             SSN,
             Phone,
@@ -72,7 +72,7 @@ const createOccupancyRequest = async (req: Request, res: Response) => {
         console.log(req.body, "body")
         const OccupancyRequest = {
             code,
-            Full,
+            Full:FullName,
             DateOfBirth,
             SSN,
             Phone,
@@ -116,7 +116,7 @@ const createOccupancyRequest = async (req: Request, res: Response) => {
             user_id,
             product_pharmacy_id
         }
-        console.log(OccupancyRequest)
+        console.log(OccupancyRequest,'OccupancyRequest created')
         const or = await OccupancyRequests.create(OccupancyRequest, { transaction, returning: true }).then(async (r) => {
             const updatePlaceToPayRequestId = await placeToPayRequestId.update({ order_id: r.id }, { where: { requestId: requestId }, transaction, returning: true })
             .catch((r)=>console.log("error",r))
