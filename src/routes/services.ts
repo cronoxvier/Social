@@ -6,7 +6,7 @@ const servicesRouter: express.Router = express.Router();
 servicesRouter.post('/create', servicesCtrl.createTypeServices);
 servicesRouter.post('/saveImgTypeServices/:id', servicesCtrl.saveImgTypeServices);
 servicesRouter.get('/getTypeServiceById/:id', servicesCtrl.getTypeServiceById);
-// adsRouter.post('/activeDisable/ads/:id', adsCtrl.activeDisable);
+servicesRouter.post('/createService', servicesCtrl.createServices);
 // adsRouter.get('/getAdsByfarmacyId/:id', adsCtrl.getAdsByFarmacies);
 // adsRouter.post('/createAdminAdsToPharmacy', adsCtrl.createAdminAdsToPharmacy);
 // adsRouter.get('/getAdminAdsToPharmacyByPharmacy/:id', adsCtrl.getAdminAdsToPharmacyByPharmacy);

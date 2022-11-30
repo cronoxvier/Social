@@ -1,6 +1,7 @@
 
 
 import { TypeServices } from '../models/TypeServices'
+import {service} from '../models/services'
 import { deletFile, uploadImg } from './image.controller'
 
 const createTypeServices = async (req, res) => {
@@ -8,6 +9,27 @@ const createTypeServices = async (req, res) => {
 
         const { ...data } = req.body
         const services = await TypeServices.create(data)
+
+        res.status(200).send({
+            ok: true,
+            services
+
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+    }
+
+}
+
+const createServices = async (req, res) => {
+    try {
+
+        const { ...data } = req.body
+        const services = await service.create(data)
 
         res.status(200).send({
             ok: true,
@@ -102,4 +124,4 @@ const getTypeServiceById = async (req, res) => {
         })
     }
 }
-export { createTypeServices, saveImgTypeServices, getTypeServiceById }
+export { createTypeServices, saveImgTypeServices, getTypeServiceById, createServices }
