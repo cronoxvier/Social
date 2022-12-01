@@ -107,7 +107,6 @@ const saveImgTypeServices = async (req, res) => {
             ok: false
         })
     }
-
 }
 
 const getTypeServiceById = async (req, res) => {
@@ -126,8 +125,6 @@ const getTypeServiceById = async (req, res) => {
     }
 }
 
-
-
 const saveImagesServices = async (req, res) => {
     try {
         const { id } = req.params;
@@ -138,6 +135,7 @@ const saveImagesServices = async (req, res) => {
                 mensaje: 'No existe este registro'
             })
         }
+        console.log(service)
 
         uploadImg(req, res, async (err) => {
             if (err) {
@@ -161,7 +159,6 @@ const saveImagesServices = async (req, res) => {
                 imagen,
                 ok: true
             })
-
         })
     } catch (error) {
         console.log(error)
