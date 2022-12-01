@@ -27,8 +27,8 @@ const services = db.define<servicesAttr>('Services',{
 services.belongsTo(TypeServices,{foreignKey: 'typeServices_id' , as: 'TypeServices'})
 services.belongsTo(Pharmacy,{foreignKey: 'pharmacy_id' , as: 'Pharmacy'})
 
-services.sync({ alter: { drop: true } }).then(
-	() => console.log("Sync complete type services")
-);
+// services.sync({ alter: { drop: true } }).then(
+// 	() => console.log("Sync complete type services")
+// );
 
 export { services }
