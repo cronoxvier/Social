@@ -5,6 +5,8 @@ import { services } from '../models/services'
 import { deletFile, uploadImg } from './image.controller'
 import { Imagen } from '../models/imagen'
 
+import { dbf, firebase } from '../config/firebase';
+
 const createTypeServices = async (req, res) => {
     try {
 
@@ -32,10 +34,16 @@ const createServices = async (req, res) => {
         const { ...data } = req.body
         const service = await services.create(data)
 
+        await firebase.firestore().collection('ServiceNotification').add({
+            message: 'A new order #' + service.id + ' has been placed.',
+            seen: false,
+            pharmacy_id: service.pharmacy_id,
+            typeServices_id:service.typeServices_id
+        });
+
         res.status(200).send({
             ok: true,
-            services:service
-
+            services: service
         })
 
     } catch (error) {
@@ -44,13 +52,11 @@ const createServices = async (req, res) => {
             ok: false
         })
     }
-
 }
 
 const saveImgTypeServices = async (req, res) => {
     try {
         const { id } = req.params;
-
         const services = await TypeServices.findOne({ where: { id } })
         if (!services) {
             return res.status(400).send({
@@ -62,8 +68,6 @@ const saveImgTypeServices = async (req, res) => {
         if (url) {
             deletFile(url);
         }
-
-
         uploadImg(req, res, (err) => {
             if (err) {
                 console.log(err, '5')
@@ -72,7 +76,6 @@ const saveImgTypeServices = async (req, res) => {
                 })
             }
             else {
-                console.log(req.file, "1")
                 if (req.file === undefined) {
                     return res.status(400).send({
                         ok: false,
@@ -135,8 +138,6 @@ const saveImagesServices = async (req, res) => {
                 mensaje: 'No existe este registro'
             })
         }
-        console.log(service)
-
         uploadImg(req, res, async (err) => {
             if (err) {
                 console.log(err)
@@ -153,8 +154,7 @@ const saveImagesServices = async (req, res) => {
                 }
             }
             const img = req.file as any;
-            const imagen = await Imagen.create({ url: img.location, services_id:id})
-
+            const imagen = await Imagen.create({ url: img.location, services_id: id })
             return res.status(200).send({
                 imagen,
                 ok: true

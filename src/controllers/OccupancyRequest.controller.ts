@@ -72,7 +72,7 @@ const createOccupancyRequest = async (req: Request, res: Response) => {
         console.log(req.body, "body")
         const OccupancyRequest = {
             code,
-            Full:FullName,
+            Full: FullName,
             DateOfBirth,
             SSN,
             Phone,
@@ -116,26 +116,26 @@ const createOccupancyRequest = async (req: Request, res: Response) => {
             user_id,
             product_pharmacy_id
         }
-        console.log(OccupancyRequest,'OccupancyRequest created')
+        console.log(OccupancyRequest, 'OccupancyRequest created')
         const or = await OccupancyRequests.create(OccupancyRequest, { transaction, returning: true }).then(async (r) => {
             const updatePlaceToPayRequestId = await placeToPayRequestId.update({ order_id: r.id }, { where: { requestId: requestId }, transaction, returning: true })
-            .catch((r)=>console.log("error",r))
-            console.log(r,requestId,'test')
+                .catch((r) => console.log("error", r))
+            console.log(r, requestId, 'test')
             await firebase.firestore().collection('propertiesOrder').add({
                 message: 'A new order #' + r.code + ' has been placed.',
                 seen: false,
                 user_id: pharmacy_id + '',
                 order_id: r.id,
                 order_status: 1
-              });
-      
+            });
+
             //   await firebase.firestore().collection('orders').add({
             //     order_id: r.id,
             //     order_status: 1,
             //     farmacy_id: pharmacy_id
             //   });
-      
-              await firebase.firestore().collection('notificationsPush').add({
+
+            await firebase.firestore().collection('notificationsPush').add({
                 message: 'A new order #' + OccupancyRequest.code + ' has been placed.',
                 seen: false,
                 pharmacy_id: pharmacy_id + '',
@@ -200,20 +200,21 @@ const getOccupancyRequestsByUser = async (req: Request, res: Response) => {
 const getOccupancyRequestsById = async (req: Request, res: Response) => {
     const { id } = req.body
     try {
-        const OccupancyRequest = await OccupancyRequests.findOne({ where: { id },
-            include:[{
-                model:PharmacyProduct,
-                as:'PharmacyProduct',
-                include:[{
-                    model:Products,
-                    as:'Products'
+        const OccupancyRequest = await OccupancyRequests.findOne({
+            where: { id },
+            include: [{
+                model: PharmacyProduct,
+                as: 'PharmacyProduct',
+                include: [{
+                    model: Products,
+                    as: 'Products'
                 }]
             }],
             attributes: [
-                "product_pharmacy_id", 
+                "product_pharmacy_id",
                 "RequestFee",
                 'code',
-                [col ('Full'),'FullName'],
+                [col('Full'), 'FullName'],
                 'DateOfBirth',
                 'SSN',
                 'Phone',
@@ -222,43 +223,43 @@ const getOccupancyRequestsById = async (req: Request, res: Response) => {
                 'City',
                 'State',
                 'Zipcode',
-        
+
                 'CurrentLandlord',
-        
+
                 'LandlordPhone',
-        
+
                 'RentAmount',
-        
+
                 'MoveInDate',
-        
+
                 'Expiration',
-        
+
                 'ReasonForMoving',
-        
+
                 'AreYouBeingEvicted',
-        
+
                 'WhoShouldWeContactInCaseEmergency',
-        
+
                 'EmergencyPhone',
-        
+
                 'EmergencyAddress',
-        
+
                 'EmergencyCity',
-        
+
                 'EmergencyState',
-        
+
                 'EmergencyZipcode',
-        
+
                 'EmergencyPersonRelationship',
-        
+
                 'FutureTenant',
-        
+
                 'FutureTenantBirthDay',
                 'order_state_id',
-              //  ["ammount", "quantity"],
-               // ["price", "product_price"],
-               // "from",
-               // "message",
+                //  ["ammount", "quantity"],
+                // ["price", "product_price"],
+                // "from",
+                // "message",
                 //"gift_status_id",
                 // [col("PharmacyProduct.ivu_municipal"), "ivu_municipal"],
                 // [col("PharmacyProduct.ivu_statal"), "ivu_statal"],
@@ -266,7 +267,7 @@ const getOccupancyRequestsById = async (req: Request, res: Response) => {
                 // [col("PharmacyProduct.gift_price"), "gift_price"],
                 [col("PharmacyProduct.Products.name"), "name"],
                 [col("PharmacyProduct.Products.img"), "imageUrl"]
-              ]
+            ]
         });
         //console.log(OccupancyRequest)
         if (!OccupancyRequest) {
@@ -283,7 +284,7 @@ const getOccupancyRequestsById = async (req: Request, res: Response) => {
             OccupancyRequest
         })
     } catch (error) {
-        console.log("catch error",error)
+        console.log("catch error", error)
         res.status(400).send({
             ok: false
         })
@@ -297,7 +298,7 @@ const updateOccupancyState = async (req: Request, res: Response) => {
         const order = await OccupancyRequests.findOne({
             where: { id: occupancy_id },
         });
-      
+
         // console.log(order)
         const orderNames = await OrderState.findOne({
             where: { id: state },
@@ -305,9 +306,9 @@ const updateOccupancyState = async (req: Request, res: Response) => {
         //   const orderStates = await OrderStateHistory.findAll({
         //     where: { occupancy_id },
         //   });
-        console.log(order,orderNames,"order")
+        console.log(order, orderNames, "order")
         if (!(order /*&& orderStates*/ && orderNames)) {
-           res.status(404).send({
+            res.status(404).send({
                 ok: false,
                 message: "Request not found",
                 mensaje: "Solicitud no encontrada",
@@ -390,40 +391,40 @@ const updateOccupancyState = async (req: Request, res: Response) => {
 };
 const getAllOccupancyByPharmacy = async (req: Request, res: Response) => {
     try {
-      const { pharmacy_id } = req.body;
-  
-      if (!pharmacy_id) {
-        return res.status(204).json({
-          mensaje: "Id invalido",
-          message: "Id invalid",
+        const { pharmacy_id } = req.body;
+
+        if (!pharmacy_id) {
+            return res.status(204).json({
+                mensaje: "Id invalido",
+                message: "Id invalid",
+            });
+        }
+        const order = await OccupancyRequests.findAll({
+            where: {
+                //pharmacy_id,
+                order_state_id: { [Op.not]: 8 }
+            },
+            order: [
+                ['created_at', 'DESC'],
+            ],
         });
-      }
-      const order = await OccupancyRequests.findAll({
-        where: {
-          //pharmacy_id,
-           order_state_id:{[Op.not]:8}
-        },
-        order: [
-          ['created_at', 'DESC'],
-        ],
-      });
-      if (!order.length) {
-        return res.status(204).send({
-          message: "Order not found",
+        if (!order.length) {
+            return res.status(204).send({
+                message: "Order not found",
+            });
+        }
+        res.status(200).json({
+            message: "Completado!",
+            order,
         });
-      }
-      res.status(200).json({
-        message: "Completado!",
-        order,
-      });
     } catch (error) {
-      res.status(400).json({
-        mensaje: "Ha ocurrido un error",
-        messaje: "It has ocurred an error",
-        error,
-      });
-  
-      ////getOrdersDriverAdmin;
+        res.status(400).json({
+            mensaje: "Ha ocurrido un error",
+            messaje: "It has ocurred an error",
+            error,
+        });
+
+        ////getOrdersDriverAdmin;
     }
-  };
-export { createOccupancyRequest, getOccupancyRequestsByUser,getAllOccupancyByPharmacy, getOccupancyRequestsById,updateOccupancyState }
+};
+export { createOccupancyRequest, getOccupancyRequestsByUser, getAllOccupancyByPharmacy, getOccupancyRequestsById, updateOccupancyState }
