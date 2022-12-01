@@ -35,7 +35,7 @@ const createServices = async (req, res) => {
         const service = await services.create(data)
         
         await firebase.firestore().collection('ServiceNotification').add({
-            message: 'A new order #' + service.id + ' has been placed.',
+            message: 'you have a new service request',
             seen: false,
             pharmacy_id: service.pharmacy_id,
             typeServices_id:service.typeServices_id
