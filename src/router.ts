@@ -22,6 +22,7 @@ import chatRouter from './routes/Chat';
 import imagenRouter from './routes/imagen';
 import createOccupancyRequestRouter from './routes/occupancyRequest'
 import createRentRouter from './routes/Rent';
+import servicesRouter from './routes/services';
 
 
 
@@ -48,5 +49,7 @@ router.use('/chat', chatRouter)
 router.use('/imagen', imagenRouter)
 router.use('/occupancyRequest',createOccupancyRequestRouter)
 router.use('/rent',createRentRouter)
+router.use('/services', servicesRouter)
+
 
 export default router;
