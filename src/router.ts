@@ -21,6 +21,7 @@ import AdminPharmaciesDriver from './routes/AdminPharmaciesDriver'
 import chatRouter from './routes/Chat';
 import imagenRouter from './routes/imagen';
 import createOccupancyRequestRouter from './routes/occupancyRequest'
+import createRentRouter from './routes/Rent';
 
 
 
@@ -46,6 +47,6 @@ router.use('/driver',AdminPharmaciesDriver);
 router.use('/chat', chatRouter)
 router.use('/imagen', imagenRouter)
 router.use('/occupancyRequest',createOccupancyRequestRouter)
-
+router.use('/rent',createRentRouter)
 
 export default router;

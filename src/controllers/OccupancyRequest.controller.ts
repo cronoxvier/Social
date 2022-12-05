@@ -16,7 +16,32 @@ import { col, ForeignKeyConstraintError, Op } from 'sequelize';
 import { OrderDetail } from '../models/order-detail';
 import { placeToPayRequestId } from '../models/PlaceToPay-requesId';
 import { dbf, firebase } from '../config/firebase';
-
+import { not, or } from 'sequelize/lib/operators';
+const getDefaultrequest=async(req:Request,res:Response)=>{
+    const { user_id } = req.body
+    try {
+        const OccupancyRequest = await OccupancyRequests.findOne({where:{deletedAt:{[Op.not]:null},user_id},paranoid:false})
+        console.log("default",OccupancyRequest)
+        if (OccupancyRequest===undefined||OccupancyRequest===null) {
+            return res.status(404).send({
+                message: 'Requests not found',
+                mensaje: 'Solicitudes no encontradas',
+                ok: false
+            });
+        }
+        return res.status(200).send({
+            message: 'Requests found',
+            mensaje: 'Solicitudes encontradas',
+            ok: true,
+            OccupancyRequest
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+    }
+}
 const createOccupancyRequest = async (req: Request, res: Response) => {
     const transaction = await seqDb.transaction({ autocommit: false });
     const code = new Date().getTime();
@@ -72,7 +97,7 @@ const createOccupancyRequest = async (req: Request, res: Response) => {
         console.log(req.body, "body")
         const OccupancyRequest = {
             code,
-            Full:FullName,
+            FullName,
             DateOfBirth,
             SSN,
             Phone,
@@ -117,33 +142,50 @@ const createOccupancyRequest = async (req: Request, res: Response) => {
             product_pharmacy_id
         }
         console.log(OccupancyRequest,'OccupancyRequest created')
+        const oc = await OccupancyRequests.findOne({where:{deletedAt:{[Op.not]:null},user_id},paranoid:false})
+        if(!oc){
         const or = await OccupancyRequests.create(OccupancyRequest, { transaction, returning: true }).then(async (r) => {
-            const updatePlaceToPayRequestId = await placeToPayRequestId.update({ order_id: r.id }, { where: { requestId: requestId }, transaction, returning: true })
-            .catch((r)=>console.log("error",r))
-            console.log(r,requestId,'test')
-            await firebase.firestore().collection('propertiesOrder').add({
-                message: 'A new order #' + r.code + ' has been placed.',
-                seen: false,
-                user_id: pharmacy_id + '',
-                order_id: r.id,
-                order_status: 1
-              });
-      
-            //   await firebase.firestore().collection('orders').add({
+            await OccupancyRequests.destroy({where:{id:r.id},transaction})
+            await transaction.commit();
+            res.status(200).send({
+                mensaje: "Solicitud creada",
+                message: "Request created",
+                ok: true,
+                or
+            })
+            // await firebase.firestore().collection('propertiesOrder').add({
+            //     message: 'A new order #' + r.code + ' has been placed.',
+            //     seen: false,
+            //     user_id: pharmacy_id + '',
             //     order_id: r.id,
-            //     order_status: 1,
-            //     farmacy_id: pharmacy_id
+            //     order_status: 1
             //   });
       
-              await firebase.firestore().collection('notificationsPush').add({
-                message: 'A new order #' + OccupancyRequest.code + ' has been placed.',
-                seen: false,
-                pharmacy_id: pharmacy_id + '',
-                order_id: r.id,
-                order_status: 1,
-                token: TOKEN
-            });
+            // //   await firebase.firestore().collection('orders').add({
+            // //     order_id: r.id,
+            // //     order_status: 1,
+            // //     farmacy_id: pharmacy_id
+            // //   });
+      
+            //   await firebase.firestore().collection('notificationsPush').add({
+            //     message: 'A new order #' + OccupancyRequest.code + ' has been placed.',
+            //     seen: false,
+            //     pharmacy_id: pharmacy_id + '',
+            //     order_id: r.id,
+            //     order_status: 1,
+            //     token: TOKEN
+            // });
         })
+    }
+    else{
+       // await transaction.commit();
+        res.status(204).send({
+            mensaje: "Solicitud  no creada",
+            message: "Request can't be created",
+            ok: false,
+            or:oc
+        })
+    }
 
         // if (!or) {
         //     res.status(204).send({
@@ -154,13 +196,13 @@ const createOccupancyRequest = async (req: Request, res: Response) => {
         //     })
 
         // }
-        await transaction.commit();
-        res.status(200).send({
-            mensaje: "Solicitud creada",
-            message: "Request created",
-            ok: true,
-            or
-        })
+        // await transaction.commit();
+        // res.status(200).send({
+        //     mensaje: "Solicitud creada",
+        //     message: "Request created",
+        //     ok: true,
+        //     or
+        // })
     } catch (error) {
         console.log(error)
         await transaction.rollback();
@@ -171,7 +213,64 @@ const createOccupancyRequest = async (req: Request, res: Response) => {
         })
     }
 }
-
+const confirmCreation= async(req:Request,res:Response)=>{
+    try {
+        const transaction = await seqDb.transaction({ autocommit: false });
+        const {user_id,TOKEN,requestId}=req.body
+        const trueCreate=  await OccupancyRequests.findOne({where:{deletedAt:{[Op.not]:null},user_id},paranoid:false})
+        //console.log(trueCreate.id,"pendiente de crear")
+        if(trueCreate!==undefined&&trueCreate!==null){
+            console.log("test")
+            const updatePlaceToPayRequestId = await placeToPayRequestId.update({ order_id: trueCreate.id }, { where: { requestId: requestId }, transaction, returning: true })
+            .catch((r)=>console.log("error",r)).then(async()=>{
+                await transaction.commit();
+                await OccupancyRequests.restore({where:{deletedAt:{[Op.not]:null},user_id}}).then(async()=>{
+                await firebase.firestore().collection('propertiesOrder').add({
+                message: 'A new order #' + trueCreate.code + ' has been placed.',
+                seen: false,
+                user_id: 534 + '',
+                order_id: trueCreate.id,
+                order_status: 1
+              });
+      
+            //   await firebase.firestore().collection('orders').add({
+            //     order_id: r.id,
+            //     order_status: 1,
+            //     farmacy_id: pharmacy_id
+            //   });
+      
+              await firebase.firestore().collection('notificationsPush').add({
+                message: 'A new order #' + trueCreate.code + ' has been placed.',
+                seen: false,
+                pharmacy_id: 534 + '',
+                order_id: trueCreate.id,
+                order_status: 1,
+                token: TOKEN
+            });
+                })
+            })
+           return res.status(200).send({
+                mensaje: "Solicitud creada",
+                message: "Request created",
+                ok: true,
+            })
+        }else{
+           return res.status(204).send({
+                mensaje: "Solicitud creada",
+                message: "Request created",
+                ok: true,
+            })
+        }
+        
+    } catch (error) {
+        console.log(error)
+               res.status(400).send({
+                mensaje: "Ha ocurrido un error",
+                messaje: "It has ocurred an errores",
+                error
+            })
+    }
+    }
 const getOccupancyRequestsByUser = async (req: Request, res: Response) => {
     const { user_id } = req.body
     try {
@@ -210,6 +309,7 @@ const getOccupancyRequestsById = async (req: Request, res: Response) => {
                 }]
             }],
             attributes: [
+                "id",
                 "product_pharmacy_id", 
                 "RequestFee",
                 'code',
@@ -426,4 +526,4 @@ const getAllOccupancyByPharmacy = async (req: Request, res: Response) => {
       ////getOrdersDriverAdmin;
     }
   };
-export { createOccupancyRequest, getOccupancyRequestsByUser,getAllOccupancyByPharmacy, getOccupancyRequestsById,updateOccupancyState }
+export { createOccupancyRequest,confirmCreation,getDefaultrequest,getOccupancyRequestsByUser,getAllOccupancyByPharmacy, getOccupancyRequestsById,updateOccupancyState }

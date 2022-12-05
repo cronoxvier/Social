@@ -95,7 +95,6 @@ const getProductsByPharmacy = async (req: Request, res: Response) => {
                     'stock', 'price', 'gift_status',
                     [col('Products.category_id'), 'category']
                     // [col('Category.name'),'category_name']
-
                 ],
                 where: {
                     pharmacy_id: pharmacy_id,

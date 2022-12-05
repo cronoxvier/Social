@@ -237,8 +237,8 @@ OrderDetail.belongsTo(Orders,{foreignKey:'order_id', as: 'Order'})
 Orders.hasMany(OrderStateHistory, { foreignKey: 'order_id', as: 'OrdersStatesHistory' })
 Orders.belongsTo(OrderState, { foreignKey: 'order_state_id', as: 'OrdersState'})
 
- Orders.sync({ alter: { drop: false }}).catch(
-     (error) => console.log("Sync errror",error)
-  );
+//  Orders.sync({ alter: { drop: false }}).catch(
+//      (error) => console.log("Sync errror",error)
+//   );
   const Order= Orders
 export { Order }

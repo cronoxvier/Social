@@ -24,7 +24,7 @@ import { Order } from '../models/orders';
 const reversePayment = async (req: Request, res: Response) => {
     try {
         const { ...data } = req.body
-        console.log(data, "data enviada")
+       // console.log(data, "data enviada")
         const url = `${process.env.URL}/api/session`;
         const nonce = Math.random().toString(36).substring(2);
         const seed = moment().format();
@@ -57,7 +57,7 @@ const saveRequesId = async (req: Request, res: Response) => {
         let error = ''
         let result
         const { ...data } = req.body
-        console.log(data, "data enviada")
+       // console.log(data, "data enviada")
 
 
         const url = `${process.env.URL}/api/session`;
@@ -67,7 +67,7 @@ const saveRequesId = async (req: Request, res: Response) => {
         const hash = CryptoJS.SHA256(nonce + seed + process.env.SECRETKEY);
         const tranKey = hash.toString(CryptoJS.enc.Base64);
 
-        console.log(url, 'url')
+      //  console.log(url, 'url')
 
         const datas = {
             locale: "es_PR",
@@ -92,7 +92,7 @@ const saveRequesId = async (req: Request, res: Response) => {
             ipAddress: data.ipAdress,
             userAgent: "PlacetoPay Sandbox"
         }
-        console.log(data)
+       // console.log(data)
         await axios.post(url,
             { ...datas }
         )
@@ -141,7 +141,7 @@ const checkIn = async (req: Request, res: Response) => {
         let error = ''
         let result
         const { ...data } = req.body
-        console.log(data, "data enviada")
+       // console.log(data, "data enviada")
 
 
         const url = `${process.env.URL}/api/session`;
@@ -151,7 +151,7 @@ const checkIn = async (req: Request, res: Response) => {
         const hash = CryptoJS.SHA256(nonce + seed + process.env.SECRETKEY);
         const tranKey = hash.toString(CryptoJS.enc.Base64);
 
-        console.log(url, 'url')
+       // console.log(url, 'url')
 
         const datas = {
             locale: "es_PR",
@@ -176,15 +176,15 @@ const checkIn = async (req: Request, res: Response) => {
             ipAddress: data.ipAdress,
             userAgent: "PlacetoPay Sandbox"
         }
-        console.log(data)
+       // console.log(data)
         await axios.post(url,
             { ...datas }
         )
             .then(async (e) => {
-                console.log(e, 'e')
+               // console.log(e, 'e')
                 respon = e.data
                 result = await placeToPayRequestId.create({ ...data, requestId: e.data.requestId })
-                console.log("result", e)
+                //console.log("result", e)
             })
             .catch(err => {
                 console.log(err, 'aqui')

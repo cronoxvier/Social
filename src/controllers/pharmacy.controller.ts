@@ -151,6 +151,7 @@ const getPharmacyById = async (req: Request, res: Response) => {
             pharmacy
         })
     } catch (error) {
+        console.log(error)
         res.status(400).json({
             mensaje: "Ha ocurrido un error",
             messaje: "It has ocurred an error",

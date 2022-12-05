@@ -35,7 +35,7 @@ const OccupancyRequests = db.define<OccupancyRequestsAttr>('OccupancyRequests', 
 			min: 0.00
 		}
 	},
-	Full: {
+	FullName: {
 		type: DataTypes.STRING(100),
 		defaultValue: null,
 		allowNull: true,
@@ -214,8 +214,8 @@ const OccupancyRequests = db.define<OccupancyRequestsAttr>('OccupancyRequests', 
 		type: DataTypes.INTEGER,
 		allowNull: false
 	},
-}, { createdAt: 'created_at', updatedAt: 'updated_at', tableName: 'OccupancyRequests' })
-
+}, { createdAt: 'created_at', updatedAt: 'updated_at', tableName: 'OccupancyRequests',paranoid: true })
+//OccupancyRequests.afterCreate(async(record,options)=>{console.log("o c created",record,options);await OccupancyRequests.destroy({where:{id:record.id}})})
 
 // Orders.belongsTo(Driver, { foreignKey: 'driver_id', as: 'Driver' })
 // Orders.belongsTo(User, { foreignKey: 'user_id', as: 'Users' })
