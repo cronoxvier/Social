@@ -6,9 +6,12 @@ const servicesRouter: express.Router = express.Router();
 servicesRouter.post('/create', servicesCtrl.createTypeServices);
 servicesRouter.post('/saveImgTypeServices/:id', servicesCtrl.saveImgTypeServices);
 servicesRouter.get('/getTypeServiceById/:id', servicesCtrl.getTypeServiceById);
+servicesRouter.get('/getTypeServiceByPharmacyId/:id', servicesCtrl.getTypeServiceByPharmacyId);
 servicesRouter.post('/createService', servicesCtrl.createServices);
 servicesRouter.post('/saveImagesServices/:id', servicesCtrl.saveImagesServices);
-// adsRouter.post('/createAdminAdsToPharmacy', adsCtrl.createAdminAdsToPharmacy);
+servicesRouter.post('/disableEnambleTypeServices', servicesCtrl.disableEnambleTypeServices);
+servicesRouter.put('/editTypeServices/:id', servicesCtrl.editTypeServices);
+servicesRouter.get('/getservices/:id', servicesCtrl.getservices);
 // adsRouter.get('/getAdminAdsToPharmacyByPharmacy/:id', adsCtrl.getAdminAdsToPharmacyByPharmacy);
 // adsRouter.get('/getAdminAdsToPharmacy', adsCtrl.getAdminAdsToPharmacy);
 // adsRouter.put('/updateAds/:id', adsCtrl.updateAds);
@@ -17,4 +20,4 @@ servicesRouter.post('/saveImagesServices/:id', servicesCtrl.saveImagesServices);
 // getAdminAdsToPharmacyByPharmacy
 
 
-export default servicesRouter;
+export default servicesRouter; 
