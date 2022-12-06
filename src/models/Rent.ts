@@ -29,21 +29,12 @@ const Rent = db.define<RentAttr>('Rent', {
         unique: true,
         allowNull:false
     },
-	// total_payment: {
-	// 	type: DataTypes.DECIMAL(8, 2),
-	// 	allowNull: false,
-	// 	validate: {
-	// 		min: 0.00
-	// 	}
-	// },
+
 	description:{
 		type: DataTypes.STRING,
 		allowNull:true
 	},
-	// nota:{
-	// 	type: DataTypes.STRING,
-	// 	allowNull:true
-	// },
+
 	user_id:{
 		type: DataTypes.INTEGER.UNSIGNED,
 		allowNull:false,
