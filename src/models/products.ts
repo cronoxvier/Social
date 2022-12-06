@@ -31,8 +31,8 @@ const Products = db.define<productosAttr>('Products',{
 }, { createdAt: 'created_at', updatedAt: 'updated_at',tableName: 'Products' })
 
 Products.belongsTo(Category, {foreignKey:'category_id' ,as:'Category'})
-Products.sync({ alter: { drop: false } }).catch(
-    (error) => console.log("Sync errror",error)
- );
+// Products.sync({ alter: { drop: false } }).catch(
+//     (error) => console.log("Sync errror",error)
+//  );
 
 export{Products}
