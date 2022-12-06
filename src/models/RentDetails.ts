@@ -15,7 +15,7 @@ import { OrderStateAttr } from '../interfaces/order-state'
 import { OrderDetailAttr } from '../interfaces/order-details'
 import { PharmacyProduct } from './pharmacy-product';
 import { OccupancyRequests } from './OccupancyRequest';
-import { Rent } from '../models/rent';
+import { Rent } from '../models/Rent';
 import { RentDetailsAttr } from '../interfaces/RentDetails';
 
 const RentDetails = db.define<RentDetailsAttr>('RentDetails', {

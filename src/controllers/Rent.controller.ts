@@ -16,7 +16,7 @@ import { col, ForeignKeyConstraintError, Op } from 'sequelize';
 import { OrderDetail } from '../models/order-detail';
 import { placeToPayRequestId } from '../models/PlaceToPay-requesId';
 import { dbf, firebase } from '../config/firebase';
-import { Rent } from '../models/rent';
+import { Rent } from '../models/Rent';
 import { RentDetails } from '../models/RentDetails';
 import { Category } from '../models/category';
 import { CategoryStatus } from '../models/category-status';
