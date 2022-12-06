@@ -1,4 +1,4 @@
-import * as createRentCtrl from "../controllers/rent.controller";
+import * as createRentCtrl from "../controllers/Rent.controller";
 import express=require('express');
 
 const createRentRouter:express.Router=express.Router();
