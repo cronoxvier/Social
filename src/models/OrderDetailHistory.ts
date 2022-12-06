@@ -43,7 +43,7 @@ const OrderDetailHistory = db.define<OrderDetailHistoryAttr>('OrderDetailHistory
 	// 	}
 	// ]
 })
- OrderDetailHistory.sync({ alter: { drop: false} }).catch(
-	(error) => console.log("Sync complete",error)
- );
+//  OrderDetailHistory.sync({ alter: { drop: false} }).catch(
+// 	(error) => console.log("Sync complete",error)
+//  );
 export { OrderDetailHistory }

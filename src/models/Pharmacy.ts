@@ -89,7 +89,7 @@ const Pharmacy = db.define<PharmacyAttr>('Pharmacy',{
 },{ createdAt: 'created_at', updatedAt: 'updated_at' })
 
 Pharmacy.belongsTo(Role,{foreignKey:'role_id',as:'Role'})
-Pharmacy.sync();
+// Pharmacy.sync();
 
  
 

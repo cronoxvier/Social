@@ -88,7 +88,7 @@ Users.belongsTo(Role, { foreignKey: 'role_id', as: 'role' })
 Users.belongsTo(Pharmacy,{foreignKey:'pharmacy_id', as: 'pharmacy'});
 Users.belongsTo(ClientDirection, { foreignKey: 'client_direction_id', as: 'ClientDirection' })
 
-Users.sync()
+// Users.sync()
 
 const User=Users;
 export { User }

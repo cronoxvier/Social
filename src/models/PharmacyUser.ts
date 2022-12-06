@@ -23,8 +23,8 @@ const PharmacyUser = db.define<PharmacyUserAttr>('PharmacyUser', {
 PharmacyUser.belongsTo(Pharmacy, { foreignKey: 'pharmacy_id', as: 'Pharmacy' })
 PharmacyUser.belongsTo(User, { foreignKey: 'user_id', as: 'User' })
 
-PharmacyUser.sync({ alter: { drop: false } }).then(
-	() => console.log("Sync complete")
-);
+// PharmacyUser.sync({ alter: { drop: false } }).then(
+// 	() => console.log("Sync complete")
+// );
 
 export { PharmacyUser }
