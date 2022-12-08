@@ -12,6 +12,11 @@ servicesRouter.post('/saveImagesServices/:id', servicesCtrl.saveImagesServices);
 servicesRouter.post('/disableEnambleTypeServices', servicesCtrl.disableEnambleTypeServices);
 servicesRouter.put('/editTypeServices/:id', servicesCtrl.editTypeServices);
 servicesRouter.get('/getservices/:id', servicesCtrl.getservices);
+servicesRouter.get('/selectService/:id', servicesCtrl.selectService);
+servicesRouter.put('/updateStatusService/:id', servicesCtrl.updateStatus);
+servicesRouter.get('/searchImgByService/:id', servicesCtrl.searchImgByService);
+servicesRouter.post('/sendToken', servicesCtrl.sendToken);
+
 // adsRouter.get('/getAdminAdsToPharmacyByPharmacy/:id', adsCtrl.getAdminAdsToPharmacyByPharmacy);
 // adsRouter.get('/getAdminAdsToPharmacy', adsCtrl.getAdminAdsToPharmacy);
 // adsRouter.put('/updateAds/:id', adsCtrl.updateAds);

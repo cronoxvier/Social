@@ -6,6 +6,7 @@ export interface servicesAttr extends Model {
     description: string,
     pharmacy_id:number,
     user_id:number
-    servicesStatus_id:number
+    servicesStatus_id:number,
+    token: string,
 
 }
