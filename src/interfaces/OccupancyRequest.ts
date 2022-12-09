@@ -45,6 +45,7 @@ export interface OccupancyRequestsAttr extends Model {
 
 	FutureTenantBirthDay: string,
 	user:string,
-	product_pharmacy_id:number
+	product_pharmacy_id:number,
+	isRented:boolean;
 }
 

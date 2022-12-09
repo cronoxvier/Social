@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { col, Model, Op, where } from 'sequelize'
+import { col, Model, Op, Sequelize, where } from 'sequelize'
 import { deletFile, uploadImg } from './image.controller'
 
 import { PharmacyProduct } from "../models/pharmacy-product";
@@ -13,6 +13,7 @@ import { OrderDetail } from '../models/order-detail';
 import { Order } from '../models/orders';
 import { User } from '../models/user';
 import { ClientDirection } from '../models/client-direction';
+import { count } from 'console';
 const getProducts = async (req: Request, res: Response) => {
     try {
         const product = await Products.findAll()
@@ -447,7 +448,7 @@ const getProductsByPharmacyNewPanel = async (req: Request, res: Response) => {
                 }
             ],
             attributes: [
-                'id', 'pharmacy_id', 'gift_price', 'ivu_municipal', 'ivu_statal',
+                'id', 'pharmacy_id', 'gift_price', 'ivu_municipal', 'ivu_statal',['prorateo','Prorateo'],
                 [col('Products.Name'), 'product_name'],
                 'product_id', ['active', 'status'],
                 [col('Products.Description'), 'product_description'],
@@ -455,6 +456,7 @@ const getProductsByPharmacyNewPanel = async (req: Request, res: Response) => {
                 [col('Products.img'), 'product_img'],
                 [col('Products.upc'), 'upc'],
                 [col('Products.Category.name'), 'category_name'],
+                
                 'stock', 'price', 'gift_status'
             ],
             where: { pharmacy_id: pharmacy_id, active: (Number(active) == 2) ? { [Op.not]: null } : Number(active) }
@@ -478,7 +480,7 @@ const getProductsByPharmacyNewPanel = async (req: Request, res: Response) => {
                 }
             ],
             attributes: [
-                'id', 'pharmacy_id', 'gift_price', 'ivu_municipal', 'ivu_statal',
+                'id', 'pharmacy_id', 'gift_price', 'ivu_municipal', 'ivu_statal',['prorateo','Prorateo'],
                 [col('Products.Name'), 'product_name'],
                 'product_id', ['active', 'status'],
                 [col('Products.Description'), 'product_description'],
@@ -543,7 +545,7 @@ const getProductsByPharmacyNewPanelSearch = async (req: Request, res: Response) 
                 }
             ],
             attributes: [
-                'id', 'pharmacy_id', 'gift_price', 'ivu_municipal', 'ivu_statal',
+                'id', 'pharmacy_id', 'gift_price', 'ivu_municipal', 'ivu_statal',['prorateo','Prorateo'],
                 [col('Products.Name'), 'product_name'],
                 'product_id', ['active', 'status'],
                 [col('Products.Description'), 'product_description'],
@@ -575,7 +577,7 @@ const getProductsByPharmacyNewPanelSearch = async (req: Request, res: Response) 
                 }
             ],
             attributes: [
-                'id', 'pharmacy_id', 'gift_price', 'ivu_municipal', 'ivu_statal',
+                'id', 'pharmacy_id', 'gift_price', 'ivu_municipal', 'ivu_statal',['prorateo','Prorateo'],
                 [col('Products.Name'), 'product_name'],
                 'product_id', ['active', 'status'],
                 [col('Products.Description'), 'product_description'],
@@ -916,7 +918,8 @@ const updateProductByPharmacy = async (req: Request, res: Response) => {
             gift_status,
             category_id,
             upc,
-            name
+            name,
+            Prorateo
         } = req.body
         const params = {
             stock,
@@ -927,7 +930,8 @@ const updateProductByPharmacy = async (req: Request, res: Response) => {
             ivu_municipal,
             gift_status,
             category_id,
-            upc
+            upc,
+            prorateo:Prorateo
         }
         const paramsProducId = {
             name,

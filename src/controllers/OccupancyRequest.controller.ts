@@ -319,12 +319,12 @@ const confirmCreation = async (req: Request, res: Response) => {
             FutureTenantBirthDay,
             product_pharmacy_id
         }
-        console.log("update o r", OccupancyRequest)
+        console.log("update o r", TOKEN)
         const trueCreate = await OccupancyRequests.findOne({ where: { deletedAt: { [Op.not]: null }, user_id }, paranoid: false })
         //console.log(trueCreate.id,"pendiente de crear")
         if (trueCreate !== undefined && trueCreate !== null) {
             console.log("test")
-            const updatePlaceToPayRequestId = await placeToPayRequestId.update({ order_id: trueCreate.id }, { where: { requestId: requestId }, transaction, returning: true })
+            const updatePlaceToPayRequestId = await placeToPayRequestId.update({ order_id: trueCreate.id,token_clien:TOKEN }, { where: { requestId: requestId }, transaction, returning: true })
                 .catch((r) => console.log("error", r)).then(async () => {
                     // await OccupancyRequests.update({ ...OccupancyRequest }, { where: { user_id, deletedAt: { [Op.not]: null } }, transaction, paranoid: false })
 
@@ -379,7 +379,30 @@ const confirmCreation = async (req: Request, res: Response) => {
 const getOccupancyRequestsByUser = async (req: Request, res: Response) => {
     const { user_id } = req.body
     try {
-        const OccupancyRequest = await OccupancyRequests.findAll({ where: { user_id } })
+        const OccupancyRequest = await OccupancyRequests.findAll({ 
+            include:[{
+                model:PharmacyProduct,
+                as:'PharmacyProduct',
+                include:[{
+                    model:Products,
+                    as:'Products'
+                }]
+            }],
+            where: { user_id },
+        attributes:[  
+            'code','created_at','order_state_id',"id",
+            [col('PharmacyProduct.id'),'product_pharmacy_id'],
+            [col ('OccupancyRequests.id'),"occupancy_request_id"], [col('PharmacyProduct.pharmacy_id'),'pharmacy_id'],
+        [col('PharmacyProduct.gift_price'),'security_deposit'],  [col('PharmacyProduct.prorateo'),'prorateo'], 
+        [col('PharmacyProduct.ivu_municipal'),'ivu_municipal'], [col('PharmacyProduct.ivu_statal'),'ivu_statal'],
+        [col('PharmacyProduct.Products.Name'), 'product_name'],
+        [col('PharmacyProduct.product_id'),'product_id'], [col('PharmacyProduct.active'), 'status'],
+        [col('PharmacyProduct.Products.Description'), 'product_description'],
+        [col('PharmacyProduct.Products.img'), 'product_img'],
+       [col('PharmacyProduct.stock'),'stock'], [col('PharmacyProduct.price'),'price'],
+       [ col('PharmacyProduct.gift_status'),'gift_status'],
+        [col('PharmacyProduct.Products.category_id'), 'category']]
+        })
         if (!OccupancyRequest) {
             return res.status(404).send({
                 message: 'Requests not found',
@@ -419,7 +442,7 @@ const getOccupancyRequestsById = async (req: Request, res: Response) => {
                 "product_pharmacy_id",
                 "RequestFee",
                 'code',
-                [col('Full'), 'FullName'],
+                'FullName',
                 'DateOfBirth',
                 'SSN',
                 'Phone',
