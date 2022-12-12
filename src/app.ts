@@ -6,7 +6,7 @@ import * as Tracing from '@sentry/tracing';
 import 'dotenv/config';
 import path from 'path';
 import * as cron from 'node-cron'
-// import * as status from '../src/events/paymetnStatus'
+import * as status from '../src/events/paymetnStatus'
 
 const { sentryDsn, PORT, NODE_ENV } = process.env
 const isDevelopment = ['dev', 'development'].includes(NODE_ENV)
@@ -69,12 +69,18 @@ if (isProduction) {
 }
 
 import router from './router'
+import { verifyStatus } from './events/paymetnStatus';
 
 
 app.use('/api', router)
 app.all('*', (req: Request, res: Response) => res.sendStatus(404))
 
-
+setInterval(()=>{
+    verifyStatus()
+},60000)
+// cron.schedule("* */24 * * *", ()=>{
+//     verifyStatus()
+// })
 
 
 if (isProduction) {

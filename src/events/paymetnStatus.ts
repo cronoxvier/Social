@@ -13,9 +13,7 @@ export const verifyStatus = async () => {
     const verificate = await placeToPayRequestId.findAll({
         where: { paymentStatus: 'PENDING' }
     })
-    console.log(verificate.length)
-
-
+   
     verificate.forEach(async (element) => {
         const url = `${process.env.URL}/api/session/${element.requestId} `;
         const nonce = Math.random().toString(36).substring(2);
