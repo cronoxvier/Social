@@ -356,18 +356,10 @@ const notify = async (req: Request, res: Response) => {
     try {
         const { ...data } = req.body
         const place = await placeToPayRequestId.findOne({ where: { requestId: data.requestId } })
-        //console.log("resquest",place)
-        //console.log("request data",data)
-        const { id, pharmacy_id, ads_id, order_id, advertisements, shopping, user_id, requestId, reference, description, amount, paymentStatus } = place
-        // const dataPlace = {
-        //     pharmacy_id:place
-        // }
 
-        // const seed = moment().format();
+      //  const {  pharmacy_id, ads_id, order_id, advertisements, shopping, user_id, requestId, reference, description, amount, paymentStatus } = place
+     
         const hash = sha1(data.requestId + data.status.status + data.status.date + process.env.SECRETKEY);
-        //console.log("signature",hash)
-        // + data.status.status + data.status.date + process.env.SECRETKEY
-        // console.log(data.requestId+data.status.status+data.status.date+process.env.SECRETKEY)
 
         if (hash != data.signature) {
             return res.status(400).send({
@@ -382,7 +374,8 @@ const notify = async (req: Request, res: Response) => {
             if (place.pharmacy_id != null && place.user_id != null) {
                 console.log('push notification mas email')
 
-                let expo = new Expo({ accessToken: 'DTkss6v_Z9qdGvEZLwI2D0_eTs5h-M4XF6Wx5leW' });
+                let expo = new Expo({ accessToken:process.env.EXPO_ACCESS_TOKEN //'DTkss6v_Z9qdGvEZLwI2D0_eTs5h-M4XF6Wx5leW' 
+            });
                 const pushToken = place.token_client
                 let messages = [];
                 const PlaceToPayRequest = await placeToPayRequestId.findOne({ where: { requestId: data.requestId } })
@@ -480,22 +473,22 @@ const notify = async (req: Request, res: Response) => {
                 await Order.update({ order_state_id: state }, { where: { id: PlaceToPayRequest.order_id } })
 
             }
-            if (place.pharmacy_id != null && place.user_id == null) {
-                // console.log('panel mas email')
-                const ads = await Ads.update({ paymentStatus: 'APPROVED' }, { where: { id: ads_id } })
+            // if (place.pharmacy_id != null && place.user_id == null) {
+            //     // console.log('panel mas email')
+            //     const ads = await Ads.update({ paymentStatus: 'APPROVED' }, { where: { id: ads_id } })
 
-                const dbRef = await firebase.firestore().collection('notificationPlaceToPay');
-                dbRef.add({ id, pharmacy_id, ads_id, order_id, advertisements, shopping, user_id, requestId, reference, description, amount, paymentStatus: data.status.status, see: false, date: data.status.date, });
+            //     const dbRef = await firebase.firestore().collection('notificationPlaceToPay');
+            //     dbRef.add({ id, pharmacy_id, ads_id, order_id, advertisements, shopping, user_id, requestId, reference, description, amount, paymentStatus: data.status.status, see: false, date: data.status.date, });
 
 
-            }
+            // }
         }
 
         res.status(200).send({
             status: "OK",
         })
     } catch (error) {
-        console.log(error)
+        console.log("error",error)
         res.status(500).send({
             ok: false,
 

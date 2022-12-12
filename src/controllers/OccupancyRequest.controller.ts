@@ -324,7 +324,7 @@ const confirmCreation = async (req: Request, res: Response) => {
         //console.log(trueCreate.id,"pendiente de crear")
         if (trueCreate !== undefined && trueCreate !== null) {
             console.log("test")
-            const updatePlaceToPayRequestId = await placeToPayRequestId.update({ order_id: trueCreate.id,token_clien:TOKEN }, { where: { requestId: requestId }, transaction, returning: true })
+            const updatePlaceToPayRequestId = await placeToPayRequestId.update({ order_id: trueCreate.id,token_client:TOKEN }, { where: { requestId: requestId }, transaction, returning: true })
                 .catch((r) => console.log("error", r)).then(async () => {
                     // await OccupancyRequests.update({ ...OccupancyRequest }, { where: { user_id, deletedAt: { [Op.not]: null } }, transaction, paranoid: false })
 
