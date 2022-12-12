@@ -17,6 +17,7 @@ import { OrderDetail } from '../models/order-detail';
 import { placeToPayRequestId } from '../models/PlaceToPay-requesId';
 import { dbf, firebase } from '../config/firebase';
 import { not, or } from 'sequelize/lib/operators';
+import { Expo } from 'expo-server-sdk';
 const getDefaultrequest = async (req: Request, res: Response) => {
     const { user_id } = req.body
     try {
@@ -179,16 +180,16 @@ const createOccupancyRequest = async (req: Request, res: Response) => {
         }
         else {
             // await transaction.commit();
-            const updatedRow = await OccupancyRequests.update({ ...OccupancyRequest }, { where: { user_id, deletedAt: { [Op.not]: null } }, transaction, paranoid: false,returning:true })
-           console.log(updatedRow)
-            if(updatedRow){
+            const updatedRow = await OccupancyRequests.update({ ...OccupancyRequest }, { where: { user_id, deletedAt: { [Op.not]: null } }, transaction, paranoid: false, returning: true })
+            console.log(updatedRow)
+            if (updatedRow) {
                 await transaction.commit();
-               return res.status(200).send({
+                return res.status(200).send({
                     mensaje: "Solicitud  actualizada",
                     message: "Request updated",
                     ok: false,
                     or: oc
-                }) 
+                })
             }
             res.status(204).send({
                 mensaje: "Solicitud  no creada",
@@ -436,7 +437,12 @@ const getOccupancyRequestsById = async (req: Request, res: Response) => {
                     model: Products,
                     as: 'Products'
                 }]
-            }],
+            },
+            {
+                model: placeToPayRequestId,
+                as: 'placeToPayRequestId'
+            }
+            ],
             attributes: [
                 "id",
                 "product_pharmacy_id",
@@ -494,7 +500,9 @@ const getOccupancyRequestsById = async (req: Request, res: Response) => {
                 // [col("PharmacyProduct.price"), "original_price"],
                 // [col("PharmacyProduct.gift_price"), "gift_price"],
                 [col("PharmacyProduct.Products.name"), "name"],
-                [col("PharmacyProduct.Products.img"), "imageUrl"]
+                [col("PharmacyProduct.Products.img"), "imageUrl"],
+                [col("placeToPayRequestId.token_client"), "token_client"],
+                [col("placeToPayRequestId.id"), "placeToPay_id"]
             ]
         });
         //console.log(OccupancyRequest)
@@ -655,4 +663,95 @@ const getAllOccupancyByPharmacy = async (req: Request, res: Response) => {
         ////getOrdersDriverAdmin;
     }
 };
-export { createOccupancyRequest, confirmCreation, getDefaultrequest, getOccupancyRequestsByUser, getAllOccupancyByPharmacy, getOccupancyRequestsById, updateOccupancyState }
+
+const sendTokenOccupancy = async (req: Request, res: Response) => {
+    const { ...data } = req.body
+
+    try {
+        let expo = new Expo({ accessToken: 'fsBgekH5wRpMOVN3h_ZDIy6bqMygQn3oAaJHAQje'});
+        let messages = [];
+        const pushToken = data.token
+
+        if (!data.token) {
+            return res.status(200).send({
+                ok: false,
+                messages: "Token not available"
+            })
+        }
+
+        if (!Expo.isExpoPushToken(pushToken)) {
+            console.error(`Push token ${pushToken} is not a valid Expo push token`);
+        }
+        if (data.state == 2) {
+            messages.push(
+                {
+                    to: pushToken,
+                    title: "Del properties kc 📬",
+                    subtitle: 'Requested service in process',
+                    sound: 'default',
+                    body: 'Your service is in the process of review and assignment.',
+                    badge: 0,
+                    data: { data: 'goes here' },
+                }
+            )
+        }
+        // if (data.state == 3) {
+        //     messages.push(
+        //         {
+        //             to: pushToken,
+        //             title: "Coopharma my shop! 📬",
+        //             subtitle: 'purchase order process',
+        //             sound: 'default',
+        //             body: 'Order is ready to be picked up, notification to carriers has been sent',
+        //             badge: 0,
+        //             data: { data: 'goes here' },
+        //         }
+        //     )
+        // }
+        // if (data.state == 4) {
+        //     messages.push(
+        //         {
+        //             to: pushToken,
+        //             title: "Coopharma my shop! 📬",
+        //             sound: 'default',
+        //             body: 'Added a new order',
+        //             badge: 0,
+        //             data: { data: 'goes here' },
+        //         }
+        //     )
+        // }
+
+        let chunks = expo.chunkPushNotifications(messages);
+        let tickets = [];
+       
+        for (let chunk of chunks) {
+            let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+
+            tickets.push(...ticketChunk);
+        }
+
+        res.status(200).send({
+            ok: true,
+            pushToken,
+            data
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false,
+            error
+        })
+    }
+}
+
+export {
+    createOccupancyRequest,
+    confirmCreation,
+    getDefaultrequest,
+    getOccupancyRequestsByUser,
+    getAllOccupancyByPharmacy,
+    getOccupancyRequestsById,
+    updateOccupancyState,
+    sendTokenOccupancy
+}

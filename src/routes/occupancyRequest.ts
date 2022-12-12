@@ -15,4 +15,10 @@ createOccupancyRequestRouter.post('/getAllOccupancyByPharmacy',createOccupancyRe
 createOccupancyRequestRouter.post('/updateOccupancyState',createOccupancyRequestCtrl.updateOccupancyState)
 createOccupancyRequestRouter.post('/confirmCreation',createOccupancyRequestCtrl.confirmCreation)
 createOccupancyRequestRouter.post('/getDefaultRequest',createOccupancyRequestCtrl.getDefaultrequest)
+createOccupancyRequestRouter.post('/sendTokenOccupancy',createOccupancyRequestCtrl.sendTokenOccupancy)
+
+
+
 export default createOccupancyRequestRouter
+
+// sendTokenOccupancy

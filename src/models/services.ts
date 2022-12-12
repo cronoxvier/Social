@@ -18,6 +18,11 @@ const services = db.define<servicesAttr>('Services',{
 		allowNull: true,
         defaultValue: ""
 	},
+	token:{
+		type:DataTypes.STRING,
+		allowNull: true,
+        defaultValue: ""
+	},
     typeServices_id: {
 		type: DataTypes.INTEGER,
 		allowNull: false
