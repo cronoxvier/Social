@@ -18,6 +18,7 @@ import { placeToPayRequestId } from '../models/PlaceToPay-requesId';
 import { dbf, firebase } from '../config/firebase';
 import { not, or } from 'sequelize/lib/operators';
 import { Expo } from 'expo-server-sdk';
+import { Rent } from '../models/Rent';
 const getDefaultrequest = async (req: Request, res: Response) => {
     const { user_id } = req.body
     try {
@@ -325,7 +326,7 @@ const confirmCreation = async (req: Request, res: Response) => {
         //console.log(trueCreate.id,"pendiente de crear")
         if (trueCreate !== undefined && trueCreate !== null) {
             console.log("test")
-            const updatePlaceToPayRequestId = await placeToPayRequestId.update({ order_id: trueCreate.id,token_client:TOKEN }, { where: { requestId: requestId }, transaction, returning: true })
+            const updatePlaceToPayRequestId = await placeToPayRequestId.update({ order_id: trueCreate.id, token_client: TOKEN }, { where: { requestId: requestId }, transaction, returning: true })
                 .catch((r) => console.log("error", r)).then(async () => {
                     // await OccupancyRequests.update({ ...OccupancyRequest }, { where: { user_id, deletedAt: { [Op.not]: null } }, transaction, paranoid: false })
 
@@ -380,30 +381,35 @@ const confirmCreation = async (req: Request, res: Response) => {
 const getOccupancyRequestsByUser = async (req: Request, res: Response) => {
     const { user_id } = req.body
     try {
-        const OccupancyRequest = await OccupancyRequests.findAll({ 
-            include:[{
-                model:PharmacyProduct,
-                as:'PharmacyProduct',
-                include:[{
-                    model:Products,
-                    as:'Products'
+        const OccupancyRequest = await OccupancyRequests.findAll({
+            include: [{
+                model: PharmacyProduct,
+                as: 'PharmacyProduct',
+                include: [{
+                    model: Products,
+                    as: 'Products'
                 }]
-            }],
+            }, 
+            {
+                model:Rent,
+                as:'Rent'
+            } ],
             where: { user_id },
-        attributes:[  
-            'code','created_at','order_state_id',"id",
-            [col('PharmacyProduct.id'),'product_pharmacy_id'],
-            [col ('OccupancyRequests.id'),"occupancy_request_id"], [col('PharmacyProduct.pharmacy_id'),'pharmacy_id'],
-        [col('PharmacyProduct.gift_price'),'security_deposit'],  [col('PharmacyProduct.prorateo'),'prorateo'], 
-        [col('PharmacyProduct.ivu_municipal'),'ivu_municipal'], [col('PharmacyProduct.ivu_statal'),'ivu_statal'],
-        [col('PharmacyProduct.Products.Name'), 'product_name'],
-        [col('PharmacyProduct.product_id'),'product_id'], [col('PharmacyProduct.active'), 'status'],
-        [col('PharmacyProduct.Products.Description'), 'product_description'],
-        [col('PharmacyProduct.Products.img'), 'product_img'],
-       [col('PharmacyProduct.stock'),'stock'], [col('PharmacyProduct.price'),'price'],
-       [ col('PharmacyProduct.gift_status'),'gift_status'],
-        [col('PharmacyProduct.Products.category_id'), 'category']]
+            attributes: [
+                'code', 'created_at', 'order_state_id', "id",
+                [col('PharmacyProduct.id'), 'product_pharmacy_id'],
+                [col('OccupancyRequests.id'), "occupancy_request_id"], [col('PharmacyProduct.pharmacy_id'), 'pharmacy_id'],
+                [col('PharmacyProduct.gift_price'), 'security_deposit'], [col('PharmacyProduct.prorateo'), 'prorateo'],
+                [col('PharmacyProduct.ivu_municipal'), 'ivu_municipal'], [col('PharmacyProduct.ivu_statal'), 'ivu_statal'],
+                [col('PharmacyProduct.Products.Name'), 'product_name'],
+                [col('PharmacyProduct.product_id'), 'product_id'], [col('PharmacyProduct.active'), 'status'],
+                [col('PharmacyProduct.Products.Description'), 'product_description'],
+                [col('PharmacyProduct.Products.img'), 'product_img'],
+                [col('PharmacyProduct.stock'), 'stock'], [col('PharmacyProduct.price'), 'price'],
+                [col('PharmacyProduct.gift_status'), 'gift_status'],
+                [col('PharmacyProduct.Products.category_id'), 'category']]
         })
+        console.log(OccupancyRequest)
         if (!OccupancyRequest) {
             return res.status(404).send({
                 message: 'Requests not found',
@@ -668,7 +674,7 @@ const sendTokenOccupancy = async (req: Request, res: Response) => {
     const { ...data } = req.body
 
     try {
-        let expo = new Expo({ accessToken: 'fsBgekH5wRpMOVN3h_ZDIy6bqMygQn3oAaJHAQje'});
+        let expo = new Expo({ accessToken: 'fsBgekH5wRpMOVN3h_ZDIy6bqMygQn3oAaJHAQje' });
         let messages = [];
         const pushToken = data.token
 
@@ -723,7 +729,7 @@ const sendTokenOccupancy = async (req: Request, res: Response) => {
 
         let chunks = expo.chunkPushNotifications(messages);
         let tickets = [];
-       
+
         for (let chunk of chunks) {
             let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
 
