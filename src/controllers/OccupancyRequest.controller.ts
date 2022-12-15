@@ -642,6 +642,31 @@ const getAllOccupancyByPharmacy = async (req: Request, res: Response) => {
             });
         }
         const order = await OccupancyRequests.findAll({
+            include: [{
+                model: PharmacyProduct,
+                as: 'PharmacyProduct',
+                include: [{
+                    model: Products,
+                    as: 'Products'
+                }]
+            }, 
+            {
+                model:Rent,
+                as:'Rent'
+            } ],
+            attributes: [
+                'code', 'created_at', 'order_state_id', "id",'RequestFee','isRented',
+                [col('PharmacyProduct.id'), 'product_pharmacy_id'],
+                [col('OccupancyRequests.id'), "occupancy_request_id"], [col('PharmacyProduct.pharmacy_id'), 'pharmacy_id'],
+                [col('PharmacyProduct.gift_price'), 'security_deposit'], [col('PharmacyProduct.prorateo'), 'prorateo'],
+                [col('PharmacyProduct.ivu_municipal'), 'ivu_municipal'], [col('PharmacyProduct.ivu_statal'), 'ivu_statal'],
+                [col('PharmacyProduct.Products.Name'), 'product_name'],
+                [col('PharmacyProduct.product_id'), 'product_id'], [col('PharmacyProduct.active'), 'status'],
+                [col('PharmacyProduct.Products.Description'), 'product_description'],
+                [col('PharmacyProduct.Products.img'), 'product_img'],
+                [col('PharmacyProduct.stock'), 'stock'], [col('PharmacyProduct.price'), 'price'],
+                [col('PharmacyProduct.gift_status'), 'gift_status'],
+                [col('PharmacyProduct.Products.category_id'), 'category']],
             where: {
                 //pharmacy_id,
                 order_state_id: { [Op.not]: 8 }
