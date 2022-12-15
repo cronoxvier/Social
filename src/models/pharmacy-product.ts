@@ -62,5 +62,5 @@ const PharmacyProduct = db.define<PharmacyProductAttr>('PharmaciesProducts', {
 
 PharmacyProduct.belongsTo(Pharmacy,{foreignKey: 'pharmacy_id' , as: 'Pharmacy'})
 PharmacyProduct.belongsTo(Products,{foreignKey:'product_id', as:'Products'})
-PharmacyProduct.sync({ alter: { drop: true }}).catch((e)=>console.log(e))
+//PharmacyProduct.sync({ alter: { drop: true }}).catch((e)=>console.log(e))
 export { PharmacyProduct }
