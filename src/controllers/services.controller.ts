@@ -16,6 +16,7 @@ import { User } from "../models/user";
 import { ServicesStatus } from '../models/services-status';
 import { Request, Response } from 'express';
 import { Expo } from 'expo-server-sdk';
+import { Pharmacy } from "../models/Pharmacy";
 
 
 const createTypeServices = async (req, res) => {
@@ -530,6 +531,74 @@ const getservicesByTypeServices = async (req, res) => {
     }
 }
 
+const getservicesByPharmacy= async (req, res) => {
+    const noExisten = []
+    try {
+
+        // const service = await services.findAll({
+        //     include: [
+        //         {
+        //             model: TypeServices,
+        //             as: "TypeServices",
+        //             attributes: [],
+        //         },
+        //         {
+        //             model: User,
+        //             as: "User",
+        //             attributes: [],
+        //         },
+        //         {
+        //             model: ServicesStatus,
+        //             as: "ServicesStatus",
+        //             attributes: [],
+        //         },
+        //         {
+        //             model: Pharmacy,
+        //             as: "Pharmacy",
+        //             attributes: [],
+        //         }
+        //     ],
+        //     attributes: [
+        //         "id", "description", "token",
+        //         [col("TypeServices.name"), "name"],
+        //         [col("TypeServices.nombre"), "nombre"],
+        //         [col("TypeServices.id"), "typeServices_id"],
+        //         [col("TypeServices.img"), "typeServices_img"],
+        //         [col("User.first_name"), "first_name"],
+        //         [col("User.last_name"), "last_name"],
+        //         [col("User.img"), "user_img"],
+        //         [col("ServicesStatus.name"), "services-status-name"],
+        //         [col("ServicesStatus.nombre"), "services-status-nombre"],
+        //         [col("ServicesStatus.code"), "code"],
+        //         [col("Pharmacy.name"), "pname"],
+        //     ]
+        // })
+     
+
+        const pharmacy = await Pharmacy.findAll({
+            where: {
+                role_id: 2, disabled:0
+            }
+        })
+        
+        for (let i in pharmacy) {
+            const service = await TypeServices.findAll({ where: { pharmacy_id: pharmacy[i].id, deleted: false } })
+            noExisten.push([service])
+        }
+
+        return res.status(200).send({
+            ok: true,
+            service:noExisten
+
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+    }
+}
+
 export {
     createTypeServices,
     saveImgTypeServices,
@@ -544,5 +613,6 @@ export {
     updateStatus,
     searchImgByService,
     sendToken,
-    getservicesByTypeServices
+    getservicesByTypeServices,
+    getservicesByPharmacy
 }
