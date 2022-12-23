@@ -263,7 +263,7 @@ const editTypeServices = async (req, res) => {
 
 const getservices = async (req, res) => {
     try {
-        const { id } = req.params;
+        // const { id } = req.params;
         const service = await services.findAll({
             include: [
                 {
@@ -307,7 +307,7 @@ const getservices = async (req, res) => {
     }
 }
 
-const selectService = async (req, res)=>{
+const selectService = async (req, res) => {
     try {
         const { id } = req.params;
         const service = await services.findAll({
@@ -329,7 +329,7 @@ const selectService = async (req, res)=>{
                 },
             ],
             attributes: [
-                "id", "description","token",
+                "id", "description", "token",
                 [col("TypeServices.name"), "name"],
                 [col("TypeServices.nombre"), "nombre"],
                 [col("TypeServices.id"), "typeServices_id"],
@@ -339,7 +339,8 @@ const selectService = async (req, res)=>{
                 [col("ServicesStatus.name"), "servicesStatusName"],
                 [col("ServicesStatus.nombre"), "services-status-nombre"],
                 [col("ServicesStatus.code"), "code"],
-            ], where:{id}
+                [col("User.img"), "user_img"],
+            ], where: { id }
         })
         return res.status(200).send({
             ok: true,
@@ -353,7 +354,7 @@ const selectService = async (req, res)=>{
     }
 }
 
-const updateStatus = async (req, res)=>{
+const updateStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const { ...data } = req.body;
@@ -368,7 +369,7 @@ const updateStatus = async (req, res)=>{
             ok: true,
             services: service
         })
-        
+
     } catch (error) {
         console.log(error)
         res.status(500).send({
@@ -378,20 +379,20 @@ const updateStatus = async (req, res)=>{
 
 }
 
-const searchImgByService = async (req, res)=>{
+const searchImgByService = async (req, res) => {
     try {
         const { id } = req.params;
         const service = await Imagen.findAll({
             where: {
                 services_id:
-                id
+                    id
             }
         })
         return res.status(200).send({
             ok: true,
             services: service
         })
-        
+
     } catch (error) {
         console.log(error)
         res.status(500).send({
@@ -405,7 +406,7 @@ const sendToken = async (req: Request, res: Response) => {
     const { ...data } = req.body
 
     try {
-        let expo = new Expo({ accessToken: 'fsBgekH5wRpMOVN3h_ZDIy6bqMygQn3oAaJHAQje'});
+        let expo = new Expo({ accessToken: 'fsBgekH5wRpMOVN3h_ZDIy6bqMygQn3oAaJHAQje' });
         let messages = [];
         const pushToken = data.token
 
@@ -460,7 +461,7 @@ const sendToken = async (req: Request, res: Response) => {
 
         let chunks = expo.chunkPushNotifications(messages);
         let tickets = [];
-       
+
         for (let chunk of chunks) {
             let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
 
@@ -482,6 +483,53 @@ const sendToken = async (req: Request, res: Response) => {
     }
 }
 
+const getservicesByTypeServices = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const service = await services.findAll({
+            include: [
+                {
+                    model: TypeServices,
+                    as: "TypeServices",
+                    attributes: [],
+                },
+                {
+                    model: User,
+                    as: "User",
+                    attributes: [],
+                },
+                {
+                    model: ServicesStatus,
+                    as: "ServicesStatus",
+                    attributes: [],
+                },
+            ],
+            attributes: [
+                "id", "description", "token",
+                [col("TypeServices.name"), "name"],
+                [col("TypeServices.nombre"), "nombre"],
+                [col("TypeServices.id"), "typeServices_id"],
+                [col("TypeServices.img"), "typeServices_img"],
+                [col("User.first_name"), "first_name"],
+                [col("User.last_name"), "last_name"],
+                [col("User.img"), "user_img"],
+                [col("ServicesStatus.name"), "services-status-name"],
+                [col("ServicesStatus.nombre"), "services-status-nombre"],
+                [col("ServicesStatus.code"), "code"],
+            ], where: { typeServices_id: id }
+        })
+        return res.status(200).send({
+            ok: true,
+            services: service
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+    }
+}
+
 export {
     createTypeServices,
     saveImgTypeServices,
@@ -496,4 +544,5 @@ export {
     updateStatus,
     searchImgByService,
     sendToken,
+    getservicesByTypeServices
 }

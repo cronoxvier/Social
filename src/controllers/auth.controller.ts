@@ -204,7 +204,6 @@ const loginToken = async (req: Request, res: Response) => {
                     as: 'role'
                 },
             ]
-
         })
         if (user.role_id !== 1) {
             return res.status(200).send({
@@ -257,11 +256,6 @@ const loginToken = async (req: Request, res: Response) => {
         // throw error
     }
 }
-
-
-
-
-
 
 export {
     login,
