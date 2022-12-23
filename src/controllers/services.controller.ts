@@ -583,7 +583,7 @@ const getservicesByPharmacy= async (req, res) => {
         
         for (let i in pharmacy) {
             const service = await TypeServices.findAll({ where: { pharmacy_id: pharmacy[i].id, deleted: false } })
-            noExisten.push([service])
+            noExisten.push({type:service})
         }
 
         return res.status(200).send({
