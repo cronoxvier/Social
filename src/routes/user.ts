@@ -15,7 +15,7 @@ userRouter.post('/updateDriveDocumentImage/:id',userCtrl.updateDriverDocumentIma
 userRouter.post('/getDriverById',userCtrl.getDriverUser);
 userRouter.post('/updateDriverActive',userCtrl.updatedDriverActive);
 userRouter.post('/getDriverByPharmacy',userCtrl.getDriverByPharmacy);
-userRouter.get('/getDriverByAdmin',userCtrl.getDriverByAdmin);
+userRouter.get('/getDriverByAdmin/:id',userCtrl.getDriverByAdmin);
 userRouter.post('/getDriverDocuments',userCtrl.getDriverDocuments);
 userRouter.post('/updateCliente',userCtrl.updateClient);
 userRouter.post('/updatePasswordUser/:token',userCtrl.resetPasswordUser);

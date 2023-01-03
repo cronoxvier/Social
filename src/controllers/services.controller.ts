@@ -517,7 +517,7 @@ const getservicesByTypeServices = async (req, res) => {
                 [col("ServicesStatus.name"), "services-status-name"],
                 [col("ServicesStatus.nombre"), "services-status-nombre"],
                 [col("ServicesStatus.code"), "code"],
-            ], where: { typeServices_id: id }
+            ], where: { typeServices_id: id, servicesStatus_id: 2}
         })
         return res.status(200).send({
             ok: true,

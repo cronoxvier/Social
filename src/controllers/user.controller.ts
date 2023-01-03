@@ -501,10 +501,11 @@ const getDriverByPharmacy = async (req: Request, res: Response) => {
 const getDriverByAdmin = async (req: Request, res: Response) => {
 
     try {
+        const { id } = req.params;
 
         const driver = await Driver.findAll({
             where: {
-                zip_code: "admin"
+                pharmacy_id: id
             }
         })
 
