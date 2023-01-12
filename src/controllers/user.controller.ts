@@ -11,6 +11,8 @@ import * as jwt from 'jsonwebtoken'
 import { User } from '../models/user';
 import { Driver } from '../models/driver';
 import { DriverDocuments } from '../models/driver_documents';
+import { Pharmacy } from "../models/Pharmacy";
+import { col } from 'sequelize';
 
 
 const getUsers = async (req: Request, res: Response) => {
@@ -216,32 +218,26 @@ const updateDriverUser = async (req: Request, res: Response) => {
     try {
 
         const {
-            driver_id,
-            email,
-            first_name,
-            last_name,
-            address_1,
-            city,
-            phone,
-            zip_code } = req.body
-        const params = {
-            zip_code,
-            email,
-            first_name,
-            last_name,
-            address_1,
-            city,
-            phone
-        }
-        const driver = await Driver.update(params, { where: { id: driver_id } })
+            ...data } = req.body
+        // const params = {
+        //     zip_code,
+        //     email,
+        //     first_name,
+        //     last_name,
+        //     address_1,
+        //     city,
+        //     phone,
+        //     pharmacy_id
+        // }
+        const driver = await Driver.update(data, { where: { id: data.driver_id } })
 
         if (!driver.length) {
             return res.status(204).send()
         }
 
         res.status(200).send({
-            message: 'Driver updated',
-            mensaje: 'Driver actualizado',
+            message: 'User updated',
+            mensaje: 'Usuario actualizado',
             driver
         })
 
@@ -253,8 +249,6 @@ const updateDriverUser = async (req: Request, res: Response) => {
             messaje: "It has ocurred an error",
             error
         })
-
-
     }
 
 }
@@ -291,7 +285,7 @@ const createDriverUser = async (req: Request, res: Response) => {
         const user = await Driver.findOne({
             where: { email }
         })
-        console.log(user)
+
         if (user) {
             return res.status(400).send({
                 ok: false,
@@ -308,6 +302,7 @@ const createDriverUser = async (req: Request, res: Response) => {
             createUser
         })
     } catch (error) {
+        console.log(error)
         res.status(400).json({
             ok: false,
             mensaje: "Ha ocurrido un error",
@@ -437,6 +432,98 @@ const updateDriverDocuments = async (req: Request, res: Response) => {
 
     }
 }
+
+const getAllDriverUser = async (req: Request, res: Response) => {
+    try {
+        const driver = await Driver.findAll({
+            include: [
+                // {
+                //     model: TypeServices,
+                //     as: "TypeServices",
+                //     attributes: [],
+                // },
+                // {
+                //     model: User,
+                //     as: "User",
+                //     attributes: [],
+                // },
+                // {
+                //     model: ServicesStatus,
+                //     as: "ServicesStatus",
+                //     attributes: [],
+                // },
+                {
+                    model: Pharmacy,
+                    as: "Pharmacy",
+                    attributes: [],
+                }
+            ],
+            attributes: [
+                'id',
+                'zip_code',
+                'email',
+                'first_name',
+                'last_name',
+                'address_1',
+                'city',
+                'phone',
+                'pharmacy_id',
+                'role_id',
+                'active',
+                'img',
+                [col("Pharmacy.name"), "pname"],
+            ]
+        })
+
+        if (!driver) {
+            return res.status(400).send()
+        }
+
+        res.status(200).send({
+            message: 'Driver',
+            driver
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(400).json({
+            mensaje: "Ha ocurrido un error",
+            messaje: "It has ocurred an error",
+            error
+        })
+
+
+    }
+}
+
+const disableEnambleUserServices = async (req, res) => {
+
+    try {
+        const { ...data } = req.body
+
+        const user = await Driver.findByPk(data.id)
+
+        if (!user) {
+            return res.status(400).send({
+                ok: false,
+                mensaje: 'No existe este registro'
+            })
+        }
+
+        await Driver.update({ active: !data.active }, {
+            where: {
+                id: data.id
+            }
+        })
+        res.status(200).send({
+            ok: true,
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+    }
+}
 const getDriverUser = async (req: Request, res: Response) => {
     try {
         const { driver_id, pharmacy_id } = req.body
@@ -500,10 +587,11 @@ const getDriverByPharmacy = async (req: Request, res: Response) => {
 const getDriverByAdmin = async (req: Request, res: Response) => {
 
     try {
+        const { id } = req.params;
 
         const driver = await Driver.findAll({
             where: {
-                zip_code: "admin"
+                pharmacy_id: id
             }
         })
 
@@ -1218,5 +1306,6 @@ export {
     updateClientDirection, deleteClientDirection,
     forgetPasswordUser, updateClientImage,
     resetPasswordUser, deleteDriverByPharmacy, updatedDriverActive,
-    deleteUser, getDriverByAdmin
+    deleteUser, getDriverByAdmin,
+    getAllDriverUser, disableEnambleUserServices
 }

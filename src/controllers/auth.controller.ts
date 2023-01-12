@@ -147,9 +147,16 @@ const loginDriver = async (req: Request, res: Response) => {
         const user = await Driver.findOne({
             where: { email }
         })
+       
 
+        if (user.active == false) {
+            return res.status(200).send({
+                mensage: 'User not active',
+                mensaje: 'Usuario no activo'
+            })
+        }
         if (user.role_id !== 3) {
-            console.log('rol')
+           
             return res.status(200).send({
                 mensage: 'User not valid',
                 mensaje: 'Usuario no valido'
@@ -168,7 +175,6 @@ const loginDriver = async (req: Request, res: Response) => {
         const passwordMatch = await bcrypt.compare(password, user.password);
         console.log('password', passwordMatch)
         if (!passwordMatch) {
-
             return res.status(400).json({
                 message: 'Wrong password',
                 mensaje: 'Contraseña incorrecta',
@@ -207,7 +213,6 @@ const loginToken = async (req: Request, res: Response) => {
                     as: 'role'
                 },
             ]
-
         })
         if (user.role_id !== 1) {
             return res.status(200).send({
@@ -260,11 +265,6 @@ const loginToken = async (req: Request, res: Response) => {
         // throw error
     }
 }
-
-
-
-
-
 
 export {
     login,

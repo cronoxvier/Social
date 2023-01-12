@@ -35,7 +35,7 @@ const Driver = db.define<DriverAttr>('Driver',{
 	},
 	pharmacy_id: {
 		type: DataTypes.INTEGER,
-		allowNull: false
+		allowNull: true
 	},
     active: {
 		type: DataTypes.BOOLEAN,

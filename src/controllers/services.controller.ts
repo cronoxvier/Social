@@ -16,6 +16,10 @@ import { User } from "../models/user";
 import { ServicesStatus } from '../models/services-status';
 import { Request, Response } from 'express';
 import { Expo } from 'expo-server-sdk';
+import { Pharmacy } from "../models/Pharmacy";
+import { UserServices } from "../models/UserServices";
+
+
 
 
 const createTypeServices = async (req, res) => {
@@ -29,6 +33,65 @@ const createTypeServices = async (req, res) => {
             services,
             mensaje: 'Could not create service',
 
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+    }
+
+}
+const createInfoPriceService = async (req, res) => {
+    try {
+        let expo = new Expo({ accessToken: 'fsBgekH5wRpMOVN3h_ZDIy6bqMygQn3oAaJHAQje' });
+        const { ...data } = req.body
+        let messages = [];
+        const pushToken = data.token_driver
+        const services = await UserServices.create(data)
+
+
+        if (!data.token_driver) {
+            return res.status(200).send({
+                ok: false,
+                messages: "Token not available"
+            })
+        }
+
+        if (!Expo.isExpoPushToken(pushToken)) {
+            console.error(`Push token ${pushToken} is not a valid Expo push token`);
+        }
+
+       
+            messages.push(
+                {
+                    to: pushToken,
+                    title: "Del properties kc 📬",
+                    subtitle: 'Requested service in process',
+                    sound: 'default',
+                    body: 'Your service is in the process of review and assignment.',
+                    badge: 0,
+                    data: { data: 'goes here' },
+                }
+            )
+        
+
+        let chunks = expo.chunkPushNotifications(messages);
+        let tickets = [];
+
+        for (let chunk of chunks) {
+            let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+
+            tickets.push(...ticketChunk);
+        }
+
+
+
+        res.status(200).send({
+            ok: true,
+            services,
+            mensaje: 'Could not create service',
         })
 
     } catch (error) {
@@ -263,7 +326,7 @@ const editTypeServices = async (req, res) => {
 
 const getservices = async (req, res) => {
     try {
-        const { id } = req.params;
+        // const { id } = req.params;
         const service = await services.findAll({
             include: [
                 {
@@ -307,7 +370,7 @@ const getservices = async (req, res) => {
     }
 }
 
-const selectService = async (req, res)=>{
+const selectService = async (req, res) => {
     try {
         const { id } = req.params;
         const service = await services.findAll({
@@ -329,7 +392,7 @@ const selectService = async (req, res)=>{
                 },
             ],
             attributes: [
-                "id", "description","token",
+                "id", "description", "token",
                 [col("TypeServices.name"), "name"],
                 [col("TypeServices.nombre"), "nombre"],
                 [col("TypeServices.id"), "typeServices_id"],
@@ -339,7 +402,9 @@ const selectService = async (req, res)=>{
                 [col("ServicesStatus.name"), "servicesStatusName"],
                 [col("ServicesStatus.nombre"), "services-status-nombre"],
                 [col("ServicesStatus.code"), "code"],
-            ], where:{id}
+                [col("User.img"), "user_img"],
+                [col("User.id"), "user_id"],
+            ], where: { id }
         })
         return res.status(200).send({
             ok: true,
@@ -353,7 +418,7 @@ const selectService = async (req, res)=>{
     }
 }
 
-const updateStatus = async (req, res)=>{
+const updateStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const { ...data } = req.body;
@@ -368,7 +433,7 @@ const updateStatus = async (req, res)=>{
             ok: true,
             services: service
         })
-        
+
     } catch (error) {
         console.log(error)
         res.status(500).send({
@@ -378,20 +443,20 @@ const updateStatus = async (req, res)=>{
 
 }
 
-const searchImgByService = async (req, res)=>{
+const searchImgByService = async (req, res) => {
     try {
         const { id } = req.params;
         const service = await Imagen.findAll({
             where: {
                 services_id:
-                id
+                    id
             }
         })
         return res.status(200).send({
             ok: true,
             services: service
         })
-        
+
     } catch (error) {
         console.log(error)
         res.status(500).send({
@@ -405,7 +470,7 @@ const sendToken = async (req: Request, res: Response) => {
     const { ...data } = req.body
 
     try {
-        let expo = new Expo({ accessToken: 'fsBgekH5wRpMOVN3h_ZDIy6bqMygQn3oAaJHAQje'});
+        let expo = new Expo({ accessToken: 'fsBgekH5wRpMOVN3h_ZDIy6bqMygQn3oAaJHAQje' });
         let messages = [];
         const pushToken = data.token
 
@@ -432,35 +497,10 @@ const sendToken = async (req: Request, res: Response) => {
                 }
             )
         }
-        // if (data.state == 3) {
-        //     messages.push(
-        //         {
-        //             to: pushToken,
-        //             title: "Coopharma my shop! 📬",
-        //             subtitle: 'purchase order process',
-        //             sound: 'default',
-        //             body: 'Order is ready to be picked up, notification to carriers has been sent',
-        //             badge: 0,
-        //             data: { data: 'goes here' },
-        //         }
-        //     )
-        // }
-        // if (data.state == 4) {
-        //     messages.push(
-        //         {
-        //             to: pushToken,
-        //             title: "Coopharma my shop! 📬",
-        //             sound: 'default',
-        //             body: 'Added a new order',
-        //             badge: 0,
-        //             data: { data: 'goes here' },
-        //         }
-        //     )
-        // }
-
+        
         let chunks = expo.chunkPushNotifications(messages);
         let tickets = [];
-       
+
         for (let chunk of chunks) {
             let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
 
@@ -482,6 +522,121 @@ const sendToken = async (req: Request, res: Response) => {
     }
 }
 
+const getservicesByTypeServices = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const service = await services.findAll({
+            include: [
+                {
+                    model: TypeServices,
+                    as: "TypeServices",
+                    attributes: [],
+                },
+                {
+                    model: User,
+                    as: "User",
+                    attributes: [],
+                },
+                {
+                    model: ServicesStatus,
+                    as: "ServicesStatus",
+                    attributes: [],
+                },
+            ],
+            attributes: [
+                "id", "description", "token",
+                [col("TypeServices.name"), "name"],
+                [col("TypeServices.nombre"), "nombre"],
+                [col("TypeServices.id"), "typeServices_id"],
+                [col("TypeServices.img"), "typeServices_img"],
+                [col("User.first_name"), "first_name"],
+                [col("User.last_name"), "last_name"],
+                [col("User.img"), "user_img"],
+                [col("ServicesStatus.name"), "services-status-name"],
+                [col("ServicesStatus.nombre"), "services-status-nombre"],
+                [col("ServicesStatus.code"), "code"],
+            ], where: { typeServices_id: id, servicesStatus_id: 2}
+        })
+        return res.status(200).send({
+            ok: true,
+            services: service
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+    }
+}
+
+const getservicesByPharmacy= async (req, res) => {
+    const noExisten = []
+    try {
+
+        // const service = await services.findAll({
+        //     include: [
+        //         {
+        //             model: TypeServices,
+        //             as: "TypeServices",
+        //             attributes: [],
+        //         },
+        //         {
+        //             model: User,
+        //             as: "User",
+        //             attributes: [],
+        //         },
+        //         {
+        //             model: ServicesStatus,
+        //             as: "ServicesStatus",
+        //             attributes: [],
+        //         },
+        //         {
+        //             model: Pharmacy,
+        //             as: "Pharmacy",
+        //             attributes: [],
+        //         }
+        //     ],
+        //     attributes: [
+        //         "id", "description", "token",
+        //         [col("TypeServices.name"), "name"],
+        //         [col("TypeServices.nombre"), "nombre"],
+        //         [col("TypeServices.id"), "typeServices_id"],
+        //         [col("TypeServices.img"), "typeServices_img"],
+        //         [col("User.first_name"), "first_name"],
+        //         [col("User.last_name"), "last_name"],
+        //         [col("User.img"), "user_img"],
+        //         [col("ServicesStatus.name"), "services-status-name"],
+        //         [col("ServicesStatus.nombre"), "services-status-nombre"],
+        //         [col("ServicesStatus.code"), "code"],
+        //         [col("Pharmacy.name"), "pname"],
+        //     ]
+        // })
+     
+
+        const pharmacy = await Pharmacy.findAll({
+            where: {
+                role_id: 2, disabled:0
+            }
+        })
+        
+        for (let i in pharmacy) {
+            const service = await TypeServices.findAll({ where: { pharmacy_id: pharmacy[i].id, deleted: false } })
+            noExisten.push({type:service})
+        }
+
+        return res.status(200).send({
+            ok: true,
+            service:noExisten
+
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+    }
+}
+
 export {
     createTypeServices,
     saveImgTypeServices,
@@ -496,4 +651,7 @@ export {
     updateStatus,
     searchImgByService,
     sendToken,
+    getservicesByTypeServices,
+    getservicesByPharmacy,
+    createInfoPriceService
 }

@@ -18,7 +18,7 @@ const getPharmacies = async (req: Request, res: Response) => {
                 role_id: 2, disabled:0
             }
         })
-        console.log(pharmacy.length)
+       
 
         if (!pharmacy.length) {
             return res.status(204).json({

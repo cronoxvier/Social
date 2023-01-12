@@ -16,6 +16,9 @@ servicesRouter.get('/selectService/:id', servicesCtrl.selectService);
 servicesRouter.put('/updateStatusService/:id', servicesCtrl.updateStatus);
 servicesRouter.get('/searchImgByService/:id', servicesCtrl.searchImgByService);
 servicesRouter.post('/sendToken', servicesCtrl.sendToken);
+servicesRouter.get('/getservicesByTypeServices/:id', servicesCtrl.getservicesByTypeServices);
+servicesRouter.get('/getservicesByPharmacy', servicesCtrl.getservicesByPharmacy);
+servicesRouter.post('/createInfoPriceService', servicesCtrl.createInfoPriceService);
 
 // adsRouter.get('/getAdminAdsToPharmacyByPharmacy/:id', adsCtrl.getAdminAdsToPharmacyByPharmacy);
 // adsRouter.get('/getAdminAdsToPharmacy', adsCtrl.getAdminAdsToPharmacy);
