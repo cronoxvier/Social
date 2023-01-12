@@ -21,6 +21,7 @@ import { UserServices } from "../models/UserServices";
 
 
 
+
 const createTypeServices = async (req, res) => {
     try {
 
@@ -44,8 +45,48 @@ const createTypeServices = async (req, res) => {
 }
 const createInfoPriceService = async (req, res) => {
     try {
+        let expo = new Expo({ accessToken: 'fsBgekH5wRpMOVN3h_ZDIy6bqMygQn3oAaJHAQje' });
         const { ...data } = req.body
+        let messages = [];
+        const pushToken = data.token_driver
         const services = await UserServices.create(data)
+
+
+        if (!data.token_driver) {
+            return res.status(200).send({
+                ok: false,
+                messages: "Token not available"
+            })
+        }
+
+        if (!Expo.isExpoPushToken(pushToken)) {
+            console.error(`Push token ${pushToken} is not a valid Expo push token`);
+        }
+
+       
+            messages.push(
+                {
+                    to: pushToken,
+                    title: "Del properties kc 📬",
+                    subtitle: 'Requested service in process',
+                    sound: 'default',
+                    body: 'Your service is in the process of review and assignment.',
+                    badge: 0,
+                    data: { data: 'goes here' },
+                }
+            )
+        
+
+        let chunks = expo.chunkPushNotifications(messages);
+        let tickets = [];
+
+        for (let chunk of chunks) {
+            let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+
+            tickets.push(...ticketChunk);
+        }
+
+
 
         res.status(200).send({
             ok: true,
@@ -456,32 +497,7 @@ const sendToken = async (req: Request, res: Response) => {
                 }
             )
         }
-        // if (data.state == 3) {
-        //     messages.push(
-        //         {
-        //             to: pushToken,
-        //             title: "Coopharma my shop! 📬",
-        //             subtitle: 'purchase order process',
-        //             sound: 'default',
-        //             body: 'Order is ready to be picked up, notification to carriers has been sent',
-        //             badge: 0,
-        //             data: { data: 'goes here' },
-        //         }
-        //     )
-        // }
-        // if (data.state == 4) {
-        //     messages.push(
-        //         {
-        //             to: pushToken,
-        //             title: "Coopharma my shop! 📬",
-        //             sound: 'default',
-        //             body: 'Added a new order',
-        //             badge: 0,
-        //             data: { data: 'goes here' },
-        //         }
-        //     )
-        // }
-
+        
         let chunks = expo.chunkPushNotifications(messages);
         let tickets = [];
 

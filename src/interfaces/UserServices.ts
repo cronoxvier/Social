@@ -1,5 +1,4 @@
 import { Model } from 'sequelize';
-
 export interface UserServicesAttr extends Model {
     id: number,
     price: number,
@@ -9,5 +8,4 @@ export interface UserServicesAttr extends Model {
     startDate:string,
     finalDate:string,
     token_driver:string
-
 }
