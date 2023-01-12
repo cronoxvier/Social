@@ -22,6 +22,7 @@ import { UserServices } from "../models/UserServices";
 
 
 
+
 const createTypeServices = async (req, res) => {
     try {
 
@@ -48,50 +49,40 @@ const createInfoPriceService = async (req, res) => {
         let expo = new Expo({ accessToken: 'fsBgekH5wRpMOVN3h_ZDIy6bqMygQn3oAaJHAQje' });
         const { ...data } = req.body
         let messages = [];
-        const pushToken = data.token_driver
-        const services = await UserServices.create(data)
 
+        const Services = await UserServices.create(data)
 
-        if (!data.token_driver) {
-            return res.status(200).send({
-                ok: false,
-                messages: "Token not available"
-            })
-        }
+        const token = await services.findByPk(data.service_id)
 
-        if (!Expo.isExpoPushToken(pushToken)) {
-            console.error(`Push token ${pushToken} is not a valid Expo push token`);
-        }
+        const pushToken = token.token
 
-       
+        if (pushToken) {
+            if (!Expo.isExpoPushToken(pushToken)) {
+                console.error(`Push token ${pushToken} is not a valid Expo push token`);
+            }
             messages.push(
                 {
                     to: pushToken,
-                    title: "Del properties kc 📬",
-                    subtitle: 'Requested service in process',
+                    title: "Facilito📬",
+                    subtitle: 'Solicited service',
                     sound: 'default',
-                    body: 'Your service is in the process of review and assignment.',
+                    body: 'New application process received check if you accept the service',
                     badge: 0,
                     data: { data: 'goes here' },
                 }
             )
-        
+            let chunks = expo.chunkPushNotifications(messages);
+            let tickets = [];
 
-        let chunks = expo.chunkPushNotifications(messages);
-        let tickets = [];
+            for (let chunk of chunks) {
+                let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
 
-        for (let chunk of chunks) {
-            let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-
-            tickets.push(...ticketChunk);
+                tickets.push(...ticketChunk);
+            }
         }
-
-
-
         res.status(200).send({
             ok: true,
-            services,
-            mensaje: 'Could not create service',
+            Services,
         })
 
     } catch (error) {
@@ -497,7 +488,7 @@ const sendToken = async (req: Request, res: Response) => {
                 }
             )
         }
-        
+
         let chunks = expo.chunkPushNotifications(messages);
         let tickets = [];
 
@@ -555,7 +546,7 @@ const getservicesByTypeServices = async (req, res) => {
                 [col("ServicesStatus.name"), "services-status-name"],
                 [col("ServicesStatus.nombre"), "services-status-nombre"],
                 [col("ServicesStatus.code"), "code"],
-            ], where: { typeServices_id: id, servicesStatus_id: 2}
+            ], where: { typeServices_id: id, servicesStatus_id: 2 }
         })
         return res.status(200).send({
             ok: true,
@@ -569,7 +560,7 @@ const getservicesByTypeServices = async (req, res) => {
     }
 }
 
-const getservicesByPharmacy= async (req, res) => {
+const getservicesByPharmacy = async (req, res) => {
     const noExisten = []
     try {
 
@@ -611,22 +602,22 @@ const getservicesByPharmacy= async (req, res) => {
         //         [col("Pharmacy.name"), "pname"],
         //     ]
         // })
-     
+
 
         const pharmacy = await Pharmacy.findAll({
             where: {
-                role_id: 2, disabled:0
+                role_id: 2, disabled: 0
             }
         })
-        
+
         for (let i in pharmacy) {
             const service = await TypeServices.findAll({ where: { pharmacy_id: pharmacy[i].id, deleted: false } })
-            noExisten.push({type:service})
+            noExisten.push({ type: service })
         }
 
         return res.status(200).send({
             ok: true,
-            service:noExisten
+            service: noExisten
 
         })
     } catch (error) {
