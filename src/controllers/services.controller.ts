@@ -17,6 +17,8 @@ import { ServicesStatus } from '../models/services-status';
 import { Request, Response } from 'express';
 import { Expo } from 'expo-server-sdk';
 import { Pharmacy } from "../models/Pharmacy";
+import { UserServices } from "../models/UserServices";
+
 
 
 const createTypeServices = async (req, res) => {
@@ -30,6 +32,25 @@ const createTypeServices = async (req, res) => {
             services,
             mensaje: 'Could not create service',
 
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+    }
+
+}
+const createInfoPriceService = async (req, res) => {
+    try {
+        const { ...data } = req.body
+        const services = await UserServices.create(data)
+
+        res.status(200).send({
+            ok: true,
+            services,
+            mensaje: 'Could not create service',
         })
 
     } catch (error) {
@@ -341,6 +362,7 @@ const selectService = async (req, res) => {
                 [col("ServicesStatus.nombre"), "services-status-nombre"],
                 [col("ServicesStatus.code"), "code"],
                 [col("User.img"), "user_img"],
+                [col("User.id"), "user_id"],
             ], where: { id }
         })
         return res.status(200).send({
@@ -614,5 +636,6 @@ export {
     searchImgByService,
     sendToken,
     getservicesByTypeServices,
-    getservicesByPharmacy
+    getservicesByPharmacy,
+    createInfoPriceService
 }

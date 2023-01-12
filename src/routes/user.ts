@@ -31,6 +31,8 @@ userRouter.post('/updateClientDirection',userCtrl.updateClientDirection)
 userRouter.post('/deleteClientDirection',userCtrl.deleteClientDirection)
 userRouter.post('/updateClientImage/:id',userCtrl.updateClientImage)
 userRouter.get('/deleteUser/:id',userCtrl.deleteUser)
+userRouter.get('/getAllDriverUser', userCtrl.getAllDriverUser);
+userRouter.post('/disableEnambleUserServices', userCtrl.disableEnambleUserServices);
 
 
 
