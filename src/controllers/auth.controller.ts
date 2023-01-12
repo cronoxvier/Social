@@ -62,6 +62,8 @@ const login = async (req: Request, res: Response) => {
                 mensaje: 'Usuario Eliminado'
             })
         }
+
+        const token = await generarJWT(user)
         res.status(200).send({
             ok: true,
             message: "Welcome",
@@ -73,7 +75,8 @@ const login = async (req: Request, res: Response) => {
             phone: user.phone,
             password: user.password,
             role: user.role_id,
-            img: user.img
+            img: user.img,
+            token
         })
     } catch (error) {
         res.status(500).send({

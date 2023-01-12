@@ -42,21 +42,20 @@ const getUsers = async (req: Request, res: Response) => {
 const createClient = async (req: Request, res: Response) => {
     try {
         const password = req.body.password;
-        const email = req.body.email;
         const passwordHash = await bcrypt.hash(password, 8);
 
         const {
-
+            email,
             firstName,
             lastName,
             phone
         } = req.body
 
         const client = {
-            email,
+            email: email,
             first_name: firstName,
             last_name: lastName,
-            phone,
+            phone: phone,
             password: passwordHash,
             role_id: 1
         }
@@ -72,7 +71,7 @@ const createClient = async (req: Request, res: Response) => {
             return res.status(400).send({
                 ok: false,
                 message: 'That email is taken. Try another',
-                mensaje: 'Ese email está tomado. Prueba otra',
+                mensaje: 'Ese email está tomado. Prueba otro',
 
             })
         }
@@ -808,7 +807,6 @@ const deleteUser = async (req: Request, res: Response) => {
     }
 }
 
-//
 const updateUser = (req: Request, res: Response) => {
     const {
         id_user,
