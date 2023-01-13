@@ -57,6 +57,6 @@ UserServices.belongsTo(services, { foreignKey: 'service_id', as: 'Services' })
 // 	() => console.log("Sync complete")
 // );
 
-UserServices.sync()
+
 
 export { UserServices }
