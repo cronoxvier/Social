@@ -11,7 +11,7 @@ const createTypeServicesFacilito = async (req: Request, res: Response) => {
     const typeServicesFacilito = await typesServicesFacilito.create(params)
 
 
-    console.log(params, "kk")
+
 
     res.status(200).send({
       ok: true,
@@ -40,7 +40,7 @@ const getTypeServicesFacilito = async (req: Request, res: Response) => {
   
     const typeServicesFacilito = await typesServicesFacilito.findAll()
 
-    console.log("kk")
+    
 
 
     res.status(200).send({
