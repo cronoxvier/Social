@@ -547,7 +547,7 @@ const getservicesByTypeServices = async (req, res) => {
                 [col("ServicesStatus.name"), "services-status-name"],
                 [col("ServicesStatus.nombre"), "services-status-nombre"],
                 [col("ServicesStatus.code"), "code"],
-            ], where: { typeServices_id: id, servicesStatus_id: 2 }
+            ], where: { typeServices_id: id, servicesStatus_id: 1 }
         })
         return res.status(200).send({
             ok: true,
@@ -654,7 +654,7 @@ const getInfoPriceService = async (req, res) => {
                     ]
                 },
             ],
-            attributes: ['id', 'user_id', 'driver_id', 'service_id', 'price', 'startDate', 'finalDate', 'token_driver',
+            attributes: ['id', 'user_id', 'driver_id', 'service_id', 'price', 'startDate', 'finalDate', 'token_driver', 'accepted', 'deleted', 'servicesStatus_id',
                 [col("Driver.first_name"), "driver_first_name"],
                 [col("Driver.last_name"), "driver_last_name"],
                 [col("Driver.phone"), "driver_phone"],
@@ -669,10 +669,13 @@ const getInfoPriceService = async (req, res) => {
 
                 // [col("Services.TypeServices.name"), "Services_typeServices_name"],
             ],
-            where: { user_id: id }
+            where: {
+                user_id: id,
+                [Op.or]: [{ servicesStatus_id: 1 }, { servicesStatus_id: 4 }],
+                deleted: 0
 
+            }
         })
-
 
         return res.status(200).send({
             ok: true,
@@ -684,6 +687,60 @@ const getInfoPriceService = async (req, res) => {
             ok: false
         })
     }
+}
+
+const updateUserServicesAccepted = async (req, res) => {
+
+    try {
+        const { ...data } = req.body
+
+        const updatedRows = UserServices.update({ servicesStatus_id: 4, accepted: true }, {
+            where: {
+                id: data.id
+            }
+        })
+
+        if (updatedRows) {
+            const updateUserServices = UserServices.update({ servicesStatus_id: 7, deleted: true }, {
+                where: {
+                    servicesStatus_id: 1,
+                    service_id: data.service_id,
+                    user_id: data.user_id
+                }
+            })
+
+            if (!updatedRows) {
+                res.status(400).send({
+                    ok: false,
+                })
+            }
+
+            await services.update({servicesStatus_id:4}, {where:{id:data.service_id}})
+            //mandar el push notification
+
+
+            const push = await services.findByPk(data.service_id)
+
+            console.log(push)
+
+        }
+
+
+        // Me quede aqui haciendo el update 
+
+        res.status(200).send({
+            ok: true,
+            // serviceUpdate
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+
+    }
+
 }
 
 export {
@@ -703,5 +760,6 @@ export {
     getservicesByTypeServices,
     getservicesByPharmacy,
     createInfoPriceService,
-    getInfoPriceService
+    getInfoPriceService,
+    updateUserServicesAccepted
 }
