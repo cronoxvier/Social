@@ -35,14 +35,7 @@ const getTypeServicesFacilito = async (req: Request, res: Response) => {
 
   try {
 
-    // console.log()
-
-  
     const typeServicesFacilito = await typesServicesFacilito.findAll()
-
-    console.log("kk")
-
-
     res.status(200).send({
       ok: true,
       typeServicesFacilito
