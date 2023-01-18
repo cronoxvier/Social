@@ -1,4 +1,4 @@
-import * as servicesFacilitoCtrl from '../../controllers/Facilito/services-facilito.controller'
+import * as servicesFacilitoCtrl from '../controllers/Facilito/services-facilito.controller'
 import express = require('express');
 
 const TypeServicesFacilitoRouter: express.Router = express.Router();

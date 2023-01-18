@@ -24,7 +24,7 @@ import createOccupancyRequestRouter from './routes/occupancyRequest'
 import createRentRouter from './routes/Rent';
 import servicesRouter from './routes/services';
 import email from './routes/Facilito/emails';
-import TypeServicesFacilitoRouter from './routes/Facilito/type-services-facilito';
+import TypeServicesFacilitoRouter from './routes/type-services-facilito';
 import PreServicesRouter from './routes/Facilito/pre-services';
 import createClientServiceRouter from './routes/Facilito/clientServices';
 import facilitoPlaceToPayRouter from './routes/Facilito/facilitoPlaceToPay';
