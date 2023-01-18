@@ -34,7 +34,7 @@ const createTypeServicesFacilito = async (req: Request, res: Response) => {
 const getTypeServicesFacilito = async (req: Request, res: Response) => {
 
   try {
-
+    console.log("test")
     const typeServicesFacilito = await typesServicesFacilito.findAll()
     res.status(200).send({
       ok: true,
