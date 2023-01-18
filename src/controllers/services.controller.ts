@@ -19,9 +19,10 @@ import { Expo } from 'expo-server-sdk';
 import { Pharmacy } from "../models/Pharmacy";
 import { UserServices } from "../models/UserServices";
 import { Driver } from "../models/driver";
-
-
-
+import moment from 'moment';
+import CryptoJS from 'crypto-js'
+import axios from 'axios';
+import { playTopayCredential } from "../helper/CreateCredentiaPlaytopay";
 
 
 const createTypeServices = async (req, res) => {
@@ -65,7 +66,7 @@ const createInfoPriceService = async (req, res) => {
                 {
                     to: pushToken,
                     title: "Facilito📬",
-                    subtitle: 'Solicited service',
+                    subtitle: 'Service request',
                     sound: 'default',
                     body: 'New application process received check if you accept the service',
                     badge: 0,
@@ -715,19 +716,39 @@ const updateUserServicesAccepted = async (req, res) => {
                 })
             }
 
-            await services.update({servicesStatus_id:4}, {where:{id:data.service_id}})
+            await services.update({ servicesStatus_id: 4 }, { where: { id: data.service_id } })
             //mandar el push notification
-
-
             const push = await services.findByPk(data.service_id)
 
-            console.log(push)
+            let expo = new Expo({ accessToken: 'fsBgekH5wRpMOVN3h_ZDIy6bqMygQn3oAaJHAQje' });
+            let messages = [];
+            const pushToken = push.token
 
+            if (pushToken) {
+                if (!Expo.isExpoPushToken(pushToken)) {
+                    console.error(`Push token ${pushToken} is not a valid Expo push token`);
+                }
+                messages.push(
+                    {
+                        to: pushToken,
+                        title: "Facilito📬",
+                        subtitle: 'service request',
+                        sound: 'default',
+                        body: 'Request accepted, you can check your service request',
+                        badge: 0,
+                        data: { data: 'goes here' },
+                    }
+                )
+                let chunks = expo.chunkPushNotifications(messages);
+                let tickets = [];
+
+                for (let chunk of chunks) {
+                    let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+
+                    tickets.push(...ticketChunk);
+                }
+            }
         }
-
-
-        // Me quede aqui haciendo el update 
-
         res.status(200).send({
             ok: true,
             // serviceUpdate
@@ -741,6 +762,65 @@ const updateUserServicesAccepted = async (req, res) => {
 
     }
 
+}
+
+const saveRequesIdServices = async (req, res) => {
+    try {
+        let respon = ''
+        let error = ''
+        let result
+        const { ...data } = req.body
+
+        const credential = await playTopayCredential('session')
+        const datas = {
+            locale: "es_PR",
+            auth: {
+                login: process.env.LOGIN,
+                tranKey: credential.tranKey,
+                nonce: btoa(credential.nonce),
+                seed: credential.seed
+            },
+            //type: 'checkin',
+            payment: {
+                reference: data.reference,
+                description: data.description,
+                amount: {
+                    currency: "USD",
+                    total: data.amount
+                },
+                allowPartial: false
+            },
+            expiration: credential.expiration,
+            returnUrl: data.returnUrl,
+            ipAddress: data.ipAdress,
+            userAgent: "PlacetoPay Sandbox"
+        }
+
+        await axios.post(credential.url,
+            { ...datas }
+        ).then(async (e) => {
+            // console.log(e, 'e')
+            respon = e.data
+        }).catch(err => {
+            console.log(err, 'aqui')
+            error = err.response.data.status.status
+            respon = err.response.data
+        })
+
+        res.status(200).send({
+            ok: true,
+            data: respon,
+            result
+            
+        })
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+    }
 }
 
 export {
@@ -761,5 +841,6 @@ export {
     getservicesByPharmacy,
     createInfoPriceService,
     getInfoPriceService,
-    updateUserServicesAccepted
+    updateUserServicesAccepted,
+    saveRequesIdServices
 }
