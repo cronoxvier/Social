@@ -21,6 +21,7 @@ servicesRouter.get('/getservicesByPharmacy', servicesCtrl.getservicesByPharmacy)
 servicesRouter.post('/createInfoPriceService', servicesCtrl.createInfoPriceService);
 servicesRouter.get('/getInfoPriceService/:id', servicesCtrl.getInfoPriceService);
 servicesRouter.put('/updateUserServicesAccepted', servicesCtrl.updateUserServicesAccepted);
+servicesRouter.post('/saveRequesIdServices', servicesCtrl.saveRequesIdServices);
 
 // adsRouter.get('/getAdminAdsToPharmacyByPharmacy/:id', adsCtrl.getAdminAdsToPharmacyByPharmacy);
 // adsRouter.get('/getAdminAdsToPharmacy', adsCtrl.getAdminAdsToPharmacy);
