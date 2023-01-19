@@ -23,6 +23,7 @@ import moment from 'moment';
 import CryptoJS from 'crypto-js'
 import axios from 'axios';
 import { playTopayCredential } from "../helper/CreateCredentiaPlaytopay";
+import { MaintenancePayments } from "../models/MaintenancePayments";
 
 
 const createTypeServices = async (req, res) => {
@@ -764,64 +765,109 @@ const updateUserServicesAccepted = async (req, res) => {
 
 }
 
-const saveRequesIdServices = async (req, res) => {
-    try {
-        let respon = ''
-        let error = ''
-        let result
-        const { ...data } = req.body
+// const saveRequesIdServices = async (req, res) => {
+//     try {
+//         let respon = ''
+//         let error = ''
+//         let result
+//         const url = `${process.env.URL}/api/session`;
+//         const { ...data } = req.body
+//         const credential = await playTopayCredential()
+//         const datas = {
+//             locale: "es_PR",
+//             auth: {
+//                 login: process.env.LOGIN,
+//                 tranKey: credential.tranKey,
+//                 nonce: btoa(credential.nonce),
+//                 seed: credential.seed
+//             },
+//             //type: 'checkin',
+//             payment: {
+//                 reference: data.reference,
+//                 description: data.description,
+//                 amount: {
+//                     currency: "USD",
+//                     total: data.amount
+//                 },
+//                 allowPartial: false
+//             },
+//             expiration: credential.expiration,
+//             returnUrl: data.returnUrl,
+//             ipAddress: data.ipAdress,
+//             userAgent: "PlacetoPay Sandbox"
+//         }
 
-        const credential = await playTopayCredential('session')
-        const datas = {
-            locale: "es_PR",
-            auth: {
-                login: process.env.LOGIN,
-                tranKey: credential.tranKey,
-                nonce: btoa(credential.nonce),
-                seed: credential.seed
-            },
-            //type: 'checkin',
-            payment: {
-                reference: data.reference,
-                description: data.description,
-                amount: {
-                    currency: "USD",
-                    total: data.amount
-                },
-                allowPartial: false
-            },
-            expiration: credential.expiration,
-            returnUrl: data.returnUrl,
-            ipAddress: data.ipAdress,
-            userAgent: "PlacetoPay Sandbox"
-        }
+//         await axios.post(url,
+//             { ...datas }
+//         ).then(async (e) => {
+//             // console.log(e, 'e')
+//             respon = e.data
+//             result = await MaintenancePayments.create({ ...data, requestId: e.data.requestId })
+//         }).catch(err => {
+//             console.log(err, 'aqui')
+//             error = err.response.data.status.status
+//             respon = err.response.data
+//         })
 
-        await axios.post(credential.url,
-            { ...datas }
-        ).then(async (e) => {
-            // console.log(e, 'e')
-            respon = e.data
-        }).catch(err => {
-            console.log(err, 'aqui')
-            error = err.response.data.status.status
-            respon = err.response.data
-        })
+//         res.status(200).send({
+//             ok: true,
+//             data: respon,
+//             result
+//         })
+//     } catch (error) {
+//         console.log(error)
+//         res.status(500).send({
+//             ok: false
+//         })
+//     }
+// }
 
-        res.status(200).send({
-            ok: true,
-            data: respon,
-            result
-            
-        })
+// const consultSessionServices = async (req, res) => {
+//     try {
+//         const { requestId } = req.params
+//         let result
+//         let respon
 
+//         const credential = await playTopayCredential()
+//         const url = `${process.env.URL}/api/session/${requestId} `;
+//         const datas = {
+//             auth: {
+//                 login: process.env.LOGIN,
+//                 tranKey: credential.tranKey,
+//                 nonce: btoa(credential.nonce),
+//                 seed: credential.seed,
+//                 url
+//             },
+//         }
+//         await axios.post(url,
+//             { ...datas }
+//         ).then(async (e) => {
+//             respon = e.data
+//             // console.log("consult", respon)
+//             const datos = {
+//                 paymentStatus: e.data.status.status,
+//                 date: e.data.status.date,
+//             }
+//             console.log("datos consult",datos)
 
-    } catch (error) {
-        console.log(error)
-        res.status(500).send({
-            ok: false
-        })
-    }
-}
+//              const placeUpdate = await MaintenancePayments.update({ ...datos }, { where: { requestId: requestId }, returning: true })
+
+//         }).catch(err => {
+//             console.log(err)
+//             respon = err.response.data
+//         })
+
+//         res.status(200).send({
+//             ok: true,
+//             respon
+//         })
+//     } catch (error) {
+//         console.log(error)
+//         res.status(500).send({
+//             ok: false
+//         })
+//     }
+// }
 
 export {
     createTypeServices,
@@ -842,5 +888,6 @@ export {
     createInfoPriceService,
     getInfoPriceService,
     updateUserServicesAccepted,
-    saveRequesIdServices
+    // saveRequesIdServices,
+    // consultSessionServices
 }
