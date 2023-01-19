@@ -5,13 +5,9 @@ const createTypeServicesFacilito = async (req: Request, res: Response) => {
 
   try {
 
-    // name, description, img, nombre, descripcion, router, type, orden, price
     const { ...data } = req.body
     const params = { ...data}
     const typeServicesFacilito = await typesServicesFacilito.create(params)
-
-
-
 
     res.status(200).send({
       ok: true,
@@ -25,16 +21,14 @@ const createTypeServicesFacilito = async (req: Request, res: Response) => {
     })
     
   }
-
-
-    
  
 };
 
 const getTypeServicesFacilito = async (req: Request, res: Response) => {
 
+  console.log("test")
+
   try {
-    console.log("test")
     const typeServicesFacilito = await typesServicesFacilito.findAll()
     res.status(200).send({
       ok: true,
