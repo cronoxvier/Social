@@ -1,14 +1,9 @@
 import { Model } from 'sequelize';
 
-export interface PlaceToPayRequestId extends Model {
+export interface MaintenancePayments extends Model {
     id: number,
-    pharmacy_id: number,
-    user_id: number
-    ads_id: number
-    order_id: number
-    advertisements: boolean,
-    shopping:boolean,
-    status: boolean
+    paymentNumber: number,
+    
     requestId: number,
     reference: string,
     description:string,
@@ -17,7 +12,6 @@ export interface PlaceToPayRequestId extends Model {
     amount:number,
     date:Date,
     internalReference:string,
-    type: string,
+    
     userServices_id:number
-   
 }
