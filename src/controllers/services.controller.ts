@@ -830,6 +830,51 @@ const updateUserServicesAccepted = async (req, res) => {
 
 }
 
+const deleteUserServices = async (req, res) => {
+    try {
+        const {id} = req.params
+
+        const updatedRows = UserServices.update({ deleted: true}, {
+            where: {
+                id
+            }
+        })
+        res.status(200).send({
+            ok: true,
+            updatedRows
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+    }
+
+}
+
+const updateDatePrice = async (req, res) => {
+    try {
+        const {id} = req.params
+        const {...data} = req.body
+
+        const updatedRows = UserServices.update({ ...data}, {
+            where: {
+                id
+            }
+        })
+        res.status(200).send({
+            ok: true,
+            data
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+    }
+
+}
+
 // const saveRequesIdServices = async (req, res) => {
 //     try {
 //         let respon = ''
@@ -953,7 +998,9 @@ export {
     createInfoPriceService,
     getInfoPriceService,
     updateUserServicesAccepted,
-    getInfoPriceServiceByDriver
+    getInfoPriceServiceByDriver,
+    deleteUserServices,
+    updateDatePrice
     // saveRequesIdServices,
     // consultSessionServices
 }

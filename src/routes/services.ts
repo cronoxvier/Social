@@ -22,6 +22,8 @@ servicesRouter.post('/createInfoPriceService', servicesCtrl.createInfoPriceServi
 servicesRouter.get('/getInfoPriceService/:id', servicesCtrl.getInfoPriceService); 
 servicesRouter.get('/getInfoPriceServiceByDriver/:id', servicesCtrl.getInfoPriceServiceByDriver)
 servicesRouter.put('/updateUserServicesAccepted', servicesCtrl.updateUserServicesAccepted);
+servicesRouter.get('/deleteUserServices/:id', servicesCtrl.deleteUserServices);
+servicesRouter.put('/updateDatePrice/:id', servicesCtrl.updateDatePrice);
 // servicesRouter.post('/saveRequesIdServices', servicesCtrl.saveRequesIdServices);
 // servicesRouter.get('/consultSessionServices/:requestId', servicesCtrl.consultSessionServices);
 
