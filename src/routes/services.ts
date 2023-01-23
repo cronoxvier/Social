@@ -19,7 +19,8 @@ servicesRouter.post('/sendToken', servicesCtrl.sendToken);
 servicesRouter.get('/getservicesByTypeServices/:id', servicesCtrl.getservicesByTypeServices);
 servicesRouter.get('/getservicesByPharmacy', servicesCtrl.getservicesByPharmacy);
 servicesRouter.post('/createInfoPriceService', servicesCtrl.createInfoPriceService);
-servicesRouter.get('/getInfoPriceService/:id', servicesCtrl.getInfoPriceService);
+servicesRouter.get('/getInfoPriceService/:id', servicesCtrl.getInfoPriceService); 
+servicesRouter.get('/getInfoPriceServiceByDriver/:id', servicesCtrl.getInfoPriceServiceByDriver)
 servicesRouter.put('/updateUserServicesAccepted', servicesCtrl.updateUserServicesAccepted);
 // servicesRouter.post('/saveRequesIdServices', servicesCtrl.saveRequesIdServices);
 // servicesRouter.get('/consultSessionServices/:requestId', servicesCtrl.consultSessionServices);

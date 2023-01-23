@@ -97,7 +97,7 @@ OccupancyRequests.hasOne(placeToPayRequestId,{ foreignKey: 'order_id', as: 'plac
 // 	() => console.log("Sync complete")
 // );
 
-placeToPayRequestId.sync()
+// placeToPayRequestId.sync()
 
 
 export { placeToPayRequestId }

@@ -668,12 +668,77 @@ const getInfoPriceService = async (req, res) => {
                 [col("Services.typeServices_id"), "services_typeServices_id"],
                 [col("Services.pharmacy_id"), "services_pharmacy_id"],
                 [col("Services.servicesStatus_id"), "services_servicesStatus_id"],
-
-                // [col("Services.TypeServices.name"), "Services_typeServices_name"],
             ],
             where: {
                 user_id: id,
                 [Op.or]: [{ servicesStatus_id: 1 }, { servicesStatus_id: 4 }],
+                deleted: 0
+
+            }
+        })
+
+        return res.status(200).send({
+            ok: true,
+            service
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+    }
+}
+
+const getInfoPriceServiceByDriver = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const service = await UserServices.findAll({
+            include: [
+                {
+                    model: Driver,
+                    as: "Driver",
+                    attributes: [],
+                },
+                {
+                    model: ServicesStatus,
+                    as: "ServicesStatus",
+                    attributes: [],
+
+                },
+                {
+                    model: services,
+                    as: "Services",
+                    include: [
+                        {
+                            model: TypeServices,
+                            as: "TypeServices",
+                        },
+                        {
+                            model: ServicesStatus,
+                            as: "ServicesStatus",
+                        },
+                    ]
+                },
+            ],
+            attributes: ['id', 'user_id', 'driver_id', 'service_id', 'price', 'startDate', 'finalDate', 'token_driver', 'accepted', 'deleted', 'servicesStatus_id',
+                [col("Driver.first_name"), "driver_first_name"],
+                [col("Driver.last_name"), "driver_last_name"],
+                [col("Driver.phone"), "driver_phone"],
+                [col("Driver.img"), "driver_img"],
+                [col("Driver.first_name"), "driver_first_name"],
+                [col("Services.description"), "services_description"],
+                [col("Services.token"), "services_token"],
+                [col("Services.typeServices_id"), "services_typeServices_id"],
+                [col("Services.pharmacy_id"), "services_pharmacy_id"],
+                [col("Services.servicesStatus_id"), "services_servicesStatus_id"],
+                [col("ServicesStatus.id"), "ServicesStatus_id"],
+                [col("ServicesStatus.name"), "ServicesStatus_name"],
+                [col("ServicesStatus.nombre"), "ServicesStatus_nombre"],
+                [col("ServicesStatus.code"), "ServicesStatus_code"],
+            ],
+            where: {
+                driver_id: id,
+                // [Op.or]: [{ servicesStatus_id: 1 }, { servicesStatus_id: 4 }],
                 deleted: 0
 
             }
@@ -888,6 +953,7 @@ export {
     createInfoPriceService,
     getInfoPriceService,
     updateUserServicesAccepted,
+    getInfoPriceServiceByDriver
     // saveRequesIdServices,
     // consultSessionServices
 }
