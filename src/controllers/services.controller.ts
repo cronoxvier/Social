@@ -642,6 +642,12 @@ const getInfoPriceService = async (req, res) => {
                     attributes: [],
                 },
                 {
+                    model: ServicesStatus,
+                    as: "ServicesStatus",
+                    attributes: [],
+
+                },
+                {
                     model: services,
                     as: "Services",
                     include: [
@@ -668,10 +674,14 @@ const getInfoPriceService = async (req, res) => {
                 [col("Services.typeServices_id"), "services_typeServices_id"],
                 [col("Services.pharmacy_id"), "services_pharmacy_id"],
                 [col("Services.servicesStatus_id"), "services_servicesStatus_id"],
+                [col("ServicesStatus.id"), "ServicesStatus_id"],
+                [col("ServicesStatus.name"), "ServicesStatus_name"],
+                [col("ServicesStatus.nombre"), "ServicesStatus_nombre"],
+                [col("ServicesStatus.code"), "ServicesStatus_code"],
             ],
             where: {
                 user_id: id,
-                [Op.or]: [{ servicesStatus_id: 1 }, { servicesStatus_id: 4 }],
+                [Op.or]: [{ servicesStatus_id: 1 }, { servicesStatus_id: 4 }, { servicesStatus_id: 3 }],
                 deleted: 0
 
             }
@@ -875,6 +885,80 @@ const updateDatePrice = async (req, res) => {
 
 }
 
+
+const updateUserServicesCompleted = async (req, res) => {
+
+    try {
+        const { id } = req.params
+
+        const updatedRows = UserServices.update({ servicesStatus_id: 3}, {
+            where: {
+                id
+            }
+        })
+
+        // if (updatedRows) {
+            // const updateUserServices = UserServices.update({ servicesStatus_id: 7, deleted: true }, {
+            //     where: {
+            //         servicesStatus_id: 1,
+            //         service_id: data.service_id,
+            //         user_id: data.user_id
+            //     }
+            // })
+
+            // if (!updatedRows) {
+            //     res.status(400).send({
+            //         ok: false,
+            //     })
+            // }
+
+            // await services.update({ servicesStatus_id: 4 }, { where: { id: data.service_id } })
+            // const push = await services.findByPk(data.service_id)
+
+            // let expo = new Expo({ accessToken: 'fsBgekH5wRpMOVN3h_ZDIy6bqMygQn3oAaJHAQje' });
+            // let messages = [];
+            // const pushToken = push.token
+
+            // if (pushToken) {
+            //     if (!Expo.isExpoPushToken(pushToken)) {
+            //         console.error(`Push token ${pushToken} is not a valid Expo push token`);
+            //     }
+            //     messages.push(
+            //         {
+            //             to: pushToken,
+            //             title: "Facilito📬",
+            //             subtitle: 'service request',
+            //             sound: 'default',
+            //             body: 'Request accepted, you can check your service request',
+            //             badge: 0,
+            //             data: { data: 'goes here' },
+            //         }
+            //     )
+            //     let chunks = expo.chunkPushNotifications(messages);
+            //     let tickets = [];
+
+            //     for (let chunk of chunks) {
+            //         let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+
+            //         tickets.push(...ticketChunk);
+            //     }
+            // }
+        // }
+        res.status(200).send({
+            ok: true,
+            // serviceUpdate
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+
+    }
+
+}
+
 // const saveRequesIdServices = async (req, res) => {
 //     try {
 //         let respon = ''
@@ -1000,7 +1084,8 @@ export {
     updateUserServicesAccepted,
     getInfoPriceServiceByDriver,
     deleteUserServices,
-    updateDatePrice
+    updateDatePrice,
+    updateUserServicesCompleted
     // saveRequesIdServices,
     // consultSessionServices
 }
