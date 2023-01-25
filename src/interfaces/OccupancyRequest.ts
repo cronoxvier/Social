@@ -47,5 +47,6 @@ export interface OccupancyRequestsAttr extends Model {
 	user:string,
 	product_pharmacy_id:number,
 	isRented:boolean;
+	isDocumentSigned:boolean;
 }
 

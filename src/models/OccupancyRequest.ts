@@ -30,7 +30,7 @@ const OccupancyRequests = db.define<OccupancyRequestsAttr>('OccupancyRequests', 
 	RequestFee: {
 		type: DataTypes.DECIMAL(8, 2),
 		allowNull: true,
-		defaultValue:35.00,
+		defaultValue:0.00,
 		validate: {
 			min: 0.00
 		}
@@ -213,6 +213,11 @@ const OccupancyRequests = db.define<OccupancyRequestsAttr>('OccupancyRequests', 
 	product_pharmacy_id: {
 		type: DataTypes.INTEGER,
 		allowNull: false
+	},
+	isDocumentSigned:{
+		allowNull:false,
+		type: DataTypes.BOOLEAN,
+		defaultValue: false
 	},
 	isRented:{
 		type: DataTypes.BOOLEAN,

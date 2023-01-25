@@ -24,7 +24,28 @@ const RentDetails = db.define<RentDetailsAttr>('RentDetails', {
 		primaryKey: true,
 		autoIncrement: true,
 	},
-	total_payment: {
+	total_rent: {
+		type: DataTypes.DECIMAL(8, 2),
+		allowNull: false,
+		validate: {
+			min: 0.00
+		}
+	},
+	Security_deposit: {
+		type: DataTypes.DECIMAL(8, 2),
+		allowNull: false,
+		validate: {
+			min: 0.00
+		}
+	},
+	prorateo: {
+		type: DataTypes.DECIMAL(8, 2),
+		allowNull: false,
+		validate: {
+			min: 0.00
+		}
+	},
+	maintenance_fee: {
 		type: DataTypes.DECIMAL(8, 2),
 		allowNull: false,
 		validate: {
@@ -39,6 +60,15 @@ const RentDetails = db.define<RentDetailsAttr>('RentDetails', {
 		type: DataTypes.STRING,
 		allowNull:true
 	},
+	nextPayment:{
+		type:DataTypes.DATEONLY,
+		allowNull:false,
+
+	},
+	first_payment:{
+		type: DataTypes.BOOLEAN,
+		allowNull:false
+	},
 
 	Rent_id:{
 		type: DataTypes.INTEGER.UNSIGNED,
@@ -49,7 +79,7 @@ const RentDetails = db.define<RentDetailsAttr>('RentDetails', {
 RentDetails.belongsTo(Rent, { foreignKey: 'Rent_id', as: 'Rent' })
 Rent.hasMany(RentDetails,{foreignKey:'Rent_id', as:'RentDetail'})
 
-// RentDetails.sync({ alter: { drop: true }}).catch(
-// 	(error) => console.log("Sync errror",error)
-//  );
+RentDetails.sync({ alter: { drop: true }}).catch(
+	(error) => console.log("Sync errror",error)
+ );
 export { RentDetails }

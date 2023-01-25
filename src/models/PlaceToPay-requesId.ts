@@ -87,7 +87,7 @@ placeToPayRequestId.belongsTo(User, { foreignKey: 'user_id', as: 'User' })
 //placeToPayRequestId.belongsTo(Order, { foreignKey: 'order_id', as: 'Order' })
 placeToPayRequestId.belongsTo(OccupancyRequests, { foreignKey: 'order_id', as: 'OccupancyRequests' })
 OccupancyRequests.hasOne(placeToPayRequestId,{ foreignKey: 'order_id', as: 'placeToPayRequestId' })
-// placeToPayRequestId.sync({ alter: { drop: true } ,force:true}).then(
+// placeToPayRequestId.sync({ alter: { drop: true } }).then(
 // 	() => console.log("Sync complete")
 // );
 

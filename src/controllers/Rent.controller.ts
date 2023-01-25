@@ -20,7 +20,7 @@ import { Rent } from '../models/Rent';
 import { RentDetails } from '../models/RentDetails';
 import { Category } from '../models/category';
 import { CategoryStatus } from '../models/category-status';
-
+import moment from 'moment';
 const createRent = async (req: Request, res: Response) => {
     const transaction = await seqDb.transaction({ autocommit: false });
     const code = new Date().getTime();
@@ -28,7 +28,7 @@ const createRent = async (req: Request, res: Response) => {
         const {
             id,
             code,
-            total_payment,
+           // total_payment,
             description,
             nota,
             first_payment,
@@ -41,21 +41,25 @@ const createRent = async (req: Request, res: Response) => {
             RentDetail
 
         } = req.body
-        console.log(req.body, "body")
+        const pharmacyProduct=await PharmacyProduct.findOne({where:{id:pharmacy_product_id}})
+
+        const RD= {total_rent:pharmacyProduct.price,Security_deposit:pharmacyProduct.gift_price,
+            //total_payment:pharmacyProduct.price+pharmacyProduct.gift_price+pharmacyProduct.prorateo+pharmacyProduct.maintenance_fee,
+            prorateo:pharmacyProduct.prorateo,maintenance_fee:pharmacyProduct.maintenance_fee,nextPayment:moment().add(1, 'M').format("[01/] MM YYYY")}
         const rentRequest = {
             id,
             code,
-            total_payment,
-            description: first_payment ? 'Security deposit request' : description,
+           // total_payment,
+            description,
             nota,
-            first_payment,
             TOKEN,
             user_id,
             pharmacy_id,
             occupancy_request_id,
             pharmacy_product_id,
-            RentDetail
+            RentDetail:{...RentDetail,first_payment:true,...RD}
         }
+        
         // console.log(OccupancyRequest,'OccupancyRequest created')
         const rent = await Rent.create(rentRequest, {
             include: [{
@@ -67,6 +71,7 @@ const createRent = async (req: Request, res: Response) => {
             const updatePlaceToPayRequestId = await placeToPayRequestId.update({ order_id: r.id }, { where: { requestId: requestId }, transaction, returning: true })
             const updateProduct = await PharmacyProduct.update({ active: false }, { where: { id: pharmacy_product_id }, transaction, returning: true })
                 .catch((r) => console.log("error", r))
+            await OccupancyRequests.update({isRented:true},{where:{id:occupancy_request_id}})
             console.log(r, requestId, 'test')
             await firebase.firestore().collection('propertiesOrder').add({
                 message: 'A new order #' + r.code + ' has been placed.',
@@ -111,7 +116,7 @@ const createRent = async (req: Request, res: Response) => {
     } catch (error) {
         console.log(error)
         await transaction.rollback();
-        res.status(400).send({
+        res.status(500).send({
             mensaje: "Ha ocurrido un error",
             messaje: "It has ocurred an errores",
             error

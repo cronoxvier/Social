@@ -57,10 +57,28 @@ const PharmacyProduct = db.define<PharmacyProductAttr>('PharmaciesProducts', {
 		allowNull: false,
 		defaultValue:0.00
 	},
+	maintenace_enabled:{
+		type:DataTypes.BOOLEAN,
+		defaultValue:false
+	},
+	request_fee_enabled:{
+		type:DataTypes.BOOLEAN,
+		defaultValue:false
+	},
+	request_fee: {
+		type: DataTypes.DECIMAL(6, 2),
+		allowNull: false,
+		defaultValue:0.00
+	},
+	maintenance_fee: {
+		type: DataTypes.DECIMAL(6, 2),
+		allowNull: false,
+		defaultValue:0.00
+	},
 
 }, { createdAt: 'created_at', updatedAt: 'updated_at'})
 
 PharmacyProduct.belongsTo(Pharmacy,{foreignKey: 'pharmacy_id' , as: 'Pharmacy'})
 PharmacyProduct.belongsTo(Products,{foreignKey:'product_id', as:'Products'})
-//PharmacyProduct.sync({ alter: { drop: true }}).catch((e)=>console.log(e))
+PharmacyProduct.sync({ alter: { drop: true }}).catch((e)=>console.log(e)).then(()=>{console.log('pharmacy product updated')})
 export { PharmacyProduct }

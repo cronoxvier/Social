@@ -448,7 +448,8 @@ const getProductsByPharmacyNewPanel = async (req: Request, res: Response) => {
                 }
             ],
             attributes: [
-                'id', 'pharmacy_id', 'gift_price', 'ivu_municipal', 'ivu_statal',['prorateo','Prorateo'],
+                'id', 'pharmacy_id', 'gift_price', 'ivu_municipal', 'ivu_statal',['prorateo','Prorateo'],'maintenance_fee',
+                'maintenace_enabled','request_fee_enabled','request_fee',
                 [col('Products.Name'), 'product_name'],
                 'product_id', ['active', 'status'],
                 [col('Products.Description'), 'product_description'],
@@ -480,7 +481,8 @@ const getProductsByPharmacyNewPanel = async (req: Request, res: Response) => {
                 }
             ],
             attributes: [
-                'id', 'pharmacy_id', 'gift_price', 'ivu_municipal', 'ivu_statal',['prorateo','Prorateo'],
+                'id', 'pharmacy_id', 'gift_price', 'ivu_municipal', 'ivu_statal',['prorateo','Prorateo'],'maintenance_fee',
+                'maintenace_enabled','request_fee_enabled','request_fee',
                 [col('Products.Name'), 'product_name'],
                 'product_id', ['active', 'status'],
                 [col('Products.Description'), 'product_description'],
@@ -919,7 +921,13 @@ const updateProductByPharmacy = async (req: Request, res: Response) => {
             category_id,
             upc,
             name,
-            Prorateo
+            Prorateo,
+            maintenace_enabled,
+            maintenance_fee,
+            request_fee,
+            request_fee_enabled
+
+
         } = req.body
         const params = {
             stock,
@@ -931,7 +939,11 @@ const updateProductByPharmacy = async (req: Request, res: Response) => {
             gift_status,
             category_id,
             upc,
-            prorateo:Prorateo
+            prorateo:Prorateo,
+            maintenace_enabled,
+            maintenance_fee,
+            request_fee,
+            request_fee_enabled
         }
         const paramsProducId = {
             name,

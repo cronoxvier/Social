@@ -6,6 +6,7 @@ const placeToPayRouter: express.Router = express.Router();
 
 placeToPayRouter.post('/save/requestId', placeToPayRouterCtrl.saveRequesId);
 placeToPayRouter.post('/checkin/requestId', placeToPayRouterCtrl.checkIn);
+placeToPayRouter.post('/checkin/checkInRequest', placeToPayRouterCtrl.checkInRequest);
 placeToPayRouter.post('/checkout/requestId', placeToPayRouterCtrl.checkOut);
 placeToPayRouter.get('/consultSession/:requestId', placeToPayRouterCtrl.consultSession);
 placeToPayRouter.post('/notify', placeToPayRouterCtrl.notify);

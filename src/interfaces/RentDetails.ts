@@ -7,6 +7,7 @@ export interface RentDetailsAttr extends Model {
 	description:string,
 	nota:string,
 	first_payment:boolean,
+	nextPayment:string,
 	user_id:number
 }
 

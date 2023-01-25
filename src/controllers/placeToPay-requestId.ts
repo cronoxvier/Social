@@ -12,6 +12,7 @@ import { Expo } from 'expo-server-sdk';
 import { Ads } from '../models/ads';
 import { checkServerIdentity } from 'tls';
 import { Order } from '../models/orders';
+import { PharmacyProduct } from '../models/pharmacy-product';
 
 // const importDynamic = new Function('modulePath', 'return import(modulePath)');
 
@@ -136,6 +137,187 @@ const saveRequesId = async (req: Request, res: Response) => {
 }
 
 const checkIn = async (req: Request, res: Response) => {
+    try {
+        let respon = ''
+        let error = ''
+        let result
+        const { ...data } = req.body
+       // console.log(data, "data enviada")
+
+
+        const url = `${process.env.URL}/api/session`;
+        const nonce = Math.random().toString(36).substring(2);
+        const seed = moment().format();
+        const expiration = moment().add(32, 'minutes').format();
+        const hash = CryptoJS.SHA256(nonce + seed + process.env.SECRETKEY);
+        const tranKey = hash.toString(CryptoJS.enc.Base64);
+
+       // console.log(url, 'url')
+
+        const datas = {
+            locale: "es_PR",
+            auth: {
+                login: process.env.LOGIN,
+                tranKey: tranKey,
+                nonce: btoa(nonce),
+                seed: seed
+            },
+            //type: 'checkin',
+            payment: {
+                reference: data.reference,
+                description: data.description,
+                amount: {
+                    currency: "USD",
+                    total: data.amount
+                },
+                allowPartial: false
+            },
+            expiration: expiration,
+            returnUrl: data.returnUrl,
+            ipAddress: data.ipAdress,
+            userAgent: "PlacetoPay Sandbox"
+        }
+       // console.log(data)
+        await axios.post(url,
+            { ...datas }
+        )
+            .then(async (e) => {
+               // console.log(e, 'e')
+                respon = e.data
+                result = await placeToPayRequestId.create({ ...data, requestId: e.data.requestId })
+                //console.log("result", e)
+            })
+            .catch(err => {
+                console.log(err, 'aqui')
+                error = err.response.data.status.status
+                respon = err.response.data
+            })
+
+
+        if (error == 'FAILED') {
+            return res.status(400).send({
+                ok: false,
+                respon
+            })
+        } else {
+
+        }
+
+        res.status(200).send({
+            ok: true,
+            data: respon,
+            result
+
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            error,
+            ok: false
+        })
+    }
+
+}
+
+
+
+const checkInRequest = async (req: Request, res: Response) => {
+    try {
+        let respon = ''
+        let error = ''
+        let result
+        const { ...data } = req.body
+        console.log(data, "data enviada")
+
+
+        const url = `${process.env.URL}/api/session`;
+        const nonce = Math.random().toString(36).substring(2);
+        const seed = moment().format();
+        const expiration = moment().add(32, 'minutes').format();
+        const hash = CryptoJS.SHA256(nonce + seed + process.env.SECRETKEY);
+        const tranKey = hash.toString(CryptoJS.enc.Base64);
+        const Product = await PharmacyProduct.findOne({where:{id:data.pharmacy_product_id}})
+        console.log(Product, 'errorr')
+       // console.log(url, 'url')
+
+        const datas = {
+            locale: "es_PR",
+            auth: {
+                login: process.env.LOGIN,
+                tranKey: tranKey,
+                nonce: btoa(nonce),
+                seed: seed
+            },
+            //type: 'checkin',
+            payment: {
+                reference: data.reference,
+                description: data.description,
+                amount: {
+                    currency: "USD",
+                    total:Product.request_fee_enabled && Product.request_fee>0 ? Product.request_fee:0
+                },
+                allowPartial: false
+            },
+            expiration: expiration,
+            returnUrl: data.returnUrl,
+            ipAddress: data.ipAdress,
+            userAgent: "PlacetoPay Sandbox"
+        }
+       // console.log(data)
+       if(Product.request_fee_enabled&&Product.request_fee>0){
+        await axios.post(url,
+            { ...datas }
+        )
+            .then(async (e) => {
+               // console.log(e, 'e')
+                respon = e.data
+                result = await placeToPayRequestId.create({ ...data,amount:0.00,paymentStatus:'APPROVED', requestId: e.data.requestId })
+                //console.log("result", e)
+            })
+            .catch(err => {
+               // console.log(err, 'aqui')
+               console.log(err.response.data,"errorr")
+                error = err.response.data.status.status
+                respon = err.response.data
+            })
+
+
+        if (error == 'FAILED') {
+            return res.status(400).send({
+                ok: false,
+                respon
+            })
+        } else {
+
+        }
+       }
+       else{
+        result = await placeToPayRequestId.create({ ...data, requestId: 0o0000000 })
+       }
+        
+
+        res.status(200).send({
+            ok: true,
+            data: respon,
+            result,
+            Product
+
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            error,
+            ok: false
+        })
+    }
+
+}
+
+
+
+const checkInProrducts = async (req: Request, res: Response) => {
     try {
         let respon = ''
         let error = ''
@@ -641,4 +823,4 @@ const saveRequesIdEditAds = async (req: Request, res: Response) => {
 }
 
 
-export { saveRequesId, consultSession, notify, updateRequestIdStatus, updateStatusAds, checkIn, checkOut, saveRequesIdEditAds, reversePayment }
+export { saveRequesId, consultSession, notify, updateRequestIdStatus, updateStatusAds,checkInRequest ,checkIn, checkOut, saveRequesIdEditAds, reversePayment }

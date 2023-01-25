@@ -19,6 +19,7 @@ import { dbf, firebase } from '../config/firebase';
 import { not, or } from 'sequelize/lib/operators';
 import { Expo } from 'expo-server-sdk';
 import { Rent } from '../models/Rent';
+import { RentDetails } from '../models/RentDetails';
 const getDefaultrequest = async (req: Request, res: Response) => {
     const { user_id } = req.body
     try {
@@ -96,6 +97,7 @@ const createOccupancyRequest = async (req: Request, res: Response) => {
             user_id,
             product_pharmacy_id
         } = req.body
+        const Product = await PharmacyProduct.findOne({ where: { id: product_pharmacy_id} })
         console.log(req.body, "body")
         const OccupancyRequest = {
             code,
@@ -141,7 +143,8 @@ const createOccupancyRequest = async (req: Request, res: Response) => {
 
             FutureTenantBirthDay,
             user_id,
-            product_pharmacy_id
+            product_pharmacy_id,
+            RequestFee:Product.request_fee
         }
         // console.log(OccupancyRequest,'OccupancyRequest created')
         const oc = await OccupancyRequests.findOne({ where: { deletedAt: { [Op.not]: null }, user_id }, paranoid: false })
@@ -277,6 +280,7 @@ const confirmCreation = async (req: Request, res: Response) => {
             user_id,
             product_pharmacy_id
         } = req.body
+        const Product = await PharmacyProduct.findOne({ where: { id: product_pharmacy_id} })
         const OccupancyRequest = {
             FullName,
             DateOfBirth,
@@ -319,17 +323,17 @@ const confirmCreation = async (req: Request, res: Response) => {
             FutureTenant,
 
             FutureTenantBirthDay,
-            product_pharmacy_id
+            product_pharmacy_id,
+            RequestFee:Product.request_fee
         }
-        console.log("update o r", TOKEN)
+       // console.log("update o r", TOKEN)
         const trueCreate = await OccupancyRequests.findOne({ where: { deletedAt: { [Op.not]: null }, user_id }, paranoid: false })
-        //console.log(trueCreate.id,"pendiente de crear")
+        console.log(trueCreate,user_id,"r e r")
         if (trueCreate !== undefined && trueCreate !== null) {
             console.log("test")
             const updatePlaceToPayRequestId = await placeToPayRequestId.update({ order_id: trueCreate.id, token_client: TOKEN }, { where: { requestId: requestId }, transaction, returning: true })
                 .catch((r) => console.log("error", r)).then(async () => {
                     // await OccupancyRequests.update({ ...OccupancyRequest }, { where: { user_id, deletedAt: { [Op.not]: null } }, transaction, paranoid: false })
-
                     await OccupancyRequests.restore({ where: { deletedAt: { [Op.not]: null }, user_id }, transaction }).then(async () => {
                         await firebase.firestore().collection('propertiesOrder').add({
                             message: 'A new order #' + trueCreate.code + ' has been placed.',
@@ -389,11 +393,16 @@ const getOccupancyRequestsByUser = async (req: Request, res: Response) => {
                     model: Products,
                     as: 'Products'
                 }]
-            }, 
+            },
             {
-                model:Rent,
-                as:'Rent'
-            } ],
+                model: Rent,
+                as: 'Rent',
+                include: [{
+                    model: RentDetails,
+                    as: 'RentDetail'
+                }]
+            }
+            ],
             where: { user_id },
             attributes: [
                 'code', 'created_at', 'order_state_id', "id",
@@ -649,13 +658,13 @@ const getAllOccupancyByPharmacy = async (req: Request, res: Response) => {
                     model: Products,
                     as: 'Products'
                 }]
-            }, 
+            },
             {
-                model:Rent,
-                as:'Rent'
-            } ],
+                model: Rent,
+                as: 'Rent'
+            }],
             attributes: [
-                'code', 'created_at', 'order_state_id', "id",'RequestFee','isRented',
+                'code', 'created_at', 'order_state_id', "id", 'RequestFee', 'isRented', 'isDocumentSigned',
                 [col('PharmacyProduct.id'), 'product_pharmacy_id'],
                 [col('OccupancyRequests.id'), "occupancy_request_id"], [col('PharmacyProduct.pharmacy_id'), 'pharmacy_id'],
                 [col('PharmacyProduct.gift_price'), 'security_deposit'], [col('PharmacyProduct.prorateo'), 'prorateo'],
@@ -694,6 +703,31 @@ const getAllOccupancyByPharmacy = async (req: Request, res: Response) => {
         ////getOrdersDriverAdmin;
     }
 };
+const signDocuments = async (req: Request, res: Response) => {
+    const { ocId } = req.body
+    try {
+        const { isDocumentSigned } = await OccupancyRequests.findOne({ where: { id: ocId } })
+        const ocUpdated = await OccupancyRequests.update({ isDocumentSigned: !isDocumentSigned }, { where: { id: ocId } })
+        if (ocUpdated[0] === 1) {
+            res.status(200).json({
+                message: "Completado!",
+                ocUpdated,
+            });
+        } else {
+            res.status(400).json({
+                message: "El id indicado no existe!",
+                ocUpdated,
+            });
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false,
+            error
+        })
+    }
+}
 
 const sendTokenOccupancy = async (req: Request, res: Response) => {
     const { ...data } = req.body
@@ -784,5 +818,6 @@ export {
     getAllOccupancyByPharmacy,
     getOccupancyRequestsById,
     updateOccupancyState,
-    sendTokenOccupancy
+    sendTokenOccupancy,
+    signDocuments
 }

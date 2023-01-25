@@ -16,7 +16,7 @@ createOccupancyRequestRouter.post('/updateOccupancyState',createOccupancyRequest
 createOccupancyRequestRouter.post('/confirmCreation',createOccupancyRequestCtrl.confirmCreation)
 createOccupancyRequestRouter.post('/getDefaultRequest',createOccupancyRequestCtrl.getDefaultrequest)
 createOccupancyRequestRouter.post('/sendTokenOccupancy',createOccupancyRequestCtrl.sendTokenOccupancy)
-
+createOccupancyRequestRouter.post('/signDocuments',createOccupancyRequestCtrl.signDocuments)
 
 
 export default createOccupancyRequestRouter
