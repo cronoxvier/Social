@@ -10,5 +10,6 @@ export interface UserServicesAttr extends Model {
     token_driver: string,
     accepted: boolean,
     deleted: boolean,
-    servicesStatus_id:number
+    servicesStatus_id:number,
+    paymentStatus_id:number
 }

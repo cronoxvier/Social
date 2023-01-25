@@ -681,7 +681,7 @@ const getInfoPriceService = async (req, res) => {
             ],
             where: {
                 user_id: id,
-                [Op.or]: [{ servicesStatus_id: 1 }, { servicesStatus_id: 4 }, { servicesStatus_id: 3 }],
+                [Op.or]: [{ servicesStatus_id: 1 }, { servicesStatus_id: 4 }, { servicesStatus_id: 3 }, { servicesStatus_id: 6 }],
                 deleted: 0
 
             }
@@ -771,14 +771,14 @@ const updateUserServicesAccepted = async (req, res) => {
     try {
         const { ...data } = req.body
 
-        const updatedRows = UserServices.update({ servicesStatus_id: 4, accepted: true }, {
+        const updatedRows = await UserServices.update({ servicesStatus_id: 4, accepted: true }, {
             where: {
                 id: data.id
             }
         })
 
         if (updatedRows) {
-            const updateUserServices = UserServices.update({ servicesStatus_id: 7, deleted: true }, {
+            const updateUserServices = await UserServices.update({ servicesStatus_id: 7, deleted: true }, {
                 where: {
                     servicesStatus_id: 1,
                     service_id: data.service_id,
@@ -842,9 +842,9 @@ const updateUserServicesAccepted = async (req, res) => {
 
 const deleteUserServices = async (req, res) => {
     try {
-        const {id} = req.params
+        const { id } = req.params
 
-        const updatedRows = UserServices.update({ deleted: true}, {
+        const updatedRows = UserServices.update({ deleted: true }, {
             where: {
                 id
             }
@@ -864,10 +864,10 @@ const deleteUserServices = async (req, res) => {
 
 const updateDatePrice = async (req, res) => {
     try {
-        const {id} = req.params
-        const {...data} = req.body
+        const { id } = req.params
+        const { ...data } = req.body
 
-        const updatedRows = UserServices.update({ ...data}, {
+        const updatedRows = UserServices.update({ ...data }, {
             where: {
                 id
             }
@@ -885,68 +885,34 @@ const updateDatePrice = async (req, res) => {
 
 }
 
-
 const updateUserServicesCompleted = async (req, res) => {
 
     try {
         const { id } = req.params
 
-        const updatedRows = UserServices.update({ servicesStatus_id: 3}, {
+        const updatedRows = await UserServices.update({ servicesStatus_id: 6, paymentStatus_id: 2 }, {
             where: {
                 id
             }
         })
 
-        // if (updatedRows) {
-            // const updateUserServices = UserServices.update({ servicesStatus_id: 7, deleted: true }, {
-            //     where: {
-            //         servicesStatus_id: 1,
-            //         service_id: data.service_id,
-            //         user_id: data.user_id
-            //     }
-            // })
+        const getService = await UserServices.findByPk(id)
+        if (!getService) {
+            return res.status(400).send({
+                ok: false,
 
-            // if (!updatedRows) {
-            //     res.status(400).send({
-            //         ok: false,
-            //     })
-            // }
+            })
+        }
 
-            // await services.update({ servicesStatus_id: 4 }, { where: { id: data.service_id } })
-            // const push = await services.findByPk(data.service_id)
+        const updatedRows2 = await services.update({ servicesStatus_id: 6 }, {
+            where: {
+                id: getService.service_id
+            }
+        })
 
-            // let expo = new Expo({ accessToken: 'fsBgekH5wRpMOVN3h_ZDIy6bqMygQn3oAaJHAQje' });
-            // let messages = [];
-            // const pushToken = push.token
-
-            // if (pushToken) {
-            //     if (!Expo.isExpoPushToken(pushToken)) {
-            //         console.error(`Push token ${pushToken} is not a valid Expo push token`);
-            //     }
-            //     messages.push(
-            //         {
-            //             to: pushToken,
-            //             title: "Facilito📬",
-            //             subtitle: 'service request',
-            //             sound: 'default',
-            //             body: 'Request accepted, you can check your service request',
-            //             badge: 0,
-            //             data: { data: 'goes here' },
-            //         }
-            //     )
-            //     let chunks = expo.chunkPushNotifications(messages);
-            //     let tickets = [];
-
-            //     for (let chunk of chunks) {
-            //         let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-
-            //         tickets.push(...ticketChunk);
-            //     }
-            // }
-        // }
         res.status(200).send({
             ok: true,
-            // serviceUpdate
+            getService
         })
 
     } catch (error) {
@@ -958,6 +924,42 @@ const updateUserServicesCompleted = async (req, res) => {
     }
 
 }
+
+const signatureCompleted = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const updatedRows = await UserServices.update({ servicesStatus_id: 3 }, {
+            where: {
+                id
+            }
+        })
+
+        const getService = await UserServices.findByPk(id)
+        if (!getService) {
+            return res.status(400).send({
+                ok: false,
+
+            })
+        }
+
+        const updatedRows2 = await services.update({ servicesStatus_id: 3 }, {
+            where: {
+                id: getService.service_id
+            }
+        })
+
+        res.status(200).send({
+            ok: true,
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false
+        })
+    }
+}
+
 
 // const saveRequesIdServices = async (req, res) => {
 //     try {
@@ -1085,7 +1087,8 @@ export {
     getInfoPriceServiceByDriver,
     deleteUserServices,
     updateDatePrice,
-    updateUserServicesCompleted
+    updateUserServicesCompleted,
+    signatureCompleted
     // saveRequesIdServices,
     // consultSessionServices
 }

@@ -82,11 +82,8 @@ const Users = db.define<UserAttr>('Users', {
 		allowNull:false
 	},
 	access_code: {
-
 		type: DataTypes.STRING,
 		allowNull: true
-		
-
 	}
 }, { createdAt: 'created_at', updatedAt: 'updated_at',tableName: 'Users' })
 

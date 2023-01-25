@@ -25,6 +25,7 @@ servicesRouter.put('/updateUserServicesAccepted', servicesCtrl.updateUserService
 servicesRouter.get('/deleteUserServices/:id', servicesCtrl.deleteUserServices);
 servicesRouter.put('/updateDatePrice/:id', servicesCtrl.updateDatePrice);
 servicesRouter.put('/updateUserServicesCompleted/:id', servicesCtrl.updateUserServicesCompleted);
+servicesRouter.get('/signatureCompleted/:id', servicesCtrl.signatureCompleted);
 // servicesRouter.post('/saveRequesIdServices', servicesCtrl.saveRequesIdServices);
 // servicesRouter.get('/consultSessionServices/:requestId', servicesCtrl.consultSessionServices);
 

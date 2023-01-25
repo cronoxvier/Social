@@ -61,6 +61,10 @@ const  UserServices = db.define<UserServicesAttr>('UserServices', {
 		allowNull: false,
         defaultValue:1
 	},
+    paymentStatus_id: {
+		type: DataTypes.INTEGER,
+		allowNull: true,
+	},
     
         
 }, { createdAt: 'created_at', updatedAt: 'updated_at' })
