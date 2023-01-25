@@ -8,4 +8,7 @@ export interface TypeServicesAttr extends Model {
     status: boolean,
     pharmacy_id: number,
     deleted: boolean,
+    fixedPriceStatus: boolean,
+    amountOfPayments:number
+    fixedPrice:number
 }

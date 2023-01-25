@@ -36,7 +36,6 @@ const createTypeServices = async (req, res) => {
             ok: true,
             services,
             mensaje: 'Could not create service',
-
         })
 
     } catch (error) {
