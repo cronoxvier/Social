@@ -78,6 +78,9 @@ app.all('*', (req: Request, res: Response) => res.sendStatus(404))
 //setInterval(()=>{
     //verifyStatus()
 //},60000)
+// setInterval(()=>{
+//     verifyStatus()
+// },60000)
 // cron.schedule("* */24 * * *", ()=>{
 //     verifyStatus()
 // })

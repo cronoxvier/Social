@@ -25,7 +25,7 @@ import { PharmacyProduct } from '../models/pharmacy-product';
 const reversePayment = async (req: Request, res: Response) => {
     try {
         const { ...data } = req.body
-       // console.log(data, "data enviada")
+        // console.log(data, "data enviada")
         const url = `${process.env.URL}/api/session`;
         const nonce = Math.random().toString(36).substring(2);
         const seed = moment().format();
@@ -58,7 +58,7 @@ const saveRequesId = async (req: Request, res: Response) => {
         let error = ''
         let result
         const { ...data } = req.body
-       // console.log(data, "data enviada")
+        // console.log(data, "data enviada")
 
 
         const url = `${process.env.URL}/api/session`;
@@ -68,7 +68,7 @@ const saveRequesId = async (req: Request, res: Response) => {
         const hash = CryptoJS.SHA256(nonce + seed + process.env.SECRETKEY);
         const tranKey = hash.toString(CryptoJS.enc.Base64);
 
-      //  console.log(url, 'url')
+        //  console.log(url, 'url')
 
         const datas = {
             locale: "es_PR",
@@ -93,7 +93,7 @@ const saveRequesId = async (req: Request, res: Response) => {
             ipAddress: data.ipAdress,
             userAgent: "PlacetoPay Sandbox"
         }
-       // console.log(data)
+        // console.log(data)
         await axios.post(url,
             { ...datas }
         )
@@ -142,7 +142,7 @@ const checkIn = async (req: Request, res: Response) => {
         let error = ''
         let result
         const { ...data } = req.body
-       // console.log(data, "data enviada")
+        // console.log(data, "data enviada")
 
 
         const url = `${process.env.URL}/api/session`;
@@ -152,7 +152,7 @@ const checkIn = async (req: Request, res: Response) => {
         const hash = CryptoJS.SHA256(nonce + seed + process.env.SECRETKEY);
         const tranKey = hash.toString(CryptoJS.enc.Base64);
 
-       // console.log(url, 'url')
+        // console.log(url, 'url')
 
         const datas = {
             locale: "es_PR",
@@ -177,12 +177,12 @@ const checkIn = async (req: Request, res: Response) => {
             ipAddress: data.ipAdress,
             userAgent: "PlacetoPay Sandbox"
         }
-       // console.log(data)
+        // console.log(data)
         await axios.post(url,
             { ...datas }
         )
             .then(async (e) => {
-               // console.log(e, 'e')
+                // console.log(e, 'e')
                 respon = e.data
                 result = await placeToPayRequestId.create({ ...data, requestId: e.data.requestId })
                 //console.log("result", e)
@@ -501,7 +501,7 @@ const consultSession = async (req: Request, res: Response) => {
         )
             .then(async (e) => {
                 respon = e.data
-                console.log("consult",respon)
+                console.log("consult", respon)
                 const datos = {
                     paymentStatus: e.data.status.status,
                     date: e.data.status.date,
@@ -539,8 +539,8 @@ const notify = async (req: Request, res: Response) => {
         const { ...data } = req.body
         const place = await placeToPayRequestId.findOne({ where: { requestId: data.requestId } })
 
-      //  const {  pharmacy_id, ads_id, order_id, advertisements, shopping, user_id, requestId, reference, description, amount, paymentStatus } = place
-     
+        //  const {  pharmacy_id, ads_id, order_id, advertisements, shopping, user_id, requestId, reference, description, amount, paymentStatus } = place
+
         const hash = sha1(data.requestId + data.status.status + data.status.date + process.env.SECRETKEY);
 
         if (hash != data.signature) {
@@ -554,14 +554,17 @@ const notify = async (req: Request, res: Response) => {
         else {
 
             if (place.pharmacy_id != null && place.user_id != null) {
+                console.log("entro aqui 1")
                 console.log('push notification mas email')
 
-                let expo = new Expo({ accessToken:process.env.EXPO_ACCESS_TOKEN //'DTkss6v_Z9qdGvEZLwI2D0_eTs5h-M4XF6Wx5leW' 
-            });
+                let expo = new Expo({
+                    accessToken: 'fsBgekH5wRpMOVN3h_ZDIy6bqMygQn3oAaJHAQje' //'DTkss6v_Z9qdGvEZLwI2D0_eTs5h-M4XF6Wx5leW' 
+                });
                 const pushToken = place.token_client
                 let messages = [];
                 const PlaceToPayRequest = await placeToPayRequestId.findOne({ where: { requestId: data.requestId } })
                 let state;
+
                 if (data.status.status === 'APPROVED') {
                     state = 1
                     if (!Expo.isExpoPushToken(pushToken)) {
@@ -670,7 +673,7 @@ const notify = async (req: Request, res: Response) => {
             status: "OK",
         })
     } catch (error) {
-        console.log("error",error)
+        console.log("error", error)
         res.status(500).send({
             ok: false,
 

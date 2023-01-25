@@ -31,5 +31,6 @@ export interface UserAttr extends Model {
 	token: string;
 	driver_license: number;
 	vehicule_register: string;
+	access_code: string;
 	isDeleted: boolean;
 }

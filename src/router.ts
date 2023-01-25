@@ -23,7 +23,11 @@ import imagenRouter from './routes/imagen';
 import createOccupancyRequestRouter from './routes/occupancyRequest'
 import createRentRouter from './routes/Rent';
 import servicesRouter from './routes/services';
-
+import email from './routes/Facilito/emails';
+import TypeServicesFacilitoRouter from './routes/type-services-facilito';
+import PreServicesRouter from './routes/Facilito/pre-services';
+import createClientServiceRouter from './routes/Facilito/clientServices';
+import facilitoPlaceToPayRouter from './routes/Facilito/facilitoPlaceToPay';
 
 
 
@@ -50,6 +54,11 @@ router.use('/imagen', imagenRouter)
 router.use('/occupancyRequest',createOccupancyRequestRouter)
 router.use('/rent',createRentRouter)
 router.use('/services', servicesRouter)
+router.use('/email', email)
+router.use('/services/typefacilito', TypeServicesFacilitoRouter)
+router.use('/services/facilito', PreServicesRouter)
+router.use('/services/clientServices',createClientServiceRouter)
+router.use('/facilito',facilitoPlaceToPayRouter)
 
 
 export default router;

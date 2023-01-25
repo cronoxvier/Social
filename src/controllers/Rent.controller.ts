@@ -127,6 +127,7 @@ const createRent = async (req: Request, res: Response) => {
 const getRentByUser = async (req: Request, res: Response) => {
     const { user_id } = req.body
     try {
+       
         const pharmacyproduct = await Rent.findAll({
             subQuery: false,
             include: [{

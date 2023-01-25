@@ -81,6 +81,13 @@ const Users = db.define<UserAttr>('Users', {
 		defaultValue: false,
 		allowNull:false
 	},
+	access_code: {
+
+		type: DataTypes.STRING,
+		allowNull: true
+		
+
+	}
 }, { createdAt: 'created_at', updatedAt: 'updated_at',tableName: 'Users' })
 
 Users.hasMany(CartDetail, { foreignKey: 'user_id', as: 'cart' })

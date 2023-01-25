@@ -127,4 +127,46 @@ const deleteImg = async (req, res) => {
 }
 
 
-export { createImg, saveImg, getAllimgByProduct, deleteImg }
+const saveImgFacilito = async (req, res) => {
+
+    try {
+    
+
+        uploadImg(req, res, async (err) => {
+            if (err) {
+                console.log(err)
+                return res.status(400).send({
+                    ok: false,
+                    err
+                })
+            } else {
+                console.log(req.file)
+                if (req.file === undefined) {
+                    return res.status(400).send({
+                        ok: false,
+                        mensaje: 'Error: No image selected'
+                    })
+                }
+            }
+            const img = req.file as any;
+            const imagen = await Imagen.create({ url: img.location})
+
+            return res.status(200).send({
+                imagen,
+                ok: true
+            })
+
+        })
+
+    } catch (error) {
+        res.status(500).send({
+            error,
+            ok: false
+        })
+
+
+    }
+
+}
+
+export { createImg, saveImg, getAllimgByProduct, deleteImg, saveImgFacilito }
