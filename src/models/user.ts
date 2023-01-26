@@ -7,6 +7,9 @@ import { Role } from './role';
 import { Pharmacy } from './Pharmacy';
 import { ClientDirection } from './client-direction';
 
+import { AppRelatedFacilito } from './AppRelatedFacilito';
+import { CheckInLog } from './CheckInLog';
+
 const Users = db.define<UserAttr>('Users', {
 	id: {
 		type: DataTypes.INTEGER,
@@ -84,7 +87,20 @@ const Users = db.define<UserAttr>('Users', {
 	access_code: {
 		type: DataTypes.STRING,
 		allowNull: true
-	}
+	},
+	app_related_code:{
+		type: DataTypes.STRING,
+		allowNull: true
+	},
+	status: {
+		type: DataTypes.STRING,
+		allowNull: true
+	},
+	ext: {
+		type: DataTypes.STRING,
+		allowNull: true
+	},
+	
 }, { createdAt: 'created_at', updatedAt: 'updated_at',tableName: 'Users' })
 
 Users.hasMany(CartDetail, { foreignKey: 'user_id', as: 'cart' })
@@ -92,7 +108,15 @@ Users.belongsTo(Role, { foreignKey: 'role_id', as: 'role' })
 Users.belongsTo(Pharmacy,{foreignKey:'pharmacy_id', as: 'pharmacy'});
 Users.belongsTo(ClientDirection, { foreignKey: 'client_direction_id', as: 'ClientDirection' })
 
-// Users.sync()
 
-const User=Users;
+Users.belongsTo(AppRelatedFacilito, { foreignKey: 'app_related_code', as: 'AppRelatedFacilito' })
+
+// CheckInLog.belongsTo(Users,{foreignKey: 'user_id' , as: 'Users'})
+// Users.hasMany(CheckInLog,{foreignKey: 'id' , as: 'CheckInLog'})
+
+// Users.sync({ alter: { drop: false }}).catch(
+//      (error) => console.log("Sync errror",error)
+//   );
+
+const User = Users;
 export { User }
