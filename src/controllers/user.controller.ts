@@ -12,6 +12,7 @@ import { User } from '../models/user';
 import { Driver } from '../models/driver';
 import { DriverDocuments } from '../models/driver_documents';
 import { Pharmacy } from "../models/Pharmacy";
+import { AppRelatedFacilito } from "../models/AppRelatedFacilito";
 import { col } from 'sequelize';
 
 
@@ -133,6 +134,7 @@ const getUserById = async (req: Request, res: Response) => {
     try {
         const { user_id } = req.body;
 
+
         if (!user_id) {
             return res.status(204).json({
                 mensaje: "Id invalido",
@@ -144,7 +146,11 @@ const getUserById = async (req: Request, res: Response) => {
             attributes: [
                 'id', 'first_name', 'last_name',
                 'role_id', 'email', 'img', 'card_id', 'client_direction_id',
-                'stripe_customer_id', 'phone'
+                'stripe_customer_id', 'phone',
+                'access_code',
+                'app_related_code',
+                'status',
+                'ext'
             ]
         });
 
@@ -210,6 +216,71 @@ const updateClient = (req: Request, res: Response) => {
     }
 
 }
+
+const createClientCode = async (req: Request, res: Response) => {
+    try {
+        const password = req.body.password;
+        const passwordHash = await bcrypt.hash(password, 8);
+
+        let codeRandom = Math.round(Math.random()*999999);
+        
+
+
+
+        const { ...data } = req.body;
+        const code = data.code+codeRandom;
+
+        const appRelated =  await AppRelatedFacilito.findOne({where: { code: data.app_related_code}});
+
+        const client = { ...data,  password: passwordHash,
+        access_code: code,
+        app_related_code: appRelated.code, 
+          role_id: 1 }
+
+
+
+    
+        
+
+
+        const user = await User.findOne({where: { email: data.email }})
+
+
+        if (user) {
+            return res.status(400).send({
+                ok: false,
+                message: 'That email is taken. Try another',
+                mensaje: 'Ese email está tomado. Prueba otro',
+
+            })
+        }
+        const createUser = await User.create(client)
+        if (!createUser) {
+            return res.status(204).send()
+        }
+        res.status(200).send({
+            ok: true,
+            mensaje: 'El usuario ha sido creado',
+            message: 'The user has been created',
+            createUser
+        })
+    } catch (error) {
+        console.log("error creating user", error)
+        res.status(500).json({
+            ok: false,
+            mensaje: "Ha ocurrido un error",
+            messaje: "It has ocurred an error",
+            error
+        })
+
+
+    }
+
+}
+
+
+
+
 
 
 // driver
@@ -1307,5 +1378,7 @@ export {
     forgetPasswordUser, updateClientImage,
     resetPasswordUser, deleteDriverByPharmacy, updatedDriverActive,
     deleteUser, getDriverByAdmin,
-    getAllDriverUser, disableEnambleUserServices
+    getAllDriverUser, disableEnambleUserServices,
+    createClientCode,
+    // createClientCodeExcel
 }
