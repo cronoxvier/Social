@@ -319,7 +319,7 @@ const editTypeServices = async (req, res) => {
 
 const getservices = async (req, res) => {
     try {
-        // const { id } = req.params;
+        const { id } = req.params;
         const service = await services.findAll({
             include: [
                 {
@@ -349,7 +349,8 @@ const getservices = async (req, res) => {
                 [col("ServicesStatus.name"), "services-status-name"],
                 [col("ServicesStatus.nombre"), "services-status-nombre"],
                 [col("ServicesStatus.code"), "code"],
-            ]
+            ], where: { pharmacy_id:id }
+            
         })
         return res.status(200).send({
             ok: true,
