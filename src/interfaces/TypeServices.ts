@@ -10,5 +10,7 @@ export interface TypeServicesAttr extends Model {
     deleted: boolean,
     fixedPriceStatus: boolean,
     amountOfPayments:number
-    fixedPrice:number
+    fixedPrice:number,
+    description: string,
+    descripcion: string,
 }

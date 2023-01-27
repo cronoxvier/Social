@@ -25,6 +25,16 @@ const TypeServices = db.define<TypeServicesAttr>('TypeServices',{
 		allowNull: true,
         defaultValue: ""
 	},
+	description:{
+		type:DataTypes.STRING,
+		allowNull: true,
+        defaultValue: ""
+	},
+	descripcion:{
+		type:DataTypes.STRING,
+		allowNull: true,
+        defaultValue: ""
+	},
     status: {
 		type: DataTypes.BOOLEAN,
 		allowNull: false,
@@ -66,6 +76,6 @@ TypeServices.belongsTo(Pharmacy,{foreignKey: 'pharmacy_id' , as: 'Pharmacy'})
 // 	() => console.log("Sync complete type services")
 // );
 
-TypeServices.sync()
+// TypeServices.sync()
 
 export { TypeServices }
