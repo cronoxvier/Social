@@ -1,9 +1,10 @@
 import { Model } from 'sequelize'
 
 
-export interface WorkOrderAttr extends Model {
+export interface HistoryWorkOrderAttr extends Model {
   
 	id: number;
+    workOrder_id: number;
 	email: string;
 	full_name: string;
 	date: string;
@@ -21,8 +22,7 @@ export interface WorkOrderAttr extends Model {
 	type_client: string;
 	type_business: string;
 	pay: string;
-	created_date: string;
-
+	finished_date: string;
 
 
 

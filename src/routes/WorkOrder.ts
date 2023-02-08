@@ -10,10 +10,13 @@ WorkOrderRouter.get('/getWorkOrder', WorkOrderCtrl.getWorkOrder);
 
 WorkOrderRouter.post('/updateWorkOrder', WorkOrderCtrl.updateWorkOrder);
 
-WorkOrderRouter.post('/deleteWorkOrder', WorkOrderCtrl.deleteWorkOrder);
+// WorkOrderRouter.post('/creataHistoryWorkOrder', WorkOrderCtrl.creataHistoryWorkOrder);
 
+WorkOrderRouter.post('/deleteWorkOrder/:id', WorkOrderCtrl.deleteWorkOrder);
 
-WorkOrderRouter.get('/getWorkOrderCompleted', WorkOrderCtrl.getWorkOrderCompleted);
+WorkOrderRouter.post('/getWorkOrderById', WorkOrderCtrl.getWorkOrderById);
+
+// WorkOrderRouter.get('/getWorkOrderCompleted', WorkOrderCtrl.getWorkOrderCompleted);
 
 WorkOrderRouter.post('/assignedWorkOrder', WorkOrderCtrl.assignedWorkOrder);
 
@@ -23,9 +26,12 @@ WorkOrderRouter.post('/changeStatusWorkOrder', WorkOrderCtrl.changeStatusWorkOrd
 
 WorkOrderRouter.post('/getWorkOrderByNumberOrder', WorkOrderCtrl.getWorkOrderByNumberOrder);
 
+WorkOrderRouter.post('/reactOrderByUser', WorkOrderCtrl.reactOrderByUser);
+
+WorkOrderRouter.post('/changeStatusWorkOrderByUser', WorkOrderCtrl.changeStatusWorkOrderByUser);
 
 
-
+WorkOrderRouter.get('/getCompleted', WorkOrderCtrl.getCompleted);
 
 
 export default WorkOrderRouter;

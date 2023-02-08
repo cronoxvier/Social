@@ -31,6 +31,8 @@ import facilitoPlaceToPayRouter from './routes/Facilito/facilitoPlaceToPay';
 import CheckInLogRouter from './routes/CheckInLog';
 import AppRelatedFacilitosRouter from './routes/AppRelatedFacilito';
 import WorkOrderRouter from './routes/WorkOrder';
+import TechnicalRouter from './routes/TechnicalZipCode';
+import PunchRouter from './routes/Punch';
 
 
 
@@ -69,7 +71,9 @@ router.use('/facilito',facilitoPlaceToPayRouter)
 router.use('/punch',CheckInLogRouter)
 router.use('/app',AppRelatedFacilitosRouter)
 router.use('/order',WorkOrderRouter)
+router.use('/technical',TechnicalRouter)
 
+router.use('/punch', PunchRouter)
 
 
 export default router;

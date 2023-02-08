@@ -1,11 +1,11 @@
 import { DataTypes } from 'sequelize';
 
 import db from '../config/connectionSequelize';
-import { WorkOrderAttr } from '../interfaces/WorkOrder';
+import { HistoryWorkOrderAttr } from '../interfaces/HistoryWorkOrder';
 import { User } from './user';
+import { WorkOrder } from './WorkOrder';
 
-
-const WorkOrder = db.define<WorkOrderAttr>('WorkOrder', {
+const HistoryWorkOrder = db.define<HistoryWorkOrderAttr>('HistoryWorkOrder', {
 	id: {
 		type: DataTypes.INTEGER,
 		primaryKey: true,
@@ -16,7 +16,7 @@ const WorkOrder = db.define<WorkOrderAttr>('WorkOrder', {
 	},
 	full_name: {
 		type: DataTypes.STRING(80),
-		allowNull: false
+		defaultValue: ''
 	},
 	date: DataTypes.STRING(80),
 	phone: DataTypes.STRING(45),
@@ -41,7 +41,7 @@ const WorkOrder = db.define<WorkOrderAttr>('WorkOrder', {
 	},
 	status: {
         type: DataTypes.STRING,
-		defaultValue: 'Not assigned'
+		
 	},
     user_id: {
 		type: DataTypes.INTEGER,
@@ -64,21 +64,28 @@ const WorkOrder = db.define<WorkOrderAttr>('WorkOrder', {
 	pay: {
 		type: DataTypes.STRING,
 	},
-	created_date:{
+	finished_date: {
 		type: DataTypes.STRING,
-	}
+	},
+    workOrder_id:{
+
+        type: DataTypes.INTEGER,
+        allowNull:false,
+
+    }
 	
 	
 	
-	
-}, { createdAt: 'created_at', updatedAt: 'updated_at',tableName: 'WorkOrder' })
+}, { createdAt: 'created_at', updatedAt: 'updated_at',tableName: 'HistoryWorkOrder' })
 
 
 
-WorkOrder.belongsTo(User, { foreignKey: 'user_id', as: 'Users' })
+HistoryWorkOrder.belongsTo(User, { foreignKey: 'user_id', as: 'Users' })
+// HistoryWorkOrder.belongsTo(WorkOrder, { foreignKey: 'workOrder_id', as: 'WorkOrder' })
+
+// HistoryWorkOrder.sync({ alter: { drop: true }}).catch(
+//      (error) => console.log("Sync errror",error)
+//   );
 
 
-
-
-
-export{WorkOrder}
+export{HistoryWorkOrder}

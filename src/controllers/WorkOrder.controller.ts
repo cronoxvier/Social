@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { col, Op, where} from 'sequelize'
 import { WorkOrder } from "../models/WorkOrder";
-
+import { HistoryWorkOrder } from "../models/HistoryWorkOrder";
+import moment from "moment";
 
 
 
@@ -65,15 +66,38 @@ const getWorkOrder = async (req: Request, res: Response) => {
 const updateWorkOrder = async (req: Request, res: Response) => {
   try {
     const { ...data } = req.body;
-  
 
-    const resUpdateWorkOrder = await WorkOrder.update({ ...data, }, {
+    const resUpdateWorkOrder = await WorkOrder.update({ ...data }, {
       where: {
           id: data.id
       }
-    });
+    }
+    
+    )
+  
+      const Historydata = {
+        id: '',
+        full_name: data.full_name,
+        date: data.date,
+        phone: data.phone,
+        request_details: data.request_details,
+        location: data.location,
+        zip_code: data.zip_code,
+        category: data.category,
+        priority: data.priority,
+        status: data.status,
+          user_id: data.user_id,
+        number_order: data.number_order,
+        hour: data.hour,
+        message: data.message,
+        type_client: data.type_client,
+        type_business: data.type_business,
+        pay: data.pay,
+        finished_date: data.finished_date,
+          workOrder_id: data.id
+      }
 
-
+    const resHistorialWorkOrder = await HistoryWorkOrder.create(Historydata)
 
     res.status(200).send({
       ok: true,
@@ -89,7 +113,7 @@ const updateWorkOrder = async (req: Request, res: Response) => {
 
 const deleteWorkOrder = async (req: Request, res: Response) => {
   try {
-    const { ...data } = req.body;
+    const { ...data } = req.params;
 
     const resDeleteWorkOrder = await WorkOrder.destroy({
       where: {
@@ -112,63 +136,25 @@ const deleteWorkOrder = async (req: Request, res: Response) => {
 };
 
 
+//   try {
+//     const { ...data } = req.body;
+
+//     const resHistorialWorkOrder = await HistoryWorkOrder.create({ ...data });
 
 
 
+//     res.status(200).send({
+//       ok: true,
+//       resHistorialWorkOrder,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send({
+//       ok: false,
+//     });
+//   }
+// };
 
-
-const getWorkOrderCompleted = async (req: Request, res: Response) => {
-  try {
-
-    const resWorkOrderStatusPending = await WorkOrder.findAll({
-      where: {
-        status: "Pending"
-      }
-    });
-
-    const resWorkOrderStatusNotAssi = await WorkOrder.findAll({
-      where: {
-        status: "Not assigned"
-      }
-    });
-
-    const resWorkOrderStatusProcessing = await WorkOrder.findAll({
-      where: {
-        status: "Processing"
-      }
-    });
-
-
-    const resWorkOrderCompleted = await WorkOrder.findAll({
-      where: {
-        status: "Completed"
-      }
-    });
-
-    let addNotCompleted = resWorkOrderStatusPending.length+resWorkOrderStatusNotAssi.length+resWorkOrderStatusProcessing.length;
-
-    let completed = resWorkOrderCompleted.length;
-
-    // let percentage = addNotCompleted/100;
-    // let dc = resWorkOrderCompleted.length * 10
-    // console.log(percentage)
-
-        //     order: [
-    //     ['created_at', 'DESC'],
-    // ]
-      
-     
-    res.status(200).send({
-      ok: true,
-      completed,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({
-      ok: false,
-    });
-  }
-};
 
 
 const assignedWorkOrder = async (req: Request, res: Response) => {
@@ -177,14 +163,31 @@ const assignedWorkOrder = async (req: Request, res: Response) => {
     const { ...data } = req.body;
 
 
-    // const  id  = 3;
-    // const  userId  = 71;
-    // const status = "Pending"
-   
-    console.log(data)
-    
-    const assignedWorkOrderByUser = await WorkOrder.update({ user_id: data.userId, status: data.status }, { where: { id: data.id }})
+    const assignedWorkOrderByUser = await WorkOrder.update({ user_id: data.userId, status: data.status}, { where: { id: data.id }})
 
+    const Historydata = {
+      id: '',
+      full_name: data.full_name,
+      date: data.date,
+      phone: data.phone,
+      request_details: data.request_details,
+      location: data.location,
+      zip_code: data.zip_code,
+      category: data.category,
+      priority: data.priority,
+      status: data.status,
+      user_id: data.userId,
+      number_order: data.number_order,
+      hour: data.hour,
+      message: data.message,
+      type_client: data.type_client,
+      type_business: data.type_business,
+      pay: data.pay,
+      finished_date: data.finished_date,
+        workOrder_id: data.id
+    }
+
+  const resHistorialWorkOrder = await HistoryWorkOrder.create(Historydata)
 
     res.status(200).send({
       ok: true,
@@ -204,23 +207,12 @@ const getWorkOrderByUser = async (req: Request, res: Response) => {
 
     const  {...data}  = req.body;
 
-   
-    // const  userId  = 71;
-
-  
-    const WorkOrderByUser = await WorkOrder.findAll({    
+    const WorkOrderByUser = await WorkOrder.findAll({
+      order: [['hour', 'ASC']],    
     where: { user_id: data.userId, [Op.or]: [{status: "Pending"}, {status: "Processing"}]  }});
+
+
    
-    
-    // const WorkOrderByUserProcessing = await WorkOrder.findAll({
-      
-      
-    //   where: { user_id: data.userId, status: 'Processing'  }});
-
-
-
-// console.log("fff", WorkOrderByUserPending)
-
 
 
 
@@ -247,16 +239,63 @@ const changeStatusWorkOrder = async (req: Request, res: Response) => {
     const workOrder = await WorkOrder.findOne({
       where: { id: data.id, user_id: data.userId }})
 
-
     if(workOrder.status === 'Pending'){
 
       WorkOrderByUser = await WorkOrder.update({status: 'Processing', message: data.message},{ where: {id: data.id, user_id: data.userId   }})
 
+      const Historydata = {
+        id: '',
+        full_name: data.full_name,
+        date: data.date,
+        phone: data.phone,
+        request_details: data.request_details,
+        location: data.location,
+        zip_code: data.zip_code,
+        category: data.category,
+        priority: data.priority,
+        status: 'Processing',
+        user_id: data.userId,
+        number_order: data.number_order,
+        hour: data.hour,
+        message: data.message,
+        type_client: data.type_client,
+        type_business: data.type_business,
+        pay: data.pay,
+        workOrder_id: data.id
+      }
+  
+    const resHistorialWorkOrder = await HistoryWorkOrder.create(Historydata)
+  
     }
 
     if(workOrder.status === 'Processing'){
 
-      WorkOrderByUser = await WorkOrder.update({status: 'Completed', message: data.message},{ where: {id: data.id, user_id: data.userId   }})
+      WorkOrderByUser = await WorkOrder.update({status: 'Completed', message: data.message, finished_date: data.finished_date},{ where: {id: data.id, user_id: data.userId   }})
+
+      const Historydata = {
+        id: '',
+        full_name: data.full_name,
+        date: data.date,
+        phone: data.phone,
+        request_details: data.request_details,
+        location: data.location,
+        zip_code: data.zip_code,
+        category: data.category,
+        priority: data.priority,
+        status: 'Completed',
+        user_id: data.userId,
+        number_order: data.number_order,
+        hour: data.hour,
+        message: data.message,
+        type_client: data.type_client,
+        type_business: data.type_business,
+        pay: data.pay,
+        finished_date: data.finished_date,
+          workOrder_id: data.id
+      }
+    
+    const resHistorialWorkOrder = await HistoryWorkOrder.create(Historydata)
+
 
     }
 
@@ -280,17 +319,93 @@ const changeStatusWorkOrder = async (req: Request, res: Response) => {
 };
 
 
+const changeStatusWorkOrderByUser = async (req: Request, res: Response) => {
+  try {
+    const  {...data}  = req.body;
+  
+    let WorkOrderByUser: any;
+
+    const workOrder = await WorkOrder.findOne({
+      where: { id: data.id, user_id: data.userId }})
+
+
+    if(workOrder.status === 'Pending'){
+
+      WorkOrderByUser = await WorkOrder.update({status: 'Processing', message: data.message},{ where: {id: data.id, user_id: data.userId   }})
+
+      const Historydata = {
+        id: '',
+        full_name: data.full_name,
+        date: data.date,
+        phone: data.phone,
+        request_details: data.request_details,
+        location: data.location,
+        zip_code: data.zip_code,
+        category: data.category,
+        priority: data.priority,
+        status: data.status,
+          user_id: data.userId,
+        number_order: data.number_order,
+        hour: data.hour,
+        message: data.message,
+        type_client: data.type_client,
+        type_business: data.type_business,
+        pay: data.pay,
+        finished_date: data.finished_date,
+          workOrder_id: data.id
+      }
+  
+    const resHistorialWorkOrder = await HistoryWorkOrder.create(Historydata)
+
+    }
+
+    if(workOrder.status === 'Processing'){
+
+      WorkOrderByUser = await WorkOrder.update({status: 'Completed', message: data.message},{ where: {id: data.id, user_id: data.userId   }})
+
+      const Historydata = {
+        id: '',
+        full_name: data.full_name,
+        date: data.date,
+        phone: data.phone,
+        request_details: data.request_details,
+        location: data.location,
+        zip_code: data.zip_code,
+        category: data.category,
+        priority: data.priority,
+        status: data.status,
+          user_id: data.userId,
+        number_order: data.number_order,
+        hour: data.hour,
+        message: data.message,
+        type_client: data.type_client,
+        type_business: data.type_business,
+        pay: data.pay,
+        finished_date: data.finished_date,
+          workOrder_id: data.id
+      }
+   
+  
+    const resHistorialWorkOrder = await HistoryWorkOrder.create(Historydata)
+
+    }
+
+    res.status(200).send({
+      ok: true,
+      WorkOrderByUser
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      ok: false,
+    });
+  }
+};
+
 const getWorkOrderByNumberOrder = async (req: Request, res: Response) => {
   try {
-
-
     const  {...data}  = req.body;
-
-     
-    
     const WorkOrderByNumber = await WorkOrder.findOne({ where: { number_order: data.number_order}})
-
-
 
     res.status(200).send({
       ok: true,
@@ -304,4 +419,83 @@ const getWorkOrderByNumberOrder = async (req: Request, res: Response) => {
   }
 };
 
-export { createWorkOrder, getWorkOrder, getWorkOrderCompleted, assignedWorkOrder, getWorkOrderByUser, changeStatusWorkOrder, deleteWorkOrder, updateWorkOrder, getWorkOrderByNumberOrder};
+const getWorkOrderById = async (req: Request, res: Response) => {
+  try {
+
+
+    const  {...data}  = req.body;
+  
+    const WorkOrderById = await WorkOrder.findOne({    
+    where: { id: data.id  }});
+
+    res.status(200).send({
+      ok: true,
+      WorkOrderById,
+      
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      ok: false,
+    });
+  }
+};
+
+const reactOrderByUser = async (req: Request, res: Response) => {
+  try {
+    const  {...data}  = req.body;
+  
+    const workOrders = await WorkOrder.update({
+      status: 'Not assigned', user_id: null
+    },
+      { where: {user_id: data.userId, [Op.or]: [{status: "Pending"}, {status: "Processing"}]}})
+
+    res.status(200).send({
+      ok: true,
+      workOrders
+      
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      ok: false,
+    });
+  }
+};
+
+const getCompleted = async (req: Request, res: Response) => {
+  try {
+    
+    const dateToday = moment().format("YYYY-MM-DD");
+
+    const workOrdersToday = await WorkOrder.findAll(
+      { where:{ date: dateToday} })
+  
+    const workOrdersCompleted = await WorkOrder.findAll(
+      { where:{ date: dateToday, status: 'Completed'} })
+
+      let division = Number(workOrdersCompleted.length)/Number(workOrdersToday.length);
+
+      let porcentage = division*100;
+
+      const finalPorcentage = Math.round(porcentage); 
+    
+      res.status(200).send({
+      ok: true,
+      finalPorcentage
+      
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      ok: false,
+    });
+  }
+};
+
+
+
+
+
+
+export { createWorkOrder, getWorkOrder, assignedWorkOrder, getWorkOrderByUser, changeStatusWorkOrder, deleteWorkOrder, updateWorkOrder, getWorkOrderByNumberOrder, getWorkOrderById, reactOrderByUser, changeStatusWorkOrderByUser, getCompleted};

@@ -7,7 +7,6 @@ CheckInLogRouter.post('/createCheckInLog', CheckInLogCtrl.createCheckInLog);
 
 CheckInLogRouter.get('/getCheckInLog', CheckInLogCtrl.getCheckInLog);
 
-
 CheckInLogRouter.post('/getCheckInLogByUser', CheckInLogCtrl.getCheckInLogByUser);
 
 

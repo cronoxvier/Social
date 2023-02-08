@@ -18,7 +18,7 @@ import { col } from 'sequelize';
 
 const getUsers = async (req: Request, res: Response) => {
     try {
-        console.log("test")
+        
         const user = await User.findAll()
         if (!user.length) {
             return res.status(204).json({
@@ -976,7 +976,8 @@ const updateUser = (req: Request, res: Response) => {
         phone,
         rol_id,
         pharmacy_id,
-        active
+        active, 
+        ext
     } = req.body
     User.update({
         email,
@@ -986,16 +987,19 @@ const updateUser = (req: Request, res: Response) => {
         phone,
         rol_id,
         pharmacy_id,
-        active
+        active,
+        ext
     }, {
         where: { id: id_user }
     })
         .then((result) => res.status(200).send({
+            ok: true,
             message: 'User updated',
             result
         }))
         .catch(error => {
             res.status(400).json({
+                ok: false,
                 mensaje: "Ha ocurrido un error",
                 messaje: "It has ocurred an error",
                 error
