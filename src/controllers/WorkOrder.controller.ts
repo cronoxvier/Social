@@ -474,10 +474,10 @@ const getCompleted = async (req: Request, res: Response) => {
     const dateToday = moment().format("YYYY-MM-DD");
 
     const workOrdersToday = await WorkOrder.findAll(
-      { where:{ date: dateToday} })
+      { where:{ date: dateToday, app_related_code: 'TGS_TRUE_GUARD_SECURITY'} })
   
     const workOrdersCompleted = await WorkOrder.findAll(
-      { where:{ date: dateToday, status: 'Completed'} })
+      { where:{ date: dateToday, app_related_code: 'TGS_TRUE_GUARD_SECURITY', status: 'Completed'} })
 
       let division = Number(workOrdersCompleted.length)/Number(workOrdersToday.length);
 
