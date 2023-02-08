@@ -270,18 +270,12 @@ const loginToken = async (req: Request, res: Response) => {
 const loginCode = async (req: Request, res: Response) => {
     try {
         const { code } = req.body;
-        console.log(code, "hh")
+
         const user = await User.findOne({
             where: { access_code: code },
            
         })
-
-        console.log('nn')
-
-    
-
-        
-
+ 
        
         const token = await generarJWT(user)
         res.status(200).send({

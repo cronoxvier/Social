@@ -891,7 +891,6 @@ const updatedDriverActive = async (req: Request, res: Response) => {
     let farmacysInFirebase: any[] = [];
     try {
         const { id, active } = req.body
-        console.log(id, active)
         const driver = await Driver.update({ active }, { where: { id } })
         const { pharmacy_id } = await Driver.findOne({ where: { id } })
 
@@ -1153,7 +1152,7 @@ const updateClientDirection = async (req: Request, res: Response) => {
             longitude,
             notes
         } = req.body
-        //console.log(latitude,longitude)
+    
         const direction = await ClientDirection.update({
             phone,
             alias,

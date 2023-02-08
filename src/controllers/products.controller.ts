@@ -44,7 +44,6 @@ const getProductsByPharmacy = async (req: Request, res: Response) => {
     try {
         let pharmacyproduct;
         const { pharmacy_id, category_id, limit, initial } = req.body;
-        console.log(limit, initial, category_id, pharmacy_id, "aja")
         if (!pharmacy_id) {
             return res.status(204).json({
                 mensaje: "Id invalido",
