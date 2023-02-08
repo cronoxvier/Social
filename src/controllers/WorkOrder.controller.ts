@@ -9,7 +9,7 @@ import moment from "moment";
 const createWorkOrder = async (req: Request, res: Response) => {
   try {
     const { ...data } = req.body;
-    // const params = { ...data };
+ 
 
     const workOrder = await WorkOrder.findOne({
       where: { number_order: data.number_order }})
@@ -44,9 +44,14 @@ const createWorkOrder = async (req: Request, res: Response) => {
 const getWorkOrder = async (req: Request, res: Response) => {
   try {
     const resGetWorkOrder = await WorkOrder.findAll({
+      where:{
+        app_related_code: 'TGS_TRUE_GUARD_SECURITY'
+      },
         order: [
         ['created_at', 'DESC'],
     ]});
+
+    // const resGetWorkOrder = await WorkOrder.findAll()
 
     
       

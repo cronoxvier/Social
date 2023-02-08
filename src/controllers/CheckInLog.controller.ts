@@ -34,7 +34,7 @@ const getCheckInLog = async (req: Request, res: Response) => {
   try {
     const getAppRelatedFacilito = await AppRelatedFacilito.findOne({
       where: {
-        code: "PLANET_COMMUNICATION",
+        code: "TGS_TRUE_GUARD_SECURITY",
       },
     });
 

@@ -22,6 +22,8 @@ export interface WorkOrderAttr extends Model {
 	type_business: string;
 	pay: string;
 	created_date: string;
+	app_related_code: string;
+	
 
 
 
