@@ -31,9 +31,7 @@ import facilitoPlaceToPayRouter from './routes/Facilito/facilitoPlaceToPay';
 import CheckInLogRouter from './routes/CheckInLog';
 import AppRelatedFacilitosRouter from './routes/AppRelatedFacilito';
 import WorkOrderRouter from './routes/WorkOrder';
-
-
-
+import mailRouter from './routes/mailbox';
 
 
 
@@ -69,6 +67,7 @@ router.use('/facilito',facilitoPlaceToPayRouter)
 router.use('/punch',CheckInLogRouter)
 router.use('/app',AppRelatedFacilitosRouter)
 router.use('/order',WorkOrderRouter)
+router.use('/mails',mailRouter)
 
 
 
