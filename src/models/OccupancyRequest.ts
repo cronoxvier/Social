@@ -60,11 +60,11 @@ const OccupancyRequests = db.define<OccupancyRequestsAttr>('OccupancyRequests', 
 		defaultValue: null,
 		allowNull: true,
 	},
-	Address: {
-		type: DataTypes.STRING(100),
-		defaultValue: null,
-		allowNull: true,
-	},
+	// Address: {
+	// 	type: DataTypes.STRING(100),
+	// 	defaultValue: null,
+	// 	allowNull: true,
+	// },
 	City: {
 		type: DataTypes.STRING(100),
 		defaultValue: null,
@@ -236,8 +236,8 @@ const OccupancyRequests = db.define<OccupancyRequestsAttr>('OccupancyRequests', 
 OccupancyRequests.belongsTo(OrderState, { foreignKey: 'order_state_id', as: 'OrdersState' })
 OccupancyRequests.belongsTo(PharmacyProduct,{foreignKey:'product_pharmacy_id', as:'PharmacyProduct'})
 PharmacyProduct.hasOne(OccupancyRequests, { foreignKey: 'product_pharmacy_id', as: 'OccupancyRequests' })
-//  OccupancyRequests.sync({ alter: { drop: true },force:true}).catch(
-//      (error) => console.log("Sync errror",error)
-//   );
+ OccupancyRequests.sync({ alter: { drop: true }}).catch(
+     (error) => console.log("Sync errror",error)
+  );
 
 export { OccupancyRequests }
