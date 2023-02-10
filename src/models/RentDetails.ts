@@ -79,7 +79,7 @@ const RentDetails = db.define<RentDetailsAttr>('RentDetails', {
 RentDetails.belongsTo(Rent, { foreignKey: 'Rent_id', as: 'Rent' })
 Rent.hasMany(RentDetails,{foreignKey:'Rent_id', as:'RentDetail'})
 
-RentDetails.sync({ alter: { drop: true }}).catch(
-	(error) => console.log("Sync errror",error)
- );
+// RentDetails.sync({ alter: { drop: true }}).catch(
+// 	(error) => console.log("Sync errror",error)
+//  );
 export { RentDetails }
