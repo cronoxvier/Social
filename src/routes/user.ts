@@ -33,8 +33,8 @@ userRouter.post('/updateClientImage/:id',userCtrl.updateClientImage)
 userRouter.get('/deleteUser/:id',userCtrl.deleteUser)
 userRouter.get('/getAllDriverUser', userCtrl.getAllDriverUser);
 userRouter.post('/disableEnambleUserServices', userCtrl.disableEnambleUserServices);
-
-
+userRouter.post('/createClientCode',userCtrl.createClientCode);
+// userRouter.post('/createClientCodeExcel',userCtrl.createClientCodeExcel);
 
 
 

@@ -266,9 +266,53 @@ const loginToken = async (req: Request, res: Response) => {
     }
 }
 
+
+const loginCode = async (req: Request, res: Response) => {
+    try {
+        const { code } = req.body;
+        console.log(code, "hh")
+        const user = await User.findOne({
+            where: { access_code: code },
+           
+        })
+
+        console.log('nn')
+
+    
+
+        
+
+       
+        const token = await generarJWT(user)
+        res.status(200).send({
+            ok: true,
+            message: "Welcome",
+            mensaje: "Bienvenido",
+            id: user.id,
+            user: user.email,
+            firstname: user.first_name,
+            lastname: user.last_name,
+            phone: user.phone,
+            password: user.password,
+            role: user.role_id,
+            img: user.img,
+            token
+        })
+    } catch (error) {
+        res.status(500).send({
+            mensaje: 'Error desconocido',
+            message: 'Unknow error',
+            error
+        })
+
+        // throw error
+    }
+}
+
 export {
     login,
     loginPanel,
     loginDriver,
-    loginToken
+    loginToken,
+    loginCode
 }

@@ -3,8 +3,11 @@ import { Model } from 'sequelize'
 import { OrderAttr } from './order'
 import { CartAttr } from './cart-detail'
 import { RoleAttr } from './role'
+import { CheckInLog } from '../models/CheckInLog';
+import { CheckInLogAttr } from './CheckInLog';
 
 export interface UserAttr extends Model {
+  	
 	id: number;
 	email: string;
 	first_name: string;
@@ -33,4 +36,9 @@ export interface UserAttr extends Model {
 	vehicule_register: string;
 	access_code: string;
 	isDeleted: boolean;
+	app_related_code: string;
+	status: string;
+	ext: string;
+
+
 }

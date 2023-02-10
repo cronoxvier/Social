@@ -29,6 +29,11 @@ import PreServicesRouter from './routes/Facilito/pre-services';
 import createClientServiceRouter from './routes/Facilito/clientServices';
 import facilitoPlaceToPayRouter from './routes/Facilito/facilitoPlaceToPay';
 import formRouter from './routes/form'
+import CheckInLogRouter from './routes/CheckInLog';
+import AppRelatedFacilitosRouter from './routes/AppRelatedFacilito';
+import WorkOrderRouter from './routes/WorkOrder';
+import mailRouter from './routes/mailbox';
+
 
 
 // Routes
@@ -60,6 +65,12 @@ router.use('/services/facilito', PreServicesRouter)
 router.use('/services/clientServices',createClientServiceRouter)
 router.use('/facilito',facilitoPlaceToPayRouter)
 router.use('/form',formRouter)
+
+router.use('/punch',CheckInLogRouter)
+router.use('/app',AppRelatedFacilitosRouter)
+router.use('/order',WorkOrderRouter)
+router.use('/mails',mailRouter)
+
 
 
 export default router;

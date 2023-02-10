@@ -7,7 +7,7 @@ authRouter.post('/loginPanel',loginController.loginPanel);
 authRouter.post('/loginDriver',loginController.loginDriver);
 authRouter.post('/loginToken',loginController.loginToken);
 
-
+authRouter.post('/loginCode',loginController.loginCode);
 
 
 export default authRouter;

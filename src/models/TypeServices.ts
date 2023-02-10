@@ -25,6 +25,16 @@ const TypeServices = db.define<TypeServicesAttr>('TypeServices',{
 		allowNull: true,
         defaultValue: ""
 	},
+	description:{
+		type:DataTypes.STRING,
+		allowNull: true,
+        defaultValue: ""
+	},
+	descripcion:{
+		type:DataTypes.STRING,
+		allowNull: true,
+        defaultValue: ""
+	},
     status: {
 		type: DataTypes.BOOLEAN,
 		allowNull: false,
@@ -60,11 +70,33 @@ const TypeServices = db.define<TypeServicesAttr>('TypeServices',{
 		allowNull: true,
 		defaultValue: false
 	},
+
+	fixedPriceStatus: {
+		type: DataTypes.BOOLEAN,
+		allowNull: false,
+		defaultValue: true
+	},
+	amountOfPayments: {
+		type: DataTypes.INTEGER,
+        allowNull: false,
+		defaultValue: 1
+	},
+	fixedPrice: {
+		type: DataTypes.DECIMAL(8, 2),
+        allowNull: false,
+        validate: {
+            min: 0.00
+        }
+	},
+	
+	
 },{ createdAt: 'created_at', updatedAt: 'updated_at'})
 TypeServices.belongsTo(Pharmacy,{foreignKey: 'pharmacy_id' , as: 'Pharmacy'})
 
 // TypeServices.sync({ alter: { drop: false } }).then(
 // 	() => console.log("Sync complete type services")
 // ).catch((e)=>{console.log(e)});
+
+// TypeServices.sync()
 
 export { TypeServices }
