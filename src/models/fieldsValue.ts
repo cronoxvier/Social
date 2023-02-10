@@ -36,7 +36,7 @@ const fieldsValue = db.define<fieldsValueAttr>('fieldsValue',{
 fieldsValue.belongsTo(fields, { foreignKey: 'fieldId', as: 'field' })
 fields.hasMany(fieldsValue, { foreignKey: 'id', as: 'fieldsValue' })
 fieldsValue.belongsTo(services, { foreignKey: 'serviceId', as: 'services' })
-fieldsValue.sync({ alter: { drop: true } }).then(
-	() => console.log("Sync complete type services")
-).catch((e)=>{console.log(e)});
+// fieldsValue.sync({ alter: { drop: true } }).then(
+// 	() => console.log("Sync complete type services")
+// ).catch((e)=>{console.log(e)});
 export { fieldsValue }
