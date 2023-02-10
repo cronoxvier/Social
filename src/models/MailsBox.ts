@@ -89,9 +89,9 @@ MailBox.belongsTo(Pharmacy,{foreignKey: 'pharmacy_id' , as: 'Pharmacy'})
 MailBox.belongsTo(ServicesStatus,{foreignKey: 'servicesStatus_id' , as: 'ServicesStatus'})
 
 
-MailBox.sync({ alter: { drop: true } }).then(
-	() => console.log("Sync complete type services")
-);
+// MailBox.sync({ alter: { drop: true } }).then(
+// 	() => console.log("Sync complete type services")
+// );
 
 
 
