@@ -47,7 +47,7 @@ const Rent = db.define<RentAttr>('Rent', {
 Rent.belongsTo(OccupancyRequests, { foreignKey: 'occupancy_request_id', as: 'OccupancyRequests' })
 OccupancyRequests.hasOne(Rent,{foreignKey:'occupancy_request_id', as:'Rent'})
 
-Rent.sync({ alter: { drop: false }}).catch(
-	(error) => console.log("Sync errror",error)
- );
+// Rent.sync({ alter: { drop: false }}).catch(
+// 	(error) => console.log("Sync errror",error)
+//  );
 export { Rent }

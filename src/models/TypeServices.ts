@@ -39,13 +39,32 @@ const TypeServices = db.define<TypeServicesAttr>('TypeServices',{
 		type: DataTypes.INTEGER,
 		allowNull: false
 	},
-	
-	
+	code:{
+        type: DataTypes.STRING,
+        allowNull:true,
+        defaultValue:DataTypes.UUIDV4,
+        unique:true
+    },
+	isManageByPanel: {
+		type: DataTypes.BOOLEAN,
+		allowNull: true,
+		defaultValue: false
+	},
+	isManageByServiceApp: {
+		type: DataTypes.BOOLEAN,
+		allowNull: true,
+		defaultValue: true
+	},
+	isMain: {
+		type: DataTypes.BOOLEAN,
+		allowNull: true,
+		defaultValue: false
+	},
 },{ createdAt: 'created_at', updatedAt: 'updated_at'})
 TypeServices.belongsTo(Pharmacy,{foreignKey: 'pharmacy_id' , as: 'Pharmacy'})
 
-// TypeServices.sync({ alter: { drop: true } }).then(
+// TypeServices.sync({ alter: { drop: false } }).then(
 // 	() => console.log("Sync complete type services")
-// );
+// ).catch((e)=>{console.log(e)});
 
 export { TypeServices }

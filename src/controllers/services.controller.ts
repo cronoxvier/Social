@@ -128,18 +128,16 @@ const disableEnambleTypeServices = async (req, res) => {
 }
 
 const createServices = async (req, res) => {
+
     try {
-
-        const { ...data } = req.body
-        const service = await services.create(data)
-
+        const { ...data } = req.body;
+        const service = await services.create(data);
         await firebase.firestore().collection('ServiceNotification').add({
             message: 'You have a new service request',
             seen: false,
             pharmacy_id: service.pharmacy_id,
             typeServices_id: service.typeServices_id
-        });
-
+        })
         res.status(200).send({
             ok: true,
             services: service

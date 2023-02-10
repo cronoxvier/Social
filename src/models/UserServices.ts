@@ -75,7 +75,7 @@ UserServices.belongsTo(ServicesStatus,{foreignKey: 'servicesStatus_id' , as: 'Se
 // 	() => console.log("Sync complete")
 // );
 
-UserServices.sync({})
+// UserServices.sync({})
 
 
 

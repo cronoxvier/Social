@@ -5,14 +5,20 @@ import { TypeServices } from './TypeServices';
 import { Pharmacy } from './Pharmacy';
 import { User } from './user';
 import { ServicesStatus } from './services-status';
+import { serviceChangesHistoryAttr } from '../interfaces/serviceChangesHistory';
+import { services } from './services';
 
 
-const services = db.define<servicesAttr>('Services',{
+const serviceChangesHistory = db.define<serviceChangesHistoryAttr>('Services',{
     id:{
         type : DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
+    service_id:{
+		type: DataTypes.INTEGER,
+		allowNull: false
+	},
 	description:{
 		type:DataTypes.STRING,
 		allowNull: true,
@@ -60,12 +66,12 @@ const services = db.define<servicesAttr>('Services',{
 		allowNull: false,
 		defaultValue: false
 	},
-	isPaid:{
-		type: DataTypes.BOOLEAN,
-		allowNull: false,
-		defaultValue: false
-	},
-
+	code: {
+        type: DataTypes.STRING,
+        defaultValue: DataTypes.UUIDV4,
+        unique: true,
+        allowNull:true
+    },
 	RequestFee: {
 		type: DataTypes.DECIMAL(8, 2),
 		allowNull: false,
@@ -75,14 +81,11 @@ const services = db.define<servicesAttr>('Services',{
 		}
 	}
 },{ createdAt: 'created_at', updatedAt: 'updated_at'})
-services.belongsTo(TypeServices,{foreignKey: 'typeServices_id' , as: 'TypeServices'})
-services.belongsTo(Pharmacy,{foreignKey: 'pharmacy_id' , as: 'Pharmacy'})
-services.belongsTo(User,{foreignKey: 'user_id' , as: 'User'})
-services.belongsTo(ServicesStatus,{foreignKey: 'servicesStatus_id' , as: 'ServicesStatus'})
 
+serviceChangesHistory.belongsTo(services,{foreignKey: 'services_id' , as: 'services'})
 
 // services.sync({ alter: { drop: true}}).then(
 // 	() => console.log("Sync complete type services")
 // ).catch((e)=>console.log(e,"error"));
 
-export { services }
+export { serviceChangesHistory }

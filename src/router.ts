@@ -28,7 +28,7 @@ import TypeServicesFacilitoRouter from './routes/type-services-facilito';
 import PreServicesRouter from './routes/Facilito/pre-services';
 import createClientServiceRouter from './routes/Facilito/clientServices';
 import facilitoPlaceToPayRouter from './routes/Facilito/facilitoPlaceToPay';
-
+import formRouter from './routes/form'
 
 
 // Routes
@@ -59,6 +59,7 @@ router.use('/services/typefacilito', TypeServicesFacilitoRouter)
 router.use('/services/facilito', PreServicesRouter)
 router.use('/services/clientServices',createClientServiceRouter)
 router.use('/facilito',facilitoPlaceToPayRouter)
+router.use('/form',formRouter)
 
 
 export default router;
