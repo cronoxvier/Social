@@ -6,7 +6,7 @@ import { Pharmacy } from '../models/Pharmacy';
 
 const AsignarPharmacyDriver = async (req, res) => {
     try {
-        //commit
+        //commit2
         const { ...data } = req.body
 
         console.log(data)
