@@ -20,4 +20,6 @@ const createMailbox = async(req, res)=>{
         }) 
     }
 }
+
+
 export { createMailbox }

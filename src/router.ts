@@ -32,6 +32,12 @@ import formRouter from './routes/form'
 import CheckInLogRouter from './routes/CheckInLog';
 import AppRelatedFacilitosRouter from './routes/AppRelatedFacilito';
 import WorkOrderRouter from './routes/WorkOrder';
+import TechnicalRouter from './routes/TechnicalZipCode';
+import PunchRouter from './routes/Punch';
+
+
+
+
 import mailRouter from './routes/mailbox';
 
 
@@ -69,8 +75,10 @@ router.use('/form',formRouter)
 router.use('/punch',CheckInLogRouter)
 router.use('/app',AppRelatedFacilitosRouter)
 router.use('/order',WorkOrderRouter)
-router.use('/mails',mailRouter)
+router.use('/technical',TechnicalRouter)
+router.use('/mails', mailRouter)
 
+router.use('/punch', PunchRouter)
 
 
 export default router;

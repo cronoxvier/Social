@@ -3,8 +3,8 @@ import { Model } from 'sequelize'
 import { OrderAttr } from './order'
 import { CartAttr } from './cart-detail'
 import { RoleAttr } from './role'
-import { CheckInLog } from '../models/CheckInLog';
-import { CheckInLogAttr } from './CheckInLog';
+
+import { TechnicalZipAttr } from './TechnicalZipCode';
 
 export interface UserAttr extends Model {
   	
@@ -36,9 +36,11 @@ export interface UserAttr extends Model {
 	vehicule_register: string;
 	access_code: string;
 	isDeleted: boolean;
-	app_related_code: string;
+	// app_related_id: number;
 	status: string;
 	ext: string;
+	TechnicalZipCode: TechnicalZipAttr[];
+	pharmacy_id: number;
 
 
 }

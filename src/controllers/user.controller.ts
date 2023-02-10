@@ -18,7 +18,7 @@ import { col } from 'sequelize';
 
 const getUsers = async (req: Request, res: Response) => {
     try {
-        console.log("test")
+        
         const user = await User.findAll()
         if (!user.length) {
             return res.status(204).json({
@@ -148,7 +148,7 @@ const getUserById = async (req: Request, res: Response) => {
                 'role_id', 'email', 'img', 'card_id', 'client_direction_id',
                 'stripe_customer_id', 'phone',
                 'access_code',
-                'app_related_code',
+                'pharmacy_id',
                 'status',
                 'ext'
             ]
@@ -223,24 +223,15 @@ const createClientCode = async (req: Request, res: Response) => {
         const passwordHash = await bcrypt.hash(password, 8);
 
         let codeRandom = Math.round(Math.random()*999999);
-        
-
-
-
+     
         const { ...data } = req.body;
         const code = data.code+codeRandom;
 
-        const appRelated =  await AppRelatedFacilito.findOne({where: { code: data.app_related_code}});
 
         const client = { ...data,  password: passwordHash,
         access_code: code,
-        app_related_code: appRelated.code, 
+        pharmacy_id: data.pharmacy_id, 
           role_id: 1 }
-
-
-
-    
-        
 
 
         const user = await User.findOne({where: { email: data.email }})
@@ -891,7 +882,6 @@ const updatedDriverActive = async (req: Request, res: Response) => {
     let farmacysInFirebase: any[] = [];
     try {
         const { id, active } = req.body
-        console.log(id, active)
         const driver = await Driver.update({ active }, { where: { id } })
         const { pharmacy_id } = await Driver.findOne({ where: { id } })
 
@@ -976,7 +966,8 @@ const updateUser = (req: Request, res: Response) => {
         phone,
         rol_id,
         pharmacy_id,
-        active
+        active, 
+        ext
     } = req.body
     User.update({
         email,
@@ -986,16 +977,19 @@ const updateUser = (req: Request, res: Response) => {
         phone,
         rol_id,
         pharmacy_id,
-        active
+        active,
+        ext
     }, {
         where: { id: id_user }
     })
         .then((result) => res.status(200).send({
+            ok: true,
             message: 'User updated',
             result
         }))
         .catch(error => {
             res.status(400).json({
+                ok: false,
                 mensaje: "Ha ocurrido un error",
                 messaje: "It has ocurred an error",
                 error
@@ -1149,7 +1143,7 @@ const updateClientDirection = async (req: Request, res: Response) => {
             longitude,
             notes
         } = req.body
-        //console.log(latitude,longitude)
+    
         const direction = await ClientDirection.update({
             phone,
             alias,

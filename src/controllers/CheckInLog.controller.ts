@@ -4,6 +4,8 @@ import { col} from 'sequelize'
 import { User } from "../models/user";
 import { AppRelatedFacilito } from "../models/AppRelatedFacilito";
 
+import { TechnicalZip } from "../models/TechnicalZipCode";
+
 const createCheckInLog = async (req: Request, res: Response) => {
   try {
     const { ...data } = req.body;
@@ -29,12 +31,15 @@ const createCheckInLog = async (req: Request, res: Response) => {
 };
 
 const getCheckInLog = async (req: Request, res: Response) => {
+
+  const { ...data } = req.body;
+
   try {
-    const getAppRelatedFacilito = await AppRelatedFacilito.findOne({
-      where: {
-        code: "PLANET_COMMUNICATION",
-      },
-    });
+    // const getAppRelatedFacilito = await AppRelatedFacilito.findOne({
+    //   where: {
+    //     code: data.code_app,
+    //   },
+    // });
 
 
     const getCheckInLog = await User.findAll({
@@ -42,10 +47,16 @@ const getCheckInLog = async (req: Request, res: Response) => {
         model: CheckInLog,
         as: "CheckInLog",
         attributes: [],
-      //   order: [
-      //     ['createdAt', 'DESC'],
-      // ]
-       }],
+  
+       },
+       {
+        model: TechnicalZip,
+        as: "TechnicalZipCode",
+        attributes: [],
+  
+       }
+      
+      ],
            
        attributes: [
             'id', "first_name",
@@ -58,13 +69,17 @@ const getCheckInLog = async (req: Request, res: Response) => {
             // "created_at",
             [col('CheckInLog.fecha'), 'checkInLog_fecha'],
             [col('CheckInLog.hora'), 'checkInLog_hora'],
-            [col('CheckInLog.createdAt'), 'checkInLog_createdAt']
+            [col('CheckInLog.createdAt'), 'checkInLog_createdAt'],
+            [col('TechnicalZipCode.zip_code'), 'technicalZipCode_zip_code'],
         ],
   
       where: {
-        app_related_code: getAppRelatedFacilito.code,
+        pharmacy_id: data.pharmacy_id,
+        isDeleted: false
       },
     });
+
+
 
     
 

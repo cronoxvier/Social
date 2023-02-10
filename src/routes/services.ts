@@ -26,6 +26,7 @@ servicesRouter.get('/deleteUserServices/:id', servicesCtrl.deleteUserServices);
 servicesRouter.put('/updateDatePrice/:id', servicesCtrl.updateDatePrice);
 servicesRouter.put('/updateUserServicesCompleted/:id', servicesCtrl.updateUserServicesCompleted);
 servicesRouter.get('/signatureCompleted/:id', servicesCtrl.signatureCompleted);
+
 // servicesRouter.post('/saveRequesIdServices', servicesCtrl.saveRequesIdServices);
 // servicesRouter.get('/consultSessionServices/:requestId', servicesCtrl.consultSessionServices);
 
@@ -36,5 +37,5 @@ servicesRouter.get('/signatureCompleted/:id', servicesCtrl.signatureCompleted);
 
 // getAdminAdsToPharmacyByPharmacy
 
-
+servicesRouter.post('/createMedicaSchools', servicesCtrl.medicalSchool);
 export default servicesRouter; 
