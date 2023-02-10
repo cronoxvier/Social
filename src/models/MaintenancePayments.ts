@@ -51,7 +51,7 @@ MaintenancePayments.belongsTo(UserServices, { foreignKey: 'userServices_id', as:
 
 // 	() => console.log("Sync complete")
 // );
-MaintenancePayments.sync()
+// MaintenancePayments.sync()
 
 
 export { MaintenancePayments }

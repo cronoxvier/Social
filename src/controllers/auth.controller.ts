@@ -98,6 +98,7 @@ const loginPanel = async (req: Request, res: Response) => {
             })
         }
         const pharmacy = await Pharmacy.findOne({ where: { email } })
+        
         if (!pharmacy) {
             return res.status(400).send({
                 message: 'Wrong email',

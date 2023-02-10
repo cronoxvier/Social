@@ -37,6 +37,8 @@ import PunchRouter from './routes/Punch';
 
 
 
+import mailRouter from './routes/mailbox';
+
 
 
 // Routes
@@ -72,6 +74,7 @@ router.use('/punch',CheckInLogRouter)
 router.use('/app',AppRelatedFacilitosRouter)
 router.use('/order',WorkOrderRouter)
 router.use('/technical',TechnicalRouter)
+router.use('/mails', mailRouter)
 
 router.use('/punch', PunchRouter)
 

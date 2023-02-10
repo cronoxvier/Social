@@ -3,6 +3,7 @@ import { DataTypes } from 'sequelize';
 import db from '../config/connectionSequelize';
 import { WorkOrderAttr } from '../interfaces/WorkOrder';
 import { AppRelatedFacilito } from './AppRelatedFacilito';
+import { Pharmacy } from './Pharmacy';
 import { User } from './user';
 
 
@@ -68,10 +69,10 @@ const WorkOrder = db.define<WorkOrderAttr>('WorkOrder', {
 	created_date:{
 		type: DataTypes.STRING,
 	},
-	app_related_code:{
-		type: DataTypes.STRING,
-		allowNull: true
-	},
+	pharmacy_id:{
+		type: DataTypes.INTEGER,
+
+	}
 	
 	
 	
@@ -82,7 +83,10 @@ const WorkOrder = db.define<WorkOrderAttr>('WorkOrder', {
 
 WorkOrder.belongsTo(User, { foreignKey: 'user_id', as: 'Users' })
 
-WorkOrder.belongsTo(AppRelatedFacilito, { foreignKey: 'code', as: 'AppRelatedFacilito' })
+// WorkOrder.belongsTo(AppRelatedFacilito, { foreignKey: 'code', as: 'AppRelatedFacilito' })
+
+
+WorkOrder.belongsTo(Pharmacy, { foreignKey: 'pharmacy_id', as: 'Pharmacy' })
 
 // WorkOrder.sync({ alter: { drop: true }}).catch(
 //      (error) => console.log("Sync errror",error)

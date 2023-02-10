@@ -415,7 +415,7 @@ const updatePharmacySchedule = async (req: Request, res: Response) => {
     }
 
 }
-console.log('commit')
+
 const updateDriverStatus = async (req: Request, res: Response) => {
     try {
         const { pharmacy_id, driver_status } = req.body

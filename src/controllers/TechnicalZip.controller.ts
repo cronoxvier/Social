@@ -48,12 +48,15 @@ const createTechnicalZip = async (req: Request, res: Response) => {
 
 const getTechnicalZipCode = async (req: Request, res: Response) => {
     try {
+
+
+        const { ...data } = req.body;
         
-        const getAppRelatedFacilito = await AppRelatedFacilito.findOne({
-            where: {
-              code: "PLANET_COMMUNICATION",
-            },
-          });
+        // const getAppRelatedFacilito = await AppRelatedFacilito.findOne({
+        //     where: {
+        //       id: 2,
+        //     },
+        //   });
 
     const getTechnical = await User.findAll({
         include:[{
@@ -76,7 +79,7 @@ const getTechnicalZipCode = async (req: Request, res: Response) => {
          ],
    
        where: {
-         app_related_code: getAppRelatedFacilito.code,
+         pharmacy_id: data.pharmacy_id,
        },
      });
 

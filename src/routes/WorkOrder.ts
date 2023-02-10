@@ -6,7 +6,7 @@ const WorkOrderRouter: express.Router = express.Router();
 
 WorkOrderRouter.post('/createWorkOrder', WorkOrderCtrl.createWorkOrder);
 
-WorkOrderRouter.get('/getWorkOrder', WorkOrderCtrl.getWorkOrder);
+WorkOrderRouter.post('/getWorkOrder', WorkOrderCtrl.getWorkOrder);
 
 WorkOrderRouter.post('/updateWorkOrder', WorkOrderCtrl.updateWorkOrder);
 
@@ -31,7 +31,7 @@ WorkOrderRouter.post('/reactOrderByUser', WorkOrderCtrl.reactOrderByUser);
 WorkOrderRouter.post('/changeStatusWorkOrderByUser', WorkOrderCtrl.changeStatusWorkOrderByUser);
 
 
-WorkOrderRouter.get('/getCompleted', WorkOrderCtrl.getCompleted);
+WorkOrderRouter.post('/getCompleted', WorkOrderCtrl.getCompleted);
 
 
 export default WorkOrderRouter;

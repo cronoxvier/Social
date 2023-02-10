@@ -52,6 +52,6 @@ const Driver = db.define<DriverAttr>('Driver',{
 
 Driver.belongsTo(Role,{foreignKey:'role_id',as:'Role'})
 Driver.belongsTo(Pharmacy,{foreignKey:'pharmacy_id',as:'Pharmacy'})
-Driver.sync()
+// Driver.sync()
 
 export {Driver}

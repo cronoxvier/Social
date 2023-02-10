@@ -148,7 +148,7 @@ const getUserById = async (req: Request, res: Response) => {
                 'role_id', 'email', 'img', 'card_id', 'client_direction_id',
                 'stripe_customer_id', 'phone',
                 'access_code',
-                'app_related_code',
+                'pharmacy_id',
                 'status',
                 'ext'
             ]
@@ -223,24 +223,15 @@ const createClientCode = async (req: Request, res: Response) => {
         const passwordHash = await bcrypt.hash(password, 8);
 
         let codeRandom = Math.round(Math.random()*999999);
-        
-
-
-
+     
         const { ...data } = req.body;
         const code = data.code+codeRandom;
 
-        const appRelated =  await AppRelatedFacilito.findOne({where: { code: data.app_related_code}});
 
         const client = { ...data,  password: passwordHash,
         access_code: code,
-        app_related_code: appRelated.code, 
+        pharmacy_id: data.pharmacy_id, 
           role_id: 1 }
-
-
-
-    
-        
 
 
         const user = await User.findOne({where: { email: data.email }})

@@ -43,19 +43,17 @@ const createWorkOrder = async (req: Request, res: Response) => {
 
 const getWorkOrder = async (req: Request, res: Response) => {
   try {
+    
+    const { ...data } = req.body;
+
     const resGetWorkOrder = await WorkOrder.findAll({
       where:{
-        app_related_code: 'TGS_TRUE_GUARD_SECURITY'
+        pharmacy_id: data.pharmacy_id
       },
         order: [
         ['created_at', 'DESC'],
     ]});
 
-    // const resGetWorkOrder = await WorkOrder.findAll()
-
-    
-      
-     
     res.status(200).send({
       ok: true,
       resGetWorkOrder,
@@ -141,25 +139,6 @@ const deleteWorkOrder = async (req: Request, res: Response) => {
 };
 
 
-//   try {
-//     const { ...data } = req.body;
-
-//     const resHistorialWorkOrder = await HistoryWorkOrder.create({ ...data });
-
-
-
-//     res.status(200).send({
-//       ok: true,
-//       resHistorialWorkOrder,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send({
-//       ok: false,
-//     });
-//   }
-// };
-
 
 
 const assignedWorkOrder = async (req: Request, res: Response) => {
@@ -215,10 +194,6 @@ const getWorkOrderByUser = async (req: Request, res: Response) => {
     const WorkOrderByUser = await WorkOrder.findAll({
       order: [['hour', 'ASC']],    
     where: { user_id: data.userId, [Op.or]: [{status: "Pending"}, {status: "Processing"}]  }});
-
-
-   
-
 
 
     res.status(200).send({
@@ -322,7 +297,6 @@ const changeStatusWorkOrder = async (req: Request, res: Response) => {
     });
   }
 };
-
 
 const changeStatusWorkOrderByUser = async (req: Request, res: Response) => {
   try {
@@ -470,19 +444,20 @@ const reactOrderByUser = async (req: Request, res: Response) => {
 
 const getCompleted = async (req: Request, res: Response) => {
   try {
+
+    const { ...data } = req.body;
     
     const dateToday = moment().format("YYYY-MM-DD");
 
     const workOrdersToday = await WorkOrder.findAll(
-      { where:{ date: dateToday, app_related_code: 'TGS_TRUE_GUARD_SECURITY'} })
+      { where:{ date: dateToday, pharmacy_id: data.pharmacy_id} })
   
     const workOrdersCompleted = await WorkOrder.findAll(
-      { where:{ date: dateToday, app_related_code: 'TGS_TRUE_GUARD_SECURITY', status: 'Completed'} })
+      { where:{ date: dateToday, pharmacy_id: data.pharmacy_id, status: 'Completed'} })
 
       let division = Number(workOrdersCompleted.length)/Number(workOrdersToday.length);
 
       let porcentage = division*100;
-
       const finalPorcentage = Math.round(porcentage); 
     
       res.status(200).send({

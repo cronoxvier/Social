@@ -31,12 +31,15 @@ const createCheckInLog = async (req: Request, res: Response) => {
 };
 
 const getCheckInLog = async (req: Request, res: Response) => {
+
+  const { ...data } = req.body;
+
   try {
-    const getAppRelatedFacilito = await AppRelatedFacilito.findOne({
-      where: {
-        code: "TGS_TRUE_GUARD_SECURITY",
-      },
-    });
+    // const getAppRelatedFacilito = await AppRelatedFacilito.findOne({
+    //   where: {
+    //     code: data.code_app,
+    //   },
+    // });
 
 
     const getCheckInLog = await User.findAll({
@@ -71,7 +74,7 @@ const getCheckInLog = async (req: Request, res: Response) => {
         ],
   
       where: {
-        app_related_code: getAppRelatedFacilito.code,
+        pharmacy_id: data.pharmacy_id,
         isDeleted: false
       },
     });

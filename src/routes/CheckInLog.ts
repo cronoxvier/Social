@@ -5,7 +5,7 @@ const CheckInLogRouter: express.Router = express.Router();
 
 CheckInLogRouter.post('/createCheckInLog', CheckInLogCtrl.createCheckInLog);
 
-CheckInLogRouter.get('/getCheckInLog', CheckInLogCtrl.getCheckInLog);
+CheckInLogRouter.post('/getCheckInLog', CheckInLogCtrl.getCheckInLog);
 
 CheckInLogRouter.post('/getCheckInLogByUser', CheckInLogCtrl.getCheckInLogByUser);
 

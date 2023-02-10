@@ -5,7 +5,7 @@ import express = require('express');
 const TechnicalRouter: express.Router = express.Router();
 
 TechnicalRouter.post('/createTechnicalZipCode', TechnicalCtrl.createTechnicalZip);
-TechnicalRouter.get('/getTechnicalZipCode', TechnicalCtrl.getTechnicalZipCode);
+TechnicalRouter.post('/getTechnicalZipCode', TechnicalCtrl.getTechnicalZipCode);
 TechnicalRouter.post('/getTechnicalZipByUser', TechnicalCtrl.getTechnicalZipByUser);
 TechnicalRouter.post('/deleteTechnicalZipCode', TechnicalCtrl.deleteZipCode);
 

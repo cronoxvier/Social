@@ -36,10 +36,11 @@ export interface UserAttr extends Model {
 	vehicule_register: string;
 	access_code: string;
 	isDeleted: boolean;
-	app_related_code: string;
+	// app_related_id: number;
 	status: string;
 	ext: string;
 	TechnicalZipCode: TechnicalZipAttr[];
+	pharmacy_id: number;
 
 
 }
