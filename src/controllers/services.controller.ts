@@ -24,6 +24,7 @@ import CryptoJS from 'crypto-js'
 import axios from 'axios';
 import { playTopayCredential } from "../helper/CreateCredentiaPlaytopay";
 import { MaintenancePayments } from "../models/MaintenancePayments";
+import { medicaSchools } from "../models/medicalSchools";
 
 
 const createTypeServices = async (req, res) => {
@@ -94,6 +95,24 @@ const createInfoPriceService = async (req, res) => {
         })
     }
 
+}
+
+const medicalSchool = async(req, res)=>{
+    try {
+        const {...data} = req.body
+        const medical = await medicaSchools.create({...data })
+        res.status(200).send({
+            medical,
+            ok:true
+        })
+        
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            ok: false,
+            error
+        }) 
+    }
 }
 
 const disableEnambleTypeServices = async (req, res) => {
@@ -1094,7 +1113,8 @@ export {
     deleteUserServices,
     updateDatePrice,
     updateUserServicesCompleted,
-    signatureCompleted
+    signatureCompleted,
+    medicalSchool
     // saveRequesIdServices,
     // consultSessionServices
 }
