@@ -35,8 +35,8 @@ Chat.belongsTo(Pharmacy, { foreignKey: 'pharmacy_id', as: 'Pharmacy' })
 Chat.belongsTo(User, { foreignKey: 'user_id', as: 'User' })
 // Ads.belongsTo(Category,{foreignKey: 'category_id' , as: 'Category'})
 
-Chat.sync({ alter: { drop: false } }).then(
-	() => console.log("Sync complete")
-);
+// Chat.sync({ alter: { drop: false } }).then(
+// 	() => console.log("Sync complete")
+// );
 
 export { Chat }

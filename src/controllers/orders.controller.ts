@@ -358,7 +358,7 @@ const createOrder = async (req: Request, res: Response) => {
       transaction,
     })
       .then(async (r) => {
-       // console.log("order has been created", r)
+       console.log("order has been created", r)
         const updatePlaceToPayRequestId = await placeToPayRequestId.update({ order_id: r.id }, { where: { requestId: requestId }, transaction, returning: true })
        // console.log("order actualizado en request", r.id, requestId)
         const orderHistoryDetail = products.map((product: any) => {
@@ -393,7 +393,7 @@ const createOrder = async (req: Request, res: Response) => {
         
         //const respRonpon = await sendToRonpon(ronponOrder, r)//.then(({data})=>{console.log("ronpon data",data) ; Order.update({ronpon_id:data.order_id},{where:{id:r.id},transaction})})
        // console.table("res ronpon", respRonpon)
-        await firebase.firestore().collection('notifications').add({
+        await firebase.firestore().collection('propertiesOrder').add({
           message: 'A new order #' + r.code + ' has been placed.',
           seen: false,
           user_id: r.pharmacy_id + '',
@@ -401,11 +401,11 @@ const createOrder = async (req: Request, res: Response) => {
           order_status: 1
         });
 
-        await firebase.firestore().collection('orders').add({
-          order_id: r.id,
-          order_status: 1,
-          farmacy_id: r.pharmacy_id
-        });
+        // await firebase.firestore().collection('orders').add({
+        //   order_id: r.id,
+        //   order_status: 1,
+        //   farmacy_id: r.pharmacy_id
+        // });
 
         await firebase.firestore().collection('notificationsPush').add({
           message: 'A new order #' + order.code + ' has been placed.',

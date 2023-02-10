@@ -6,6 +6,7 @@ import { User } from './user'
 import { Ads } from './ads'
 import { Order } from './orders';
 import { OccupancyRequests } from './OccupancyRequest';
+import { UserServices } from './UserServices';
 
 const placeToPayRequestId = db.define<PlaceToPayRequestId>('PlaceToPayRequestId', {
 	id: {
@@ -77,18 +78,26 @@ const placeToPayRequestId = db.define<PlaceToPayRequestId>('PlaceToPayRequestId'
 	internalReference: {
 		type: DataTypes.STRING,
 		allowNull: true
-	}
+	},
+	userServices_id: {
+		type: DataTypes.INTEGER,
+		allowNull: true
+	},
 	
 
 }, { createdAt: 'created_at', updatedAt: 'updated_at' })
 placeToPayRequestId.belongsTo(Pharmacy, { foreignKey: 'pharmacy_id', as: 'Pharmacy' })
 placeToPayRequestId.belongsTo(Ads, { foreignKey: 'ads_id', as: 'Ads' })
 placeToPayRequestId.belongsTo(User, { foreignKey: 'user_id', as: 'User' })
+placeToPayRequestId.belongsTo(UserServices, { foreignKey: 'userServices_id', as: 'UserServices' })
 //placeToPayRequestId.belongsTo(Order, { foreignKey: 'order_id', as: 'Order' })
 placeToPayRequestId.belongsTo(OccupancyRequests, { foreignKey: 'order_id', as: 'OccupancyRequests' })
-// placeToPayRequestId.sync({ alter: { drop: true } ,force:true}).then(
+OccupancyRequests.hasOne(placeToPayRequestId,{ foreignKey: 'order_id', as: 'placeToPayRequestId' })
+// placeToPayRequestId.sync({ alter: { drop: true } }).then(
 // 	() => console.log("Sync complete")
 // );
+
+// placeToPayRequestId.sync()
 
 
 export { placeToPayRequestId }

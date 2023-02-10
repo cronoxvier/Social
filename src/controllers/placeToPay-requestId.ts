@@ -12,6 +12,7 @@ import { Expo } from 'expo-server-sdk';
 import { Ads } from '../models/ads';
 import { checkServerIdentity } from 'tls';
 import { Order } from '../models/orders';
+import { PharmacyProduct } from '../models/pharmacy-product';
 
 // const importDynamic = new Function('modulePath', 'return import(modulePath)');
 
@@ -24,7 +25,7 @@ import { Order } from '../models/orders';
 const reversePayment = async (req: Request, res: Response) => {
     try {
         const { ...data } = req.body
-        console.log(data, "data enviada")
+        // console.log(data, "data enviada")
         const url = `${process.env.URL}/api/session`;
         const nonce = Math.random().toString(36).substring(2);
         const seed = moment().format();
@@ -57,7 +58,7 @@ const saveRequesId = async (req: Request, res: Response) => {
         let error = ''
         let result
         const { ...data } = req.body
-        console.log(data, "data enviada")
+        // console.log(data, "data enviada")
 
 
         const url = `${process.env.URL}/api/session`;
@@ -67,7 +68,7 @@ const saveRequesId = async (req: Request, res: Response) => {
         const hash = CryptoJS.SHA256(nonce + seed + process.env.SECRETKEY);
         const tranKey = hash.toString(CryptoJS.enc.Base64);
 
-        console.log(url, 'url')
+        //  console.log(url, 'url')
 
         const datas = {
             locale: "es_PR",
@@ -92,7 +93,7 @@ const saveRequesId = async (req: Request, res: Response) => {
             ipAddress: data.ipAdress,
             userAgent: "PlacetoPay Sandbox"
         }
-        console.log(data)
+        // console.log(data)
         await axios.post(url,
             { ...datas }
         )
@@ -141,7 +142,7 @@ const checkIn = async (req: Request, res: Response) => {
         let error = ''
         let result
         const { ...data } = req.body
-        console.log(data, "data enviada")
+        // console.log(data, "data enviada")
 
 
         const url = `${process.env.URL}/api/session`;
@@ -151,7 +152,7 @@ const checkIn = async (req: Request, res: Response) => {
         const hash = CryptoJS.SHA256(nonce + seed + process.env.SECRETKEY);
         const tranKey = hash.toString(CryptoJS.enc.Base64);
 
-        console.log(url, 'url')
+        // console.log(url, 'url')
 
         const datas = {
             locale: "es_PR",
@@ -176,15 +177,196 @@ const checkIn = async (req: Request, res: Response) => {
             ipAddress: data.ipAdress,
             userAgent: "PlacetoPay Sandbox"
         }
-        console.log(data)
+        // console.log(data)
         await axios.post(url,
             { ...datas }
         )
             .then(async (e) => {
-                console.log(e, 'e')
+                // console.log(e, 'e')
                 respon = e.data
                 result = await placeToPayRequestId.create({ ...data, requestId: e.data.requestId })
-                console.log("result", e)
+                //console.log("result", e)
+            })
+            .catch(err => {
+                console.log(err, 'aqui')
+                error = err.response.data.status.status
+                respon = err.response.data
+            })
+
+
+        if (error == 'FAILED') {
+            return res.status(400).send({
+                ok: false,
+                respon
+            })
+        } else {
+
+        }
+
+        res.status(200).send({
+            ok: true,
+            data: respon,
+            result
+
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            error,
+            ok: false
+        })
+    }
+
+}
+
+
+
+const checkInRequest = async (req: Request, res: Response) => {
+    try {
+        let respon = ''
+        let error = ''
+        let result
+        const { ...data } = req.body
+        console.log(data, "data enviada")
+
+
+        const url = `${process.env.URL}/api/session`;
+        const nonce = Math.random().toString(36).substring(2);
+        const seed = moment().format();
+        const expiration = moment().add(32, 'minutes').format();
+        const hash = CryptoJS.SHA256(nonce + seed + process.env.SECRETKEY);
+        const tranKey = hash.toString(CryptoJS.enc.Base64);
+        const Product = await PharmacyProduct.findOne({where:{id:data.pharmacy_product_id}})
+        console.log(Product, 'errorr')
+       // console.log(url, 'url')
+
+        const datas = {
+            locale: "es_PR",
+            auth: {
+                login: process.env.LOGIN,
+                tranKey: tranKey,
+                nonce: btoa(nonce),
+                seed: seed
+            },
+            //type: 'checkin',
+            payment: {
+                reference: data.reference,
+                description: data.description,
+                amount: {
+                    currency: "USD",
+                    total:Product.request_fee_enabled && Product.request_fee>0 ? Product.request_fee:0
+                },
+                allowPartial: false
+            },
+            expiration: expiration,
+            returnUrl: data.returnUrl,
+            ipAddress: data.ipAdress,
+            userAgent: "PlacetoPay Sandbox"
+        }
+       // console.log(data)
+       if(Product.request_fee_enabled&&Product.request_fee>0){
+        await axios.post(url,
+            { ...datas }
+        )
+            .then(async (e) => {
+               // console.log(e, 'e')
+                respon = e.data
+                result = await placeToPayRequestId.create({ ...data,amount:0.00,paymentStatus:'APPROVED', requestId: e.data.requestId })
+                //console.log("result", e)
+            })
+            .catch(err => {
+               // console.log(err, 'aqui')
+               console.log(err.response.data,"errorr")
+                error = err.response.data.status.status
+                respon = err.response.data
+            })
+
+
+        if (error == 'FAILED') {
+            return res.status(400).send({
+                ok: false,
+                respon
+            })
+        } else {
+
+        }
+       }
+       else{
+        result = await placeToPayRequestId.create({ ...data, requestId: 0o0000000 })
+       }
+        
+
+        res.status(200).send({
+            ok: true,
+            data: respon,
+            result,
+            Product
+
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            error,
+            ok: false
+        })
+    }
+
+}
+
+
+
+const checkInProrducts = async (req: Request, res: Response) => {
+    try {
+        let respon = ''
+        let error = ''
+        let result
+        const { ...data } = req.body
+       // console.log(data, "data enviada")
+
+
+        const url = `${process.env.URL}/api/session`;
+        const nonce = Math.random().toString(36).substring(2);
+        const seed = moment().format();
+        const expiration = moment().add(32, 'minutes').format();
+        const hash = CryptoJS.SHA256(nonce + seed + process.env.SECRETKEY);
+        const tranKey = hash.toString(CryptoJS.enc.Base64);
+
+       // console.log(url, 'url')
+
+        const datas = {
+            locale: "es_PR",
+            auth: {
+                login: process.env.LOGIN,
+                tranKey: tranKey,
+                nonce: btoa(nonce),
+                seed: seed
+            },
+            //type: 'checkin',
+            payment: {
+                reference: data.reference,
+                description: data.description,
+                amount: {
+                    currency: "USD",
+                    total: data.amount
+                },
+                allowPartial: false
+            },
+            expiration: expiration,
+            returnUrl: data.returnUrl,
+            ipAddress: data.ipAdress,
+            userAgent: "PlacetoPay Sandbox"
+        }
+       // console.log(data)
+        await axios.post(url,
+            { ...datas }
+        )
+            .then(async (e) => {
+               // console.log(e, 'e')
+                respon = e.data
+                result = await placeToPayRequestId.create({ ...data, requestId: e.data.requestId })
+                //console.log("result", e)
             })
             .catch(err => {
                 console.log(err, 'aqui')
@@ -319,7 +501,7 @@ const consultSession = async (req: Request, res: Response) => {
         )
             .then(async (e) => {
                 respon = e.data
-                console.log("consult",respon)
+                console.log("consult", respon)
                 const datos = {
                     paymentStatus: e.data.status.status,
                     date: e.data.status.date,
@@ -356,18 +538,10 @@ const notify = async (req: Request, res: Response) => {
     try {
         const { ...data } = req.body
         const place = await placeToPayRequestId.findOne({ where: { requestId: data.requestId } })
-        //console.log("resquest",place)
-        //console.log("request data",data)
-        const { id, pharmacy_id, ads_id, order_id, advertisements, shopping, user_id, requestId, reference, description, amount, paymentStatus } = place
-        // const dataPlace = {
-        //     pharmacy_id:place
-        // }
 
-        // const seed = moment().format();
+        //  const {  pharmacy_id, ads_id, order_id, advertisements, shopping, user_id, requestId, reference, description, amount, paymentStatus } = place
+
         const hash = sha1(data.requestId + data.status.status + data.status.date + process.env.SECRETKEY);
-        //console.log("signature",hash)
-        // + data.status.status + data.status.date + process.env.SECRETKEY
-        // console.log(data.requestId+data.status.status+data.status.date+process.env.SECRETKEY)
 
         if (hash != data.signature) {
             return res.status(400).send({
@@ -380,13 +554,17 @@ const notify = async (req: Request, res: Response) => {
         else {
 
             if (place.pharmacy_id != null && place.user_id != null) {
+                console.log("entro aqui 1")
                 console.log('push notification mas email')
 
-                let expo = new Expo({ accessToken: 'DTkss6v_Z9qdGvEZLwI2D0_eTs5h-M4XF6Wx5leW' });
+                let expo = new Expo({
+                    accessToken: 'fsBgekH5wRpMOVN3h_ZDIy6bqMygQn3oAaJHAQje' //'DTkss6v_Z9qdGvEZLwI2D0_eTs5h-M4XF6Wx5leW' 
+                });
                 const pushToken = place.token_client
                 let messages = [];
                 const PlaceToPayRequest = await placeToPayRequestId.findOne({ where: { requestId: data.requestId } })
                 let state;
+
                 if (data.status.status === 'APPROVED') {
                     state = 1
                     if (!Expo.isExpoPushToken(pushToken)) {
@@ -480,22 +658,22 @@ const notify = async (req: Request, res: Response) => {
                 await Order.update({ order_state_id: state }, { where: { id: PlaceToPayRequest.order_id } })
 
             }
-            if (place.pharmacy_id != null && place.user_id == null) {
-                // console.log('panel mas email')
-                const ads = await Ads.update({ paymentStatus: 'APPROVED' }, { where: { id: ads_id } })
+            // if (place.pharmacy_id != null && place.user_id == null) {
+            //     // console.log('panel mas email')
+            //     const ads = await Ads.update({ paymentStatus: 'APPROVED' }, { where: { id: ads_id } })
 
-                const dbRef = await firebase.firestore().collection('notificationPlaceToPay');
-                dbRef.add({ id, pharmacy_id, ads_id, order_id, advertisements, shopping, user_id, requestId, reference, description, amount, paymentStatus: data.status.status, see: false, date: data.status.date, });
+            //     const dbRef = await firebase.firestore().collection('notificationPlaceToPay');
+            //     dbRef.add({ id, pharmacy_id, ads_id, order_id, advertisements, shopping, user_id, requestId, reference, description, amount, paymentStatus: data.status.status, see: false, date: data.status.date, });
 
 
-            }
+            // }
         }
 
         res.status(200).send({
             status: "OK",
         })
     } catch (error) {
-        console.log(error)
+        console.log("error", error)
         res.status(500).send({
             ok: false,
 
@@ -648,4 +826,4 @@ const saveRequesIdEditAds = async (req: Request, res: Response) => {
 }
 
 
-export { saveRequesId, consultSession, notify, updateRequestIdStatus, updateStatusAds, checkIn, checkOut, saveRequesIdEditAds, reversePayment }
+export { saveRequesId, consultSession, notify, updateRequestIdStatus, updateStatusAds,checkInRequest ,checkIn, checkOut, saveRequesIdEditAds, reversePayment }

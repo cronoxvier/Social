@@ -17,15 +17,17 @@ const PharmacyProduct = db.define<PharmacyProductAttr>('PharmaciesProducts', {
 	},
 	product_id: {
 		type: DataTypes.INTEGER,
-		allowNull: false
+		allowNull: false,
+		//defaultValue:0.00
 	},
 	stock: {
 		type: DataTypes.INTEGER,
 		allowNull: false
 	},
 	price: {
-		type: DataTypes.DECIMAL(8, 5),
-		allowNull: false
+		type: DataTypes.DECIMAL(6, 2),
+		allowNull: false,
+		defaultValue:0.00
 	},
 	apply_taxes: {
 		type: DataTypes.BOOLEAN,
@@ -49,11 +51,34 @@ const PharmacyProduct = db.define<PharmacyProductAttr>('PharmaciesProducts', {
 	code_bar: DataTypes.STRING(45),
 	ivu_statal: DataTypes.BOOLEAN,
 	ivu_municipal: DataTypes.BOOLEAN,
-	gift_status: DataTypes.BOOLEAN
+	gift_status: DataTypes.BOOLEAN,
+	prorateo: {
+		type: DataTypes.DECIMAL(6, 2),
+		allowNull: false,
+		defaultValue:0.00
+	},
+	maintenace_enabled:{
+		type:DataTypes.BOOLEAN,
+		defaultValue:false
+	},
+	request_fee_enabled:{
+		type:DataTypes.BOOLEAN,
+		defaultValue:false
+	},
+	request_fee: {
+		type: DataTypes.DECIMAL(6, 2),
+		allowNull: false,
+		defaultValue:0.00
+	},
+	maintenance_fee: {
+		type: DataTypes.DECIMAL(6, 2),
+		allowNull: false,
+		defaultValue:0.00
+	},
 
 }, { createdAt: 'created_at', updatedAt: 'updated_at'})
 
 PharmacyProduct.belongsTo(Pharmacy,{foreignKey: 'pharmacy_id' , as: 'Pharmacy'})
 PharmacyProduct.belongsTo(Products,{foreignKey:'product_id', as:'Products'})
-
+// PharmacyProduct.sync({ alter: { drop: true }}).catch((e)=>console.log(e)).then(()=>{console.log('pharmacy product updated')})
 export { PharmacyProduct }

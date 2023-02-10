@@ -18,5 +18,6 @@ export interface PlaceToPayRequestId extends Model {
     date:Date,
     internalReference:string,
     type: string,
+    userServices_id:number
    
 }

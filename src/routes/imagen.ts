@@ -10,6 +10,9 @@ imagenRouter.post('/create', chatCtrl.createImg);
 imagenRouter.get('/getImgs/:id', chatCtrl.getAllimgByProduct);
 imagenRouter.post('/save/:id', chatCtrl.saveImg);
 imagenRouter.post('/deleteImg/:id', chatCtrl.deleteImg);
+
+imagenRouter.post('/saveImgFacilito', chatCtrl.saveImgFacilito);
+
 // chatRouter.post('/pharmacyUser', chatCtrl.pharmacyUser);
 // chatRouter.get('/getpharmacyUser/:pharmacy_id', chatCtrl.getPharmacyUser);
 

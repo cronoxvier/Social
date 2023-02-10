@@ -13,6 +13,7 @@ import { BillingDetail } from './billing-detail';
 //import { ProductOrderStatus } from './product-order-status';
 import { OrderStateAttr } from '../interfaces/order-state'
 import { OrderDetailAttr } from '../interfaces/order-details'
+import { PharmacyProduct } from './pharmacy-product';
 
 const OccupancyRequests = db.define<OccupancyRequestsAttr>('OccupancyRequests', {
 	id: {
@@ -29,12 +30,12 @@ const OccupancyRequests = db.define<OccupancyRequestsAttr>('OccupancyRequests', 
 	RequestFee: {
 		type: DataTypes.DECIMAL(8, 2),
 		allowNull: true,
-		defaultValue:35.00,
+		defaultValue:0.00,
 		validate: {
 			min: 0.00
 		}
 	},
-	Full: {
+	FullName: {
 		type: DataTypes.STRING(100),
 		defaultValue: null,
 		allowNull: true,
@@ -59,11 +60,11 @@ const OccupancyRequests = db.define<OccupancyRequestsAttr>('OccupancyRequests', 
 		defaultValue: null,
 		allowNull: true,
 	},
-	Address: {
-		type: DataTypes.STRING(100),
-		defaultValue: null,
-		allowNull: true,
-	},
+	// Address: {
+	// 	type: DataTypes.STRING(100),
+	// 	defaultValue: null,
+	// 	allowNull: true,
+	// },
 	City: {
 		type: DataTypes.STRING(100),
 		defaultValue: null,
@@ -213,8 +214,18 @@ const OccupancyRequests = db.define<OccupancyRequestsAttr>('OccupancyRequests', 
 		type: DataTypes.INTEGER,
 		allowNull: false
 	},
-}, { createdAt: 'created_at', updatedAt: 'updated_at', tableName: 'OccupancyRequests' })
-
+	isDocumentSigned:{
+		allowNull:false,
+		type: DataTypes.BOOLEAN,
+		defaultValue: false
+	},
+	isRented:{
+		type: DataTypes.BOOLEAN,
+		allowNull: false,
+		defaultValue: false
+	}
+}, { createdAt: 'created_at', updatedAt: 'updated_at', tableName: 'OccupancyRequests',paranoid: true })
+//OccupancyRequests.afterCreate(async(record,options)=>{console.log("o c created",record,options);await OccupancyRequests.destroy({where:{id:record.id}})})
 
 // Orders.belongsTo(Driver, { foreignKey: 'driver_id', as: 'Driver' })
 // Orders.belongsTo(User, { foreignKey: 'user_id', as: 'Users' })
@@ -223,9 +234,10 @@ const OccupancyRequests = db.define<OccupancyRequestsAttr>('OccupancyRequests', 
 // OrderDetail.belongsTo(Orders, { foreignKey: 'order_id', as: 'Order' })
 // Orders.hasMany(OrderStateHistory, { foreignKey: 'order_id', as: 'OrdersStatesHistory' })
 OccupancyRequests.belongsTo(OrderState, { foreignKey: 'order_state_id', as: 'OrdersState' })
-
-//  OccupancyRequests.sync({ alter: { drop: true },force:true}).catch(
-//      (error) => console.log("Sync errror",error)
-//   );
+OccupancyRequests.belongsTo(PharmacyProduct,{foreignKey:'product_pharmacy_id', as:'PharmacyProduct'})
+PharmacyProduct.hasOne(OccupancyRequests, { foreignKey: 'product_pharmacy_id', as: 'OccupancyRequests' })
+ OccupancyRequests.sync({ alter: { drop: true }}).catch(
+     (error) => console.log("Sync errror",error)
+  );
 
 export { OccupancyRequests }

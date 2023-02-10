@@ -1,6 +1,7 @@
 import { DataTypes} from 'sequelize';
 import db from '../config/connectionSequelize';
 import { PharmacyAttr } from '../interfaces/pharmacy';
+import { AppRelatedFacilito } from './AppRelatedFacilito';
 import { Role } from './role';
 
 
@@ -86,12 +87,26 @@ const Pharmacy = db.define<PharmacyAttr>('Pharmacy',{
     dispatcher: DataTypes.STRING,
     placeOfDispatch: DataTypes.STRING,
     dispatcherPhone: DataTypes.STRING,
+    app_related_id:{
+		type: DataTypes.INTEGER,
+		allowNull: true
+	},
+    acronym_code:{
+        type: DataTypes.STRING,
+		allowNull: true
+    }
+	
 },{ createdAt: 'created_at', updatedAt: 'updated_at' })
 
 Pharmacy.belongsTo(Role,{foreignKey:'role_id',as:'Role'})
-Pharmacy.sync();
 
- 
+
+Pharmacy.belongsTo(AppRelatedFacilito, { foreignKey: 'app_related_id', as: 'AppRelatedFacilito' })
+
+
+//  Pharmacy.sync({ alter: { drop: true }}).catch(
+//      (error) => console.log("Sync errror",error)
+//   );
 
 
 export{Pharmacy}

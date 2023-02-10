@@ -29,5 +29,7 @@ export interface PharmacyAttr extends Model{
     disabled: boolean;
     dispatcher:string;
     placeOfDispatch:string;
-    dispatcherPhone:string; 
+    dispatcherPhone:string;
+    app_related_id: number; 
+    acronym_code: string;
 }

@@ -21,7 +21,24 @@ import AdminPharmaciesDriver from './routes/AdminPharmaciesDriver'
 import chatRouter from './routes/Chat';
 import imagenRouter from './routes/imagen';
 import createOccupancyRequestRouter from './routes/occupancyRequest'
+import createRentRouter from './routes/Rent';
+import servicesRouter from './routes/services';
+import email from './routes/Facilito/emails';
+import TypeServicesFacilitoRouter from './routes/type-services-facilito';
+import PreServicesRouter from './routes/Facilito/pre-services';
+import createClientServiceRouter from './routes/Facilito/clientServices';
+import facilitoPlaceToPayRouter from './routes/Facilito/facilitoPlaceToPay';
+import formRouter from './routes/form'
+import CheckInLogRouter from './routes/CheckInLog';
+import AppRelatedFacilitosRouter from './routes/AppRelatedFacilito';
+import WorkOrderRouter from './routes/WorkOrder';
+import TechnicalRouter from './routes/TechnicalZipCode';
+import PunchRouter from './routes/Punch';
 
+
+
+
+import mailRouter from './routes/mailbox';
 
 
 
@@ -46,6 +63,22 @@ router.use('/driver',AdminPharmaciesDriver);
 router.use('/chat', chatRouter)
 router.use('/imagen', imagenRouter)
 router.use('/occupancyRequest',createOccupancyRequestRouter)
+router.use('/rent',createRentRouter)
+router.use('/services', servicesRouter)
+router.use('/email', email)
+router.use('/services/typefacilito', TypeServicesFacilitoRouter)
+router.use('/services/facilito', PreServicesRouter)
+router.use('/services/clientServices',createClientServiceRouter)
+router.use('/facilito',facilitoPlaceToPayRouter)
+router.use('/form',formRouter)
+
+router.use('/punch',CheckInLogRouter)
+router.use('/app',AppRelatedFacilitosRouter)
+router.use('/order',WorkOrderRouter)
+router.use('/technical',TechnicalRouter)
+router.use('/mails', mailRouter)
+
+router.use('/punch', PunchRouter)
 
 
 export default router;

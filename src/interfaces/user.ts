@@ -4,7 +4,10 @@ import { OrderAttr } from './order'
 import { CartAttr } from './cart-detail'
 import { RoleAttr } from './role'
 
+import { TechnicalZipAttr } from './TechnicalZipCode';
+
 export interface UserAttr extends Model {
+  	
 	id: number;
 	email: string;
 	first_name: string;
@@ -31,5 +34,13 @@ export interface UserAttr extends Model {
 	token: string;
 	driver_license: number;
 	vehicule_register: string;
+	access_code: string;
 	isDeleted: boolean;
+	// app_related_id: number;
+	status: string;
+	ext: string;
+	TechnicalZipCode: TechnicalZipAttr[];
+	pharmacy_id: number;
+
+
 }

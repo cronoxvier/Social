@@ -66,10 +66,10 @@ const OrderDetail = db.define<OrderDetailAttr>('OrdersDetails', {
 		type: DataTypes.DECIMAL(6, 2),
 		allowNull: false
 	},
-	product_order_status_id:{
+	product_order_status_id: {
 		type: DataTypes.INTEGER,
 		allowNull: false,
-		defaultValue:1
+		defaultValue: 1
 	},
 	stimated_delivered_date: {
 		type: DataTypes.DATE,
@@ -81,16 +81,16 @@ const OrderDetail = db.define<OrderDetailAttr>('OrdersDetails', {
 		allowNull: true
 	},
 
-	from:DataTypes.STRING,
-	message:DataTypes.STRING,
-	gift_status_id:DataTypes.INTEGER
+	from: DataTypes.STRING,
+	message: DataTypes.STRING,
+	gift_status_id: DataTypes.INTEGER
 }, { createdAt: 'created_at', updatedAt: 'updated_at' })
 
-OrderDetail.belongsTo(GiftStatus,{foreignKey:'gift_status_id',as:'GiftStatus'})
-OrderDetail.belongsTo(ProductOrderStatus, { foreignKey: 'product_order_status_id', as: 'ProductOrderStatus'})
-OrderDetail.belongsTo(PharmacyProduct,{foreignKey:'pharmacy_product_id', as:'PharmacyProduct'})
+OrderDetail.belongsTo(GiftStatus, { foreignKey: 'gift_status_id', as: 'GiftStatus' })
+OrderDetail.belongsTo(ProductOrderStatus, { foreignKey: 'product_order_status_id', as: 'ProductOrderStatus' })
+OrderDetail.belongsTo(PharmacyProduct, { foreignKey: 'pharmacy_product_id', as: 'PharmacyProduct' })
 PharmacyProduct.hasOne(OrderDetail, { foreignKey: 'pharmacy_product_id', as: 'OrdersDetail' })
-OrderDetail.sync({ alter: { drop: false } }).then(
-    () => console.log("Sync complete")
-   );
+// OrderDetail.sync({ alter: { drop: false } }).then(
+// 	() => console.log("Sync complete")
+// );
 export { OrderDetail }

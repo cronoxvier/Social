@@ -62,6 +62,8 @@ const login = async (req: Request, res: Response) => {
                 mensaje: 'Usuario Eliminado'
             })
         }
+
+        const token = await generarJWT(user)
         res.status(200).send({
             ok: true,
             message: "Welcome",
@@ -73,7 +75,8 @@ const login = async (req: Request, res: Response) => {
             phone: user.phone,
             password: user.password,
             role: user.role_id,
-            img: user.img
+            img: user.img,
+            token
         })
     } catch (error) {
         res.status(500).send({
@@ -95,6 +98,7 @@ const loginPanel = async (req: Request, res: Response) => {
             })
         }
         const pharmacy = await Pharmacy.findOne({ where: { email } })
+        
         if (!pharmacy) {
             return res.status(400).send({
                 message: 'Wrong email',
@@ -144,9 +148,16 @@ const loginDriver = async (req: Request, res: Response) => {
         const user = await Driver.findOne({
             where: { email }
         })
+       
 
+        if (user.active == false) {
+            return res.status(200).send({
+                mensage: 'User not active',
+                mensaje: 'Usuario no activo'
+            })
+        }
         if (user.role_id !== 3) {
-            console.log('rol')
+           
             return res.status(200).send({
                 mensage: 'User not valid',
                 mensaje: 'Usuario no valido'
@@ -165,7 +176,6 @@ const loginDriver = async (req: Request, res: Response) => {
         const passwordMatch = await bcrypt.compare(password, user.password);
         console.log('password', passwordMatch)
         if (!passwordMatch) {
-
             return res.status(400).json({
                 message: 'Wrong password',
                 mensaje: 'Contraseña incorrecta',
@@ -204,7 +214,6 @@ const loginToken = async (req: Request, res: Response) => {
                     as: 'role'
                 },
             ]
-
         })
         if (user.role_id !== 1) {
             return res.status(200).send({
@@ -259,13 +268,46 @@ const loginToken = async (req: Request, res: Response) => {
 }
 
 
+const loginCode = async (req: Request, res: Response) => {
+    try {
+        const { code } = req.body;
 
+        const user = await User.findOne({
+            where: { access_code: code },
+           
+        })
+ 
+       
+        const token = await generarJWT(user)
+        res.status(200).send({
+            ok: true,
+            message: "Welcome",
+            mensaje: "Bienvenido",
+            id: user.id,
+            user: user.email,
+            firstname: user.first_name,
+            lastname: user.last_name,
+            phone: user.phone,
+            password: user.password,
+            role: user.role_id,
+            img: user.img,
+            token
+        })
+    } catch (error) {
+        res.status(500).send({
+            mensaje: 'Error desconocido',
+            message: 'Unknow error',
+            error
+        })
 
-
+        // throw error
+    }
+}
 
 export {
     login,
     loginPanel,
     loginDriver,
-    loginToken
+    loginToken,
+    loginCode
 }

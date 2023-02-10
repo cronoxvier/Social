@@ -17,4 +17,11 @@ export interface PharmacyProductAttr extends Model {
 	ivu_municipal:boolean;
 	ivu_statal:boolean;
 	gift_status:boolean;
+	prorateo: number;
+	maintenance_enabled:boolean;
+	maintenance_fee:number;
+	request_fee_enabled:boolean;
+	request_fee: number;
+
+	
 }

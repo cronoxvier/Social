@@ -35,7 +35,7 @@ const Driver = db.define<DriverAttr>('Driver',{
 	},
 	pharmacy_id: {
 		type: DataTypes.INTEGER,
-		allowNull: false
+		allowNull: true
 	},
     active: {
 		type: DataTypes.BOOLEAN,
@@ -52,6 +52,6 @@ const Driver = db.define<DriverAttr>('Driver',{
 
 Driver.belongsTo(Role,{foreignKey:'role_id',as:'Role'})
 Driver.belongsTo(Pharmacy,{foreignKey:'pharmacy_id',as:'Pharmacy'})
-Driver.sync()
+// Driver.sync()
 
 export {Driver}

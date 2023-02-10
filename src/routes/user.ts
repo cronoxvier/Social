@@ -15,7 +15,7 @@ userRouter.post('/updateDriveDocumentImage/:id',userCtrl.updateDriverDocumentIma
 userRouter.post('/getDriverById',userCtrl.getDriverUser);
 userRouter.post('/updateDriverActive',userCtrl.updatedDriverActive);
 userRouter.post('/getDriverByPharmacy',userCtrl.getDriverByPharmacy);
-userRouter.get('/getDriverByAdmin',userCtrl.getDriverByAdmin);
+userRouter.get('/getDriverByAdmin/:id',userCtrl.getDriverByAdmin);
 userRouter.post('/getDriverDocuments',userCtrl.getDriverDocuments);
 userRouter.post('/updateCliente',userCtrl.updateClient);
 userRouter.post('/updatePasswordUser/:token',userCtrl.resetPasswordUser);
@@ -31,8 +31,10 @@ userRouter.post('/updateClientDirection',userCtrl.updateClientDirection)
 userRouter.post('/deleteClientDirection',userCtrl.deleteClientDirection)
 userRouter.post('/updateClientImage/:id',userCtrl.updateClientImage)
 userRouter.get('/deleteUser/:id',userCtrl.deleteUser)
-
-
+userRouter.get('/getAllDriverUser', userCtrl.getAllDriverUser);
+userRouter.post('/disableEnambleUserServices', userCtrl.disableEnambleUserServices);
+userRouter.post('/createClientCode',userCtrl.createClientCode);
+// userRouter.post('/createClientCodeExcel',userCtrl.createClientCodeExcel);
 
 
 

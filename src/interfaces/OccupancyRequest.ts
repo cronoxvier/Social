@@ -3,7 +3,7 @@ import { Model } from 'sequelize';
 export interface OccupancyRequestsAttr extends Model {
 	id: integer,
 	code:string,
-	Full: string,
+	FullName: string,
 	DateOfBirth: string,
 	SSN: string,
 	Phone: string,
@@ -45,6 +45,8 @@ export interface OccupancyRequestsAttr extends Model {
 
 	FutureTenantBirthDay: string,
 	user:string,
-	product_pharmacy_id:number
+	product_pharmacy_id:number,
+	isRented:boolean;
+	isDocumentSigned:boolean;
 }
 
