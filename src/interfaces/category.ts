@@ -5,4 +5,5 @@ export interface CategoryAttr extends Model {
     nombre:string;
     name: string;
 	icon:string;
+    pharmacy_id: number;
 }

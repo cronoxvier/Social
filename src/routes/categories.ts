@@ -4,6 +4,7 @@ import express=require('express');
 const categoriesRouter:express.Router=express.Router();
 
 categoriesRouter.get('/getCategories',categoriesCtrl.getCategories)
+categoriesRouter.get('/getCategories/properties/:id',categoriesCtrl.getCategoriesByPropitier)
 categoriesRouter.get('/getCategoriesStatus/:id',categoriesCtrl.getCategoriesStatus)
 categoriesRouter.get('/getCategoriesStatusMobile/:id',categoriesCtrl.getCategoriesStatusMobile)
 categoriesRouter.post('/addCategoriesStatus',categoriesCtrl.addCategoriesStatus)
